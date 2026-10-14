@@ -26,8 +26,8 @@ def main(run, out):
         files[rel] = hashlib.sha256(b).hexdigest()
         years[y] += 1
 
-    code = subprocess.run(["git", "-C", str(pathlib.Path(__file__).parent), "describe", "--always", "--dirty"],
-                          capture_output=True, text=True).stdout.strip()
+    git = lambda *a: subprocess.run(["git", "-C", str(pathlib.Path(__file__).parent), *a], capture_output=True, text=True).stdout.strip()
+    code = git("describe", "--always") + ("-dirty" if git("status", "--porcelain") else "")   # 새 파일(untracked)도 dirty
     manifest = {"source": str(run), "rule": {"group": KRICT_GROUP, "year_field": YEAR_FIELD}, "code": code,
                 "counts": dict(sorted(years.items())), "total": len(files), "files": files}
     (out / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=1))

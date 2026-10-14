@@ -1,0 +1,261 @@
+"""ChemDX(KRICT) 레코드 하나 → sdl-prefill draft + 첨부(곡선 csv) — 매핑 = mapping/chemdx_to_psc.csv.
+
+웹에서 연구자가 하는 순서 그대로: PSC 표준 레시피(PSC-RCP-03)를 불러와 → ChemDX 에 없는 스텝을 빼고 → 레코드 값을 적는다.
+- 레시피에 박힌 표준값은 이 실험의 값이 아니므로 지운다(registry 기본값 = Source default 로 돌아감). ChemDX 값만 manual.
+- registry 에 없는 이름·환산 못 한 단위는 버리지 않고 스텝 orphanParams 로(엔진이 Process Note + report.txt 경고로 남긴다).
+- 이름은 registry 의 '옛 → 새' 메모·대소문자를 너그럽게 맞추고, 적을 때는 registry 이름을 그대로 쓴다.
+엔진(sdl_platform)은 부르는 쪽이 sys.path 에 올린다(build_library.py).
+"""
+import copy, csv, io, itertools
+
+from sdl_platform.v05 import draft as D
+
+LAB, RECIPE = "KRICT-PSC", "PSC-RCP-03"   # 2026 ChemDX = n-i-p 단위셀 = PSC-RCP-03 골격(T2.2)
+LAYERS = ("tco", "etl", "etl_treatment", "perovskite", "perovskite_treatment", "htl", "anode_metal", "device_type")
+UNIT = {"ul": "ul", "µl": "ul", "μl": "ul", "ml": "ml", "m": "min", "min": "min", "s": "s", "h": "h",
+        "oc": "c", "℃": "c", "degc": "c", "°c": "c"}
+FACTOR = {("ml", "ul"): 1000, ("ul", "ml"): 0.001, ("s", "min"): 1 / 60, ("min", "s"): 60, ("h", "min"): 60}
+DOPANT = {"li-tfsi": "dopant1", "co-tfsi": "dopant2", "tbp": "additive"}   # HTL 도핑 = 이름으로 칸을 고른다
+
+
+def fmt(x):
+    return f"{x:.10g}"   # 부동소수 잡음 제거(0.045200000000000004 → 0.0452)
+
+
+def lv(d, k):
+    """ChemDX {unit, value} 잎 → (값, 단위). 없으면 (None, '')."""
+    v = d.get(k) if isinstance(d, dict) else None
+    if isinstance(v, dict):
+        return v.get("value"), v.get("unit") or ""
+    return v, ""
+
+
+def norm(name):
+    return str(name).split("→")[-1].strip().lower()
+
+
+def to_unit(value, src, dst):
+    """→ dst 단위 값 문자열, 환산 못 하면 None. 원본 단위가 없으면 대상 단위로 본다."""
+    s, d = (UNIT.get(u.strip().lower(), u.strip().lower()) for u in (src or "", dst or ""))
+    if not s or not d or d == "-" or s == d:
+        return value
+    try:
+        return fmt(float(value) * FACTOR[(s, d)])
+    except (KeyError, ValueError):
+        return None
+
+
+def put(step, name, value, unit="", nth=0):
+    """파라미터 name 의 nth 번째 칸에 manual 값. 칸이 없거나 환산 못 하면 orphanParams."""
+    if value in (None, ""):
+        return
+    value = fmt(value) if isinstance(value, (int, float)) and not isinstance(value, bool) else str(value).strip()
+    hits = [p for p in step["params"] if norm(p["name"]) == norm(name)]
+    if nth < len(hits):
+        p = hits[nth]
+        v = to_unit(value, unit, p["unit"])
+        if v is not None:
+            p["value"], p["use"] = v, True
+            return
+    step["orphanParams"][name if nth == 0 else f"{name}#{nth + 1}"] = f"{value} {unit}".strip()
+
+
+def formula(pvk):
+    """a/b/x_site 비율(%) → ABX3 조성식, 예: FA0.99MA0.01PbI2.97Br0.03 (사이트마다 합으로 나눔)."""
+    out = ""
+    for site, n in (("a_site", 1), ("b_site", 1), ("x_site", 3)):
+        rows = [(lv(r, "material")[0], float(lv(r, "ratio")[0])) for r in pvk.get(site) or []]
+        total = sum(r for _, r in rows)
+        out += "".join(m + ("" if r * n == total else fmt(r * n / total)) for m, r in rows)
+    return out
+
+
+def curve_csv(c):
+    """JV 곡선 하나 → csv 바이트(열 = 숫자 배열 잎, 머리 = '이름 [단위]')."""
+    cols = [(k, v) for k, v in c.items() if isinstance(v, dict) and isinstance(v.get("value"), list)]
+    buf = io.StringIO()
+    w = csv.writer(buf)
+    w.writerow([f"{k} [{v.get('unit', '')}]" for k, v in cols])
+    w.writerows(itertools.zip_longest(*(v["value"] for _, v in cols), fillvalue=""))
+    return buf.getvalue().encode()
+
+
+def drop_step(d, code):
+    """스텝 삭제 — 산출 개체를 쓰던 뒤 스텝은 삭제된 스텝의 투입 개체로 다시 잇는다."""
+    s = step_of(d, code)
+    d["steps"].remove(s)
+    if s["outputs"]:
+        old, new = s["outputs"][0]["entity"], s["inputs"][0]["entity"]
+        for t in d["steps"]:
+            for m in t["inputs"]:
+                if m["entity"] == old:
+                    m["entity"] = new
+        d["entities"] = [e for e in d["entities"] if e["key"] != old]
+
+
+def step_of(d, code):
+    return next(s for s in d["steps"] if norm(s["code"]) == code.lower())
+
+
+def spin_anneal(step, block):
+    for i, sc in enumerate(block.get("spin_coating") or []):
+        put(step, "spinCoatingSpeed", *lv(sc, "rpm"), nth=i)
+        put(step, "spinCoatingTime", *lv(sc, "time"), nth=i)
+        put(step, "spinCoatingMode", *lv(sc, "type"), nth=i)          # 추가후보
+    for i, an in enumerate(block.get("annealing") or []):
+        put(step, "thermalAnnealingTemperature", *lv(an, "temperature"), nth=i)
+        put(step, "thermalAnnealingTime", *lv(an, "time"), nth=i)
+
+
+def convert(rec, seq):
+    """→ (draft, blobs{file id: bytes})."""
+    blocks = {}
+    for b in rec["input"]:
+        layer = next((k for k in b if k in LAYERS), None)
+        if layer is None or layer in blocks:
+            raise ValueError(f"{rec['id']}: 모르는 input 블록 {list(b)}")   # 조용히 버리지 않는다
+        blocks[layer] = b
+    dev = blocks["device_type"]
+    if lv(dev, "device_type")[0] != "n-i-p":
+        raise ValueError(f"{rec['id']}: n-i-p 가 아님 — PSC-RCP-03 골격이 맞지 않는다")
+
+    d = D.from_recipe(LAB, RECIPE, {"date": rec["created_at"][:10], "seq": f"{seq:03d}"})
+    for s in d["steps"]:                                  # 레시피 표준값 지움 → registry 기본값(default)
+        s["orphanParams"] = {}
+        for p in s["params"]:
+            p["value"], p["use"] = "", False
+    for code in ("EQE", "IMAGE", "THICK"):                # ChemDX 에 없는 측정
+        drop_step(d, code)
+    etl = lv(blocks["etl"]["etl"][0], "material")[0]
+    drop_step(d, {"SnO2_CBD": "ETLCT", "SnO2_NP": "ETLCD"}[etl])
+    ents = {e["name"]: e for e in d["entities"]}
+
+    note = lv(dev, "note")[0]
+    d["meta"].update(title=f"{lv(dev, 'device_type')[0]} {'단위셀' if lv(dev, 'type')[0] == 'unit_cell' else lv(dev, 'type')[0]} (ChemDX)",
+                     note=" · ".join(str(x) for x in (f"ChemDX {rec['id']}", f"author {rec['author']}", note) if x))
+
+    s = step_of(d, "BOTEL")
+    put(s, "material", *lv(blocks["tco"], "tco"))
+    ents["bare_FTO전극"]["note"] = f"ChemDX tco: {lv(blocks['tco'], 'tco')[0]}"   # 원료 — 정체 한 줄(검증 miss 방지)
+
+    s = step_of(d, "ETLCD" if etl == "SnO2_CBD" else "ETLCT")
+    if etl == "SnO2_NP":
+        put(s, "material", etl)
+    put(s, "atmosphere", *lv(blocks["etl"], "condition"))             # 추가후보
+    spin_anneal(s, blocks["etl"])
+
+    if "etl_treatment" in blocks:
+        b, s = blocks["etl_treatment"], step_of(d, "ETLSF")
+        for t in b["etl_treatment"]:
+            put(s, "material", *lv(t, "material"))
+            put(s, "concentration", lv(t, "concentration")[0], lv(t, "conc_unit")[0])
+            put(s, "spinCoatingVolume", *lv(t, "quantity"))
+        spin_anneal(s, b)
+    else:
+        drop_step(d, "ETLSF")
+
+    b, s = blocks["perovskite"], step_of(d, "PVK")
+    pvk = b["perovskite"]
+    out = next(e for e in d["entities"] if e["key"] == s["outputs"][0]["entity"])
+    out["formula"] = formula(pvk)                                      # 조성 = PVK 산출 개체 화학식(확인 대상)
+    put(s, "precursorMolarity", *lv(pvk, "molarity"))                 # 추가후보
+    for i, x in enumerate(pvk.get("solvent") or []):
+        put(s, f"solvent{i + 1}", *lv(x, "material"))
+        put(s, f"solvent{i + 1}Volume", *lv(x, "volume"))
+    for i, x in enumerate(pvk.get("additive") or []):
+        put(s, "additive", *lv(x, "material"), nth=i)
+        put(s, "additiveMolarRatio", *lv(x, "quantity"), nth=i)       # 추가후보
+        put(s, "additiveConcentration", lv(x, "concentration")[0], lv(x, "conc_unit")[0], nth=i)  # 확인 대상
+    for x in pvk.get("antisolvent") or []:
+        put(s, "antiSolvent", *lv(x, "material"))
+        put(s, "antiSolventDrippingVolume", *lv(x, "quantity"))
+        put(s, "antiSolventDrippingTiming", *lv(x, "dripping_time"))
+    for i, _ in enumerate(pvk.get("spin_coating") or []):
+        put(s, "spinCoatingSpeed_Step", i + 1, nth=i)
+    spin_anneal(s, pvk)
+    put(s, "atmosphere", *lv(b, "condition"))                         # 추가후보
+    put(s, "laboratoryTemperature", *lv(dev, "temperature"))          # 실험실 온습도 = PVK(확인 대상)
+    put(s, "laboratoryRelativeHumidity", *lv(dev, "humidity"))
+
+    b, s = blocks["perovskite_treatment"], step_of(d, "PVKSF")
+    for t in b["perovskite_treatment"]:
+        put(s, "material", *lv(t, "material"))
+        put(s, "concentration", lv(t, "concentration")[0], lv(t, "conc_unit")[0])
+        put(s, "spinCoatingVolume", *lv(t, "quantity"))
+    spin_anneal(s, b)
+
+    b, s = blocks["htl"], step_of(d, "HTL")
+    for t in b["htl"]:
+        put(s, "holeTransportMaterial", *lv(t, "material"))
+        put(s, "holeTransportMaterialConcentration", lv(t, "concentration")[0], lv(t, "conc_unit")[0])  # 추가후보
+        put(s, "spinCoatingVolume", *lv(t, "quantity"))
+    for t in b.get("htl_doping") or []:
+        name, slot = lv(t, "material")[0], DOPANT.get(str(lv(t, "material")[0]).lower())
+        if slot is None:
+            put(s, f"dopant:{name}", *lv(t, "volume"))
+            continue
+        put(s, slot if slot == "additive" else f"{slot}Name", name)
+        put(s, f"{slot}Volume", *lv(t, "volume"))
+    for t in b.get("solvent") or []:
+        put(s, "solvent", *lv(t, "material"))
+        put(s, "solventVolume", *lv(t, "volume"))
+    spin_anneal(s, b)
+
+    if "anode_metal" in blocks:
+        put(step_of(d, "TOPEL"), "material", *lv(blocks["anode_metal"], "anode_metal"))
+
+    # JV — 스캔 방향별 스텝 하나, 스텝 안 반복 = 곡선(셀) 하나
+    tmpl = step_of(d, "JV")
+    at = d["steps"].index(tmpl)
+    d["steps"].remove(tmpl)
+    tmpl["results"] = [r for r in tmpl["results"] if r["name"] not in ("Image", "remark")]   # ChemDX 에 없음
+    blobs = {}
+    area = lv(dev, "cell_dimension")[0]
+    ar = lv(dev, "ar")[0]
+    for direction in ("Forward", "Reverse"):
+        curves = [c for c in rec["analysis"].get("JV") or []
+                  if lv(c.get("measurement_conditions"), "sweep_direction")[0] == direction]
+        if not curves:
+            continue
+        s = copy.deepcopy(tmpl)
+        s["key"] = f"{tmpl['key']}{direction[0].lower()}"
+        pv = [c.get("pv_cell_parameters") or {} for c in curves]
+        put(s, "scanDirection", direction.lower())
+        put(s, "activeArea", area if area not in (None, "") else lv(pv[0], "cell_dimension")[0], "cm2")
+        put(s, "incidentLightIntensity", *lv(pv[0], "irradiance"))
+        put(s, "antireflectionFIlmUsage", {0: "no", 1: "yes"}.get(ar))
+        if len({lv(p, "cell_dimension")[0] for p in pv}) > 1:
+            s["note"] = "곡선마다 cell_dimension 다름: " + ", ".join(fmt(lv(p, "cell_dimension")[0]) for p in pv)
+        for r in s["results"]:
+            src = {"powerConversionEfficiency": "efficiency", "shortCircuitCurrentDensity": "jsc",
+                   "openCircuitVoltage": "voc", "fillFactor": "fill_factor"}.get(r["name"])
+            r["values"] = []
+            for i, (c, p) in enumerate(zip(curves, pv), 1):
+                if r["name"] == "resultFile":
+                    fid, data = f"{s['key']}-{i}", curve_csv(c)
+                    blobs[fid] = data
+                    r["values"].append({"repeatNo": i, "value": "", "unit": "",
+                                        "file": {"id": fid, "name": f"{c.get('key') or i}.csv", "size": len(data)}})
+                else:
+                    v, u = lv(p, src)
+                    r["values"].append({"repeatNo": i, "value": "" if v in (None, "") else fmt(v), "unit": u, "file": None})
+        d["steps"].insert(at, s)
+        at += 1
+    return d, blobs
+
+
+def _selftest():
+    assert formula({"a_site": [{"material": {"value": "FA"}, "ratio": {"value": "99"}}, {"material": {"value": "MA"}, "ratio": {"value": 1}}],
+                    "b_site": [{"material": {"value": "Pb"}, "ratio": {"value": "100"}}],
+                    "x_site": [{"material": {"value": "I"}, "ratio": {"value": "99"}}, {"material": {"value": "Br"}, "ratio": {"value": "1"}}]}
+                   ) == "FA0.99MA0.01PbI2.97Br0.03"
+    assert [to_unit("0.3", "ml", "µL"), to_unit("20", "m", "min"), to_unit("90", "s", "min"), to_unit("150", "oC", "℃"),
+            to_unit("5", "", "s"), to_unit("FTO", "", "-"), to_unit("1", "mg/ml", "mg/mL"), to_unit("2", "kg", "g")] == \
+        ["300", "20", "1.5", "150", "5", "FTO", "1", None]
+    st = {"params": [{"name": "a → thermalAnnealingTIme", "unit": "min", "value": "", "use": False}], "orphanParams": {}}
+    put(st, "thermalAnnealingTime", "1", "h"); put(st, "thermalAnnealingTime", "3", "m", nth=1); put(st, "x", "2", "kg")
+    assert st["params"][0]["value"] == "60" and st["params"][0]["use"] and st["orphanParams"] == {"thermalAnnealingTime#2": "3 m", "x": "2 kg"}
+    assert curve_csv({"V": {"unit": "V", "value": [1, 2]}, "J": {"unit": "A/cm2", "value": [3]}, "k": "x"}) == b"V [V],J [A/cm2]\r\n1,3\r\n2,\r\n"
+
+
+_selftest()

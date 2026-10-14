@@ -17,7 +17,7 @@ device,input[].humidity,param,PVK,laboratoryRelativeHumidity,%,,registry,위와 
 device,input[].cell_dimension,param,JV,activeArea,cm2,,registry,analysis.JV[].pv_cell_parameters.cell_dimension 과 같은 값(160건만 있음)
 device,input[].ar,param,JV,antireflectionFIlmUsage,-,0 → no · 1 → yes,registry,
 device,input[].condition,param,(없음),atmosphere,-,,추가후보,air·glove-box 등 공정 분위기
-tco,input[].tco,param,BOTEL,material,-,FTO_Asahi → FTO (+note Asahi),registry,상용 FTO 기판(하부전극 일체형)
+tco,input[].tco,param,BOTEL,material,-,값 그대로(FTO · FTO_Asahi),registry,상용 FTO 기판(하부전극 일체형)
 etl,input[].etl[].material,step,ETLCD | ETLCT,,,SnO2_CBD → ETLCD · SnO2_NP → ETLCT(material=SnO2_NP),registry,값이 스텝 종류를 정한다(2026: CBD 166 · NP 4). ETLCD 는 material 칸 삭제 → 산출 개체 이름
 etl,input[].annealing[].temperature,param,ETLCD | ETLCT,thermalAnnealingTemperature,℃,oC → ℃,registry,etl 블록 안 annealing(10건형)
 etl,input[].annealing[].time,param,ETLCD | ETLCT,thermalAnnealingTime,min,m → min,registry,ETLCD 쪽 registry 이름은 오타 thermalAnnealingTIme
@@ -64,7 +64,7 @@ htl,input[].htl[].concentration · conc_unit,param,HTL,holeTransportMaterialConc
 htl,input[].htl[].quantity,param,HTL,spinCoatingVolume,µL,ml × 1000,registry,0.07 ml → 70 µL(= 기본값)
 htl,input[].htl_doping[].material,param,HTL,dopant1Name · dopant2Name · additive,-,이름으로: Li-TFSI → dopant1 · Co-TFSI → dopant2 · tBP → additive,registry,
 htl,input[].htl_doping[].volume,param,HTL,dopant1Volume · dopant2Volume · additiveVolume,µL,ul → µL,registry,
-htl,input[].solvent[].material,param,HTL,solvent,-,CB → chlorobenzene,registry,htl 블록 안 solvent
+htl,input[].solvent[].material,param,HTL,solvent,-,값 그대로(CB),registry,htl 블록 안 solvent — 물질명 정규화(CB → chlorobenzene 등)는 추후
 htl,input[].solvent[].volume,param,HTL,solventVolume,mL,,registry,
 htl,input[].spin_coating[].rpm,param,HTL,spinCoatingSpeed,rpm,,registry,
 htl,input[].spin_coating[].time,param,HTL,spinCoatingTime,s,,registry,
