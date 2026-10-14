@@ -44,3 +44,8 @@
   곡선 key 2328/2328 = 방향_원본명(시각 뺌). prefill 은 다른 세션의 HANDOFF 미커밋 수정으로 manifest 에 -dirty(엔진 무관).
   다음 = PSC 회신(10-15) → registry 판 → 재빌드 · 남은 질문(소자 condition · 온습도 스텝 · MACl 농도 · xlsx 시각).
 - **보류(2026-10-14 밤)** — 사용자: 남은 질문 4건(소자 condition · 온습도 스텝 · MACl 농도 · xlsx 시각) 일단 보류. 다음 = PSC 회신(10-15) → registry 판 → 재빌드.
+- **데이터 건수 셈법 비교(2026-10-14 밤)** — 사용자: 동료 토의(칸마다 1건 vs 타겟 Y 만 따로 · X 묶음) → 둘 다 추산해 두고 보고 때 고름 · 기록은 이 레포.
+  `docs/intent/data-count-methods.md`(셈법 A·A′·B·C · X/Y 규칙 = Value 측정값이 Y · 애매한 것 · 태양전지 적용) ·
+  `scripts/count_methods.py`(플랫폼 적재기 v05.load 로 실제 그래프 — 별도 프로세스, 시트 이름 v0.6 로 바꿔 넣고 Entity Type 잠정) →
+  `reports/count-methods-dev-20261014b.md`: A 28,398 · A′ 18,998 · B 9,652 · C 9,482 · ML 표본 행 2,328 · 트리플 339,921(미표현 0, Y 값당 15).
+  공정 칸 중 기본값 9,400(57%) · 값이 달라지는 공정 자리 22/128. `.env.example` 에 SDL_PLATFORM_DIR.
