@@ -43,3 +43,4 @@
   검증: dev 빌드 `dev-20261014b` 오류 0 · 공정 +48 · manual +32 · 미입력 +32(JV 스텝 +8 × 결과 Kind 4) · 조성·분석 변화 없음 · 소실 검사 cell_dimension 전부 남음 ·
   곡선 key 2328/2328 = 방향_원본명(시각 뺌). prefill 은 다른 세션의 HANDOFF 미커밋 수정으로 manifest 에 -dirty(엔진 무관).
   다음 = PSC 회신(10-15) → registry 판 → 재빌드 · 남은 질문(소자 condition · 온습도 스텝 · MACl 농도 · xlsx 시각).
+- **보류(2026-10-14 밤)** — 사용자: 남은 질문 4건(소자 condition · 온습도 스텝 · MACl 농도 · xlsx 시각) 일단 보류. 다음 = PSC 회신(10-15) → registry 판 → 재빌드.
