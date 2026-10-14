@@ -19,3 +19,10 @@
   `mapping/chemdx_to_psc.csv` 85행(2026 채워진 경로 119 전부 포함 확인) — layer(input 블록) × 경로 → meta·step·param·result·file·drop, '→' 정리 후 이름.
   주요 제안: 조성(a/b/x_site 비율)은 PVK 산출 개체 formula · JV 는 scanDirection 별 스텝 2개(반복 = 셀) · 곡선 = resultFile csv.
   막힌 곳: 정리된 PSC registry 판 없이는 엔진이 ETLCD 등을 모른다 → D5(PSC 회신 대기 vs 데이터팀 정리) 사용자 결정 필요.
+- **T3 변환기·빌드 파이프라인(2026-10-14)** — PSC registry 정리는 보류(PSC 회신 10-15 예정, 사용자) · 그동안 파이프라인 진행.
+  `scripts/convert.py`: from_recipe(PSC-RCP-03) 골격 → EQE·IMAGE·THICK·(CBD/NP 중 안 쓴 쪽)·(없으면 ETLSF) 빼고 개체 다시 잇기 → 레시피 표준값 지움 →
+  ChemDX 값 manual(단위 환산 ml→µL·m→min 등, 못 하면 orphan) · JV 스캔 방향별 스텝(반복 = 곡선) · 곡선 csv · 조성식. 자체 검사 `_selftest`.
+  `scripts/build_library.py`: 실험 ID · validate · to_zip 풀기 · manifest(원본 sha · 코드·prefill 커밋 · registry·template 판) · 집계.
+  검증: 세트 1개 template.xlsx 를 원본과 대조(값·곡선 파일명 일치) · 두 번 빌드 = xlsx 셀 내용·나머지 파일 동일(xlsx 바이트만 다름) ·
+  dirty 판정에 untracked 포함(filter_krict 도). dev 빌드 `library/dev-20261014`(코드 0a60847) 170세트 · 오류 0.
+  다음 = PSC 회신 → registry 판 → 재빌드 · 사용자 결정(확인 4건 · 기본값 셈 · xlsx 시각).

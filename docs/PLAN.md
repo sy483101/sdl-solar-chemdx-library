@@ -54,15 +54,21 @@ $SOLAR_DATA_DIR/
 
 ## WS3 변환기 — 라이브러리층
 
-- [ ] **T3.1 record → draft**: 매핑표대로 sdl-prefill draft JSON(meta · entities · steps — 파라미터·결과·투입/산출) 생성.
+- [~] **T3.1 record → draft** — `scripts/convert.py`(10-14): `from_recipe(PSC-RCP-03)` → ChemDX 에 없는 스텝 빼고 다시 잇기 → 레시피 표준값 지우고
+      ChemDX 값만 manual · registry 에 없는 값 = orphanParams(Process Note + report 경고) · 이름은 '→'·대소문자 너그럽게. 확인 4건은 제안안으로(HANDOFF).
+      (원안) 매핑표대로 sdl-prefill draft JSON(meta · entities · steps — 파라미터·결과·투입/산출) 생성.
       **측정 곡선(`analysis` 의 x·y 배열 — JV·PL·UV-Vis·XRD)은 DataArtifact 로 txt/csv 를 뽑아내고 5시트에 배열을 넣지 않는다**(사용자 결정 10-14 — 배열 지양).
       엔진 도우미(`draft.new_step`·`draft.new_entity`·`draft.validate`)를 쓴다. 첨부 파일 = draft 의 file 자리 + 바이트.
-- [ ] **T3.2 draft → 세트 폴더**: `sheets.to_zip`(웹 내려받기와 같은 함수) 결과를 `library/<빌드>/<2026|other>/` 에 풀어 둔다 —
+- [~] **T3.2 draft → 세트 폴더** — `scripts/build_library.py`(10-14). dev 빌드 `library/dev-20261014`(registry 0.5.3 — PSC 정리 전).
+      (원안) `sheets.to_zip`(웹 내려받기와 같은 함수) 결과를 `library/<빌드>/<2026|other>/` 에 풀어 둔다 —
       웹 zip 과 바이트 수준으로 같은 형식이 목적. `validate` 알림은 `report.txt` + 빌드 요약.
-- [ ] **T3.3 실험 ID** — 열린 결정 D1 에 따라 부여. 같은 원본 → 같은 ID(재빌드해도 안 바뀜).
-- [ ] **T3.4 정량지표 집계** → `reports/indicator-<빌드>.md`(git, 숫자만): 세트 수 · `data_counts` 합(조성·구조·공정·분석) · 알림 남은 세트 수.
+- [x] **T3.3 실험 ID** — `build_library.py`: 같은 등록일 안 ChemDX ID 순(D1). 서버 장부 겹침은 아직 미확인. 같은 원본 → 같은 ID(재빌드해도 안 바뀜).
+- [~] **T3.4 정량지표 집계** — `reports/indicator-<빌드>.md` 생성까지(공정 중 manual 따로 셈). 웹 대조 남음.
+      (원안) → `reports/indicator-<빌드>.md`(git, 숫자만): 세트 수 · `data_counts` 합(조성·구조·공정·분석) · 알림 남은 세트 수.
       완료 = 표본 세트를 sdl-prefill 웹에서 "레시피 불러오기"로 열어 같은 건수가 나오는지 대조.
-- [ ] **T3.5 재현성**: 같은 원본·커밋으로 두 번 빌드 → 폴더 해시 동일(날짜 같은 비결정 칸이 있으면 고정 방법을 정함).
+- [~] **T3.5 재현성** — 10-14: 두 번 빌드 → csv·metadata·report·manifest 세트 동일, template.xlsx 는 셀 내용 동일·바이트만 다름
+      (openpyxl 작성 시각 — 엔진 쪽). 고정 방법(내용 비교로 갈음 / sdl-prefill 에 고리) 결정 남음.
+      (원안) 같은 원본·커밋으로 두 번 빌드 → 폴더 해시 동일(날짜 같은 비결정 칸이 있으면 고정 방법을 정함).
 
 ## WS4 JSON-LD 검토 (결정만 — 구현은 결정 뒤)
 

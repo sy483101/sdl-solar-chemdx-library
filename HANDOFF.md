@@ -12,7 +12,12 @@
 - 확인(10-14): 2026년분 ≈170건 맞음(재수집 불필요) · **마감 10-26**(D6) · 측정 곡선은 JSON 배열 → DataArtifact 용 txt/csv 로 뽑는다(배열 지양).
 - T2.1 완료: `mapping/fields.csv`(경로 242, 2026 에서 채워진 것 119) — 관찰은 `docs/chemdx-api.md` 끝. D7 잠정(레코드 = 세트) · D1 = KRICT-PSC 체계(`PSC-EXP-…`).
 - D1 결정: `PSC-EXP-{created_at 날짜}-{NNN}`(같은 날 ChemDX ID 순).
-- T2.2 초안 `mapping/chemdx_to_psc.csv` — 2026 데이터 = PSC-RCP-03(n-i-p, FTO/SnO2 CBD/KCl/PVK/OABr/Spiro/Au) 골격. registry 이름은 v0.5.3 '→' 정리 후(BOTEL·ETLCD·ETLCT·PVK…).
-  **막힌 곳**: 엔진은 registry 를 글자 그대로 읽는다 — v0.5.3 에는 `ETLCD` 등이 `CBD → ETLCD` 로만 있어 정리된 PSC 판이 있어야 T3 가 돈다(PSC 회신 대기 중).
-- **다음** = 사용자 검토(확인 9행 · 추가후보 14행) + PSC registry 정리 시점 결정(D5) → T2.3·T3.
+- T2.2 초안 `mapping/chemdx_to_psc.csv` — 2026 데이터 = PSC-RCP-03(n-i-p) 골격. 이름은 v0.5.3 '→' 정리 후(BOTEL·ETLCD·ETLCT·PVK…).
+- **파이프라인 완성(dev)**: `scripts/convert.py`(레코드 → draft) · `scripts/build_library.py`(→ 엔진 zip → `library/<빌드>/2026/<실험ID>/` + manifest + 집계).
+  dev 빌드 `library/dev-20261014` = 170세트 · 조성 170 · 공정 16,540(manual 7,156) · 분석 11,640(곡선 2,328 × 값4+파일1) · 오류 0 ·
+  미입력 1,312(JV 결과 Kind — PSC Composite 보류) · 확인 660(registry 에 없는 값 → Process Note). 숫자 = `reports/indicator-dev-20261014.md`.
+- **PSC registry 정리 = 보류(사용자 10-14)** — 내일(10-15) PSC 회신 받으면 sdl-prefill 받기 절차 → 판 올림 → 이 레포는 다시 빌드만
+  (convert.py 가 '→' 메모·새 이름 모두 읽음 — ASOL 합침되면 반용매·열처리가 PVK 파라미터로 들어간다).
+- **사용자에게 물을 것**: ① 확인 4건(조성식 위치 = PVK 산출 개체 formula · JV 스캔 방향별 스텝 · 실험실 온습도 = PVK · MACl 농도 vs mol%)
+  ② **registry 기본값(Source=default)을 지표 건수에 넣을지** — 웹 입력과 같은 셈이면 공정 16,540, ChemDX 가 준 값만이면 7,156 ③ T3.5 xlsx 작성 시각.
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).
