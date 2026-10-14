@@ -62,3 +62,8 @@
   발견: registry Variable 표시 랩마다 뜻이 다름(PCC·PSC 0 · ELF 43/48 · CAM 45/48) · ChemDX 10세트(03572~03586) 파일명에 숙성 일수·조건 섞임.
   설득 문서 `docs/data-count-methods-brief.md`(안건마다 태양전지 예시) + 페이지 https://claude.ai/artifact/F2E9csXYfGCHKbVDRtHHwo(비공개).
   기본값(확인 중): 2건 문턱 n≥2 · 묶음 → 공정 칸 · C 의 1 = 조성·구조·공정. `lab_estimate.py` 는 10-14 정의 그대로(새 B 는 랩 설계인자 확인 뒤).
+- **설득 문서 그래프·한글 문서(2026-10-15)** — 사용자: 촉매·태양전지 세트당 A·B·C 막대 + 2026 목표 점선, 분야마다 한 장 · 한글 문서로(문구는 사용자가 수정).
+  `lab_estimate.py` 를 10-15 정의로(A = 레시피 1세트 트리플 — `count_methods.py --triples` 다른 프로세스 · B 1회~반복 · C) + JSON ·
+  `count_methods.py` 세트당 JSON · `plot_count_methods.py` 신규 → `docs/fig/count-methods-{solar,catalyst}.png`(로그 눈금).
+  태양전지(실데이터) A 2,003 · B 39.4 · C 10.9 vs 목표 11.0 · 석유화학촉매(registry 추산) A 911 · B 8~15 · C 8 vs 19.4(설계인자 0 가정, 응답 7 중 5 = 칭량 질량).
+  `docs/data-count-methods-brief.hwpx`(kordoc 생성, 그래프 2장 포함 — 사용자 편집본) · md·페이지에도 그래프 추가.

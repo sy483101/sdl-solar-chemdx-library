@@ -33,5 +33,7 @@
 - **데이터 건수 셈법(10-15 재논의)** = `docs/intent/data-count-methods.md` "재논의" 절 · 설득 문서 `docs/data-count-methods-brief.md`
   (+ 페이지 https://claude.ai/artifact/F2E9csXYfGCHKbVDRtHHwo, 비공개 — 공유는 사용자가). A 트리플 · B 묶음 1 + 설계인자 각 1 + 응답(시편마다 1, 같은 시편 반복 2) ·
   C 조건 1 + 측정 항목. ChemDX 2026: A 340,431 · **B 6,695(39.4)** · C 1,850(10.9 ≈ 계획 11.0)(`scripts/count_methods.py`). 보고 수치는 1차 실데이터 수집 뒤.
-  기본값 확인 중(n≥2 · 묶음 → 공정 칸 · C 의 1 = 전체) · 픽셀 = 시편 원칙은 전 실험실 실데이터 확인 뒤 · `lab_estimate.py` 는 10-14 정의.
+  기본값 확인 중(n≥2 · 묶음 → 공정 칸 · C 의 1 = 전체) · 픽셀 = 시편 원칙은 전 실험실 실데이터 확인 뒤.
+  **한글 문서 `docs/data-count-methods-brief.hwpx`(사용자가 문구 직접 수정 — 이제 이게 정본, md 는 초안 기록)** · 그래프 `docs/fig/`(태양전지 실데이터 ·
+  석유화학촉매 registry 추산 PCC A 911 · B 8~15 · C 8 vs 목표 19.4) = `scripts/plot_count_methods.py` · `lab_estimate.py` 는 10-15 정의(+ A 트리플).
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).

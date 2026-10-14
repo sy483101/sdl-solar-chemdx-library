@@ -7,6 +7,7 @@ build_library.py 와 다른 프로세스로 돈다(CLAUDE.md 함정). 플랫폼�
 메모리에서 이름만 바꿔 넣고, 비어 있는 Entity Type 은 플랫폼 J2 판정(개체 이름 → material·component·device)으로 채운다.
 
 사용: python3 -I scripts/count_methods.py <library/<빌드>>
+     python3 -I scripts/count_methods.py --triples <폴더>   # <폴더>/<랩>/<레시피>/template.xlsx → 레시피별 트리플 수(JSON) — lab_estimate.py 가 부른다
 """
 import collections, json, os, pathlib, subprocess, sys
 
@@ -41,7 +42,7 @@ def read(d, lab):
     for r in out["Process"]:
         r["TargetAmount"] = r.pop("Amount", "")
     for r in out["Entity"]:
-        r["Type"] = r.get("Type") or J2.get((lab, r["Name"])) or EXTRA_J2[r["Name"]]
+        r["Type"] = r.get("Type") or J2.get((lab, r["Name"])) or EXTRA_J2.get(r["Name"], "")   # 없으면 적재기가 미표현으로 남긴다
     return out, {s: [{c: r.get(c, "") for c in cols} for r in out[s]] for s, cols in COLUMNS.items()}
 
 
@@ -154,8 +155,14 @@ def main(lib):
     ]
     out = HERE.parent / "reports" / f"count-methods-{lib.name}.md"
     out.write_text("\n".join(lines) + "\n")
+    out.with_suffix(".json").write_text(json.dumps(   # 세트당 숫자 — plot_count_methods.py 가 읽는다
+        {"sets": rows, "A": t["full"] / rows, "B": n["B"] / rows, "C": n["C"] / rows, "cells": n["A_cells"] / rows}, indent=1) + "\n")
     print("\n".join(lines))
 
 
 if __name__ == "__main__":
-    main(pathlib.Path(sys.argv[1]).resolve())
+    if sys.argv[1] == "--triples":
+        root = pathlib.Path(sys.argv[2])
+        print(json.dumps({d.name: len(triples([read(d, d.parent.name)[1]]).g) for d in sorted(root.glob("*/*"))}))
+    else:
+        main(pathlib.Path(sys.argv[1]).resolve())
