@@ -30,6 +30,7 @@
   **이전 dev 빌드는 10세트(03731~03740, 곡선 172개)에서 activeArea 를 소자 블록 0.045216 으로 잘못 적었음 — 실제 측정 면적 0.0908**. 소자 블록 값은 완성소자 Note.
   ③ 곡선 파일 OriginalFileName = ChemDX 원본 파일명(확장자 .csv). 소실 검사: cell_dimension 전부 남음 · 곡선 key = 방향_원본명(2328/2328) → 소실 없음.
 - **보류(사용자 10-14 밤)**: 소자 블록 condition 둘 스텝 · 실험실 온습도 넣을 스텝 · MACl 농도 칸 의미(랩) · T3.5 xlsx 작성 시각 — 사용자가 다시 꺼낼 때까지 묻지 않음.
-- **데이터 건수 셈법(10-14 논의)** = `docs/intent/data-count-methods.md` — 칸 단위(A) vs 타겟 Y 단위(B·C) 둘 다 추산, 보고 때 고름.
-  2026: A 28,398 · A′ 18,998 · B 9,652 · C 9,482 · 트리플 339,921(`scripts/count_methods.py` → `reports/count-methods-<빌드>.md`).
+- **데이터 건수 셈법(10-14 정의 확정)** = `docs/intent/data-count-methods.md` — A 칸 단위 · B 범주 + Y(반복마다) · C X 1 + Y(항목마다), 보고 때 고름.
+  ChemDX 2026: A 28,398 · B 12,150 · **C 1,850(세트당 10.9 ≈ 계획 11.0)** · 트리플 340,431(`scripts/count_methods.py`).
+  랩별 registry 추산(`scripts/lab_estimate.py` → `reports/lab-estimate-registry-v0.5.3.md`): 계획 숫자는 B·C 규모, A 는 7~11배. 랩 확인 목록 4건(문서 끝).
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).

@@ -49,3 +49,8 @@
   `scripts/count_methods.py`(플랫폼 적재기 v05.load 로 실제 그래프 — 별도 프로세스, 시트 이름 v0.6 로 바꿔 넣고 Entity Type 잠정) →
   `reports/count-methods-dev-20261014b.md`: A 28,398 · A′ 18,998 · B 9,652 · C 9,482 · ML 표본 행 2,328 · 트리플 339,921(미표현 0, Y 값당 15).
   공정 칸 중 기본값 9,400(57%) · 값이 달라지는 공정 자리 22/128. `.env.example` 에 SDL_PLATFORM_DIR.
+- **셈법 정의 확정 · 랩별 추산(2026-10-14 밤)** — interview 로 확정: Y = Value 측정 결과 행 1건(파일 1 = Y 1, 파일 + 파생 숫자 둘 다,
+  물성 = 성능, 랩 Kind '공정'만 X) · B = 조성·구조·공정 각 1 + Y 반복마다 · C = X 1 + Y 측정 항목마다 · 구조(X) = 구성(산출물 J2 component·device).
+  `count_methods.py` 갱신(Entity Type = 플랫폼 J2) → ChemDX 2026 A 28,398 · B 12,150 · C 1,850(세트당 10.9 ≈ 계획 11.0) · 트리플 340,431.
+  `lab_estimate.py` 신규(엔진으로 레시피 1세트 · 목표 = 연차보고서 배포본 2026 표): A 는 계획의 7~11배, B(1회)·C 는 계획 규모 · OPD 추산 불가.
+  랩 확인 목록 = 반복 수 · PCC 칭량 질량 Kind · BAS J2 · OPD 결과 정의.
