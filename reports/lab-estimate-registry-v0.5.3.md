@@ -1,6 +1,6 @@
 # 랩별 세트당 데이터 건수 추산 — registry v0.5.3
 
-이 스크립트 e47a5d6-dirty · sdl-prefill legacy-final-27-gf5044e8-dirty · 플랫폼 J2 v0.10-192-g3d0d595-dirty. 정의·가정 = `docs/intent/data-count-methods.md` · 스크립트 머리말. 1세트 = 레시피대로, 결과 1회.
+이 스크립트 08d8e45 · sdl-prefill legacy-final-27-gf5044e8-dirty · 플랫폼 J2 v0.10-192-g3d0d595-dirty. 정의·가정 = `docs/intent/data-count-methods.md` · 스크립트 머리말. 1세트 = 레시피대로, 결과 1회.
 
 | 분야 | 레시피 | A | A′ | B(1회) | C | X 범주 | Y | B 로 계획 맞출 반복 수 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|

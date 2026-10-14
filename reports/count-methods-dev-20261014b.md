@@ -1,6 +1,6 @@
 # 데이터 건수 셈법 · 트리플 — dev-20261014b (2026)
 
-빌드 `dev-20261014b`(코드 8a20b79 · sdl-prefill legacy-final-27-gf5044e8-dirty · registry 0.5.3) · 이 스크립트 e47a5d6-dirty · 플랫폼 적재기·J2 v0.10-192-g3d0d595-dirty. 정의 = `docs/intent/data-count-methods.md`.
+빌드 `dev-20261014b`(코드 8a20b79 · sdl-prefill legacy-final-27-gf5044e8-dirty · registry 0.5.3) · 이 스크립트 08d8e45-dirty · 플랫폼 적재기·J2 v0.10-192-g3d0d595-dirty. 정의 = `docs/intent/data-count-methods.md`.
 
 | 셈법 | 정의 | 건수 | 세트당 | 트리플 ÷ 건수 |
 |---|---|---:|---:|---:|
