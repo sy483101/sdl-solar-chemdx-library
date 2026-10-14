@@ -21,9 +21,13 @@
 - 결정(10-14): 지표 건수에 registry 기본값 포함(웹과 같은 셈). 스캔 방향 = 곡선마다 확실(3곳 일치) → JV 방향별 스텝 유지.
 - **소실 검사(10-14)** — 라이브러리층에 제자리가 없는 값 22건 = `mapping/psc_additions.csv`(원본층엔 다 있음). 대부분 registry 이름만 없음(MPSP 노드 있음) →
   **PSC 회신(10-15) 받기 절차 때 sdl-prefill 에서 함께 넣기**. MPSP 갈래도 없는 것 3건 = sdl-prefill `docs/review/mpsp-upstream-feedback.md` 6절(cb5c821).
-- 조성: 마감까지 화학식 문자열만. constituent 행 = 플랫폼 템플릿 v0.6 설계 → prefill 흡수 WP(마감 뒤). **PVK 산출을 적층체 + 페로브스카이트 재료로 나누는 안**(사용자 기울어짐) — 확정 대기.
+- 조성: 마감까지 화학식 문자열만. constituent 행 = 플랫폼 템플릿 v0.6 설계 → prefill 흡수 WP(마감 뒤).
 - prefill 기록(10-14): `docs/review/mpsp-upstream-feedback.md` 6절(SDL-MPSP 고려 · cb5c821) · 7절(prefill 요청 — 조성 행 흡수·건수 규칙 · PVK 분리 연결 행 · PSC 추가후보 · 파라미터 RepeatNo · f5044e8).
 - **검토 대기(PSC 회신 10-15 때)**: `mapping/psc_additions.csv` — 특히 몰농도 `precursorMolarity`(M) · 첨가제 `additiveMolarRatio`(mol%) 를 PSC registry 에(이름·단위·MPSP 경로·J1).
-- **이 레포 변환기에서 할 것(확정 대기)**: ① PVK 산출 = 적층체 + 페로브스카이트 재료(화학식은 재료로) ② JV 스텝을 (방향, 면적)별로 ③ OriginalFileName = ChemDX 원본 파일명.
-- **사용자에게 물을 것**: 위 ①~③ 진행 · 소자 블록 condition 둘 스텝 · 실험실 온습도 넣을 스텝 · MACl 농도 칸 의미(랩) · T3.5 xlsx 작성 시각.
+- **변환기 3건 반영(10-14 밤, 사용자 승인)** — dev 빌드 `library/dev-20261014b` = 170세트 · 조성 170 · 공정 16,588(manual 7,188) · 분석 11,640 · 오류 0 ·
+  미입력 1,344 · 확인 660(`reports/indicator-dev-20261014b.md`). ① PVK 산출 = 적층체 + `페로브스카이트` 재료 개체(화학식 · Note 로 적층체 이름 —
+  PartOf 행은 엔진 미지원, prefill 7-2. 재료 이름은 PSC 회신 따라 바꿀 수 있음) ② JV = (방향, 면적)별 스텝(+8) — 면적 = 곡선 값(Isc/면적 = Jsc 확인).
+  **이전 dev 빌드는 10세트(03731~03740, 곡선 172개)에서 activeArea 를 소자 블록 0.045216 으로 잘못 적었음 — 실제 측정 면적 0.0908**. 소자 블록 값은 완성소자 Note.
+  ③ 곡선 파일 OriginalFileName = ChemDX 원본 파일명(확장자 .csv). 소실 검사: cell_dimension 전부 남음 · 곡선 key = 방향_원본명(2328/2328) → 소실 없음.
+- **사용자에게 물을 것**: 소자 블록 condition 둘 스텝 · 실험실 온습도 넣을 스텝 · MACl 농도 칸 의미(랩) · T3.5 xlsx 작성 시각.
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).

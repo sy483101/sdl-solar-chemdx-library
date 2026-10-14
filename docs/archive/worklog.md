@@ -37,3 +37,9 @@
 - **매핑 검토 4차(2026-10-14 밤)** — prefill 환류 7절(f5044e8, make test 116 passed). 확인: SDLEXO 는 MPSP 를 import(어휘 ⊇) — 빈 곳은 registry(랩 이름표).
   Environment ⊃ MeasurementCondition(측정 = acquisitionCondition), 공정 조건 = 스텝 ProcessParameter, 적재기는 MeasurementCondition 미구현(플랫폼).
   Parameter 행 RepeatNo 없음 → 셀 면적 섞인 JV 스텝 5/328 — 변환기에서 (방향, 면적)별 분리로 해소 가능. 변환기 할 일 3건 확정 대기.
+- **변환기 3건(2026-10-14 밤)** — 사용자 승인("나눠줘"). `scripts/convert.py`: ① PVK 산출에 `페로브스카이트` 재료 개체 추가(화학식 이동, Note = 적층체 이름)
+  ② JV 스텝 = (방향, 곡선 면적)별 · activeArea = 곡선 값 · 소자 블록 면적 = 완성소자 Note ③ resultFile 이름 = fileinfo original_name(key 로 짝, 확장자 .csv).
+  발견: 소자 블록 cell_dimension(0.045216)과 곡선 값이 다른 10세트(곡선 0.0908, Isc/0.0908 = Jsc 확인) — 이전 빌드는 activeArea 를 설계값으로 적었음.
+  검증: dev 빌드 `dev-20261014b` 오류 0 · 공정 +48 · manual +32 · 미입력 +32(JV 스텝 +8 × 결과 Kind 4) · 조성·분석 변화 없음 · 소실 검사 cell_dimension 전부 남음 ·
+  곡선 key 2328/2328 = 방향_원본명(시각 뺌). prefill 은 다른 세션의 HANDOFF 미커밋 수정으로 manifest 에 -dirty(엔진 무관).
+  다음 = PSC 회신(10-15) → registry 판 → 재빌드 · 남은 질문(소자 condition · 온습도 스텝 · MACl 농도 · xlsx 시각).

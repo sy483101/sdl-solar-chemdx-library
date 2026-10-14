@@ -6,7 +6,7 @@ record,id,meta,,note,,'ChemDX KRICT-SC-xxxxx',확인,D1 — 출처 추적. draft
 record,created_at,meta,,date,,앞 10자,registry,D1 — 실험 ID 날짜(PSC-EXP-YYYYMMDD-NNN)
 record,author,meta,,note,,'ChemDX author 142',확인,번호만 있음 — 이름 대응표 없음(operator 비움)
 record,_id · group · recipe_version · jvcnt · updated_at · plcnt,drop,,,,,,ChemDX 시스템 칸
-record,fileinfo[].*,drop,,,,,,업로드 파일 목록뿐(바이트 없음) — 곡선은 analysis 에서
+record,fileinfo[].*,drop,,,,,,업로드 파일 목록뿐(바이트 없음) — 곡선은 analysis 에서. original_name 만 곡선 파일 이름으로(key 로 짝)
 record,process[].*,drop,,,,,,input 을 ChemDX 가 층→스텝으로 추론한 사본(order=inferred) — input 이 정본
 record,analysisInfo.JV[].*,drop,,,,,,analysis.JV[].pv_cell_parameters 의 사본
 device,input[].device_type,meta,,title,,'n-i-p 단위셀 (ChemDX)',확인,2026 은 전부 n-i-p — PSC-RCP-03 골격
@@ -14,7 +14,7 @@ device,input[].type,meta,,title,,unit_cell → 단위셀,확인,2026 은 전부 
 device,input[].note,meta,,note,,,registry,자유 기술
 device,input[].temperature,param,PVK,laboratoryTemperature,degC,℃·oC → degC,registry,실험 당일 실험실 온도 — ETLSF·HTL 에도 같은 칸 있음(어디에 넣을지 확인)
 device,input[].humidity,param,PVK,laboratoryRelativeHumidity,%,,registry,위와 같음
-device,input[].cell_dimension,param,JV,activeArea,cm2,,registry,analysis.JV[].pv_cell_parameters.cell_dimension 과 같은 값(160건만 있음)
+device,input[].cell_dimension,entity,JV,완성소자 개체 Note,cm2,,확인,설계값 — 곡선 값과 다를 수 있다(0.045216 인데 곡선 0.0908 인 10건). activeArea 는 곡선 값(10-14)
 device,input[].ar,param,JV,antireflectionFIlmUsage,-,0 → no · 1 → yes,registry,
 device,input[].condition,param,(없음),atmosphere,-,,추가후보,air·glove-box 등 공정 분위기
 tco,input[].tco,param,BOTEL,material,-,값 그대로(FTO · FTO_Asahi),registry,상용 FTO 기판(하부전극 일체형)
@@ -32,9 +32,9 @@ etl_treatment,input[].spin_coating[].type,param,(없음),spinCoatingMode,-,,추�
 etl_treatment,input[].annealing[].temperature,param,ETLSF,thermalAnnealingTemperature,℃,oC → ℃,registry,
 etl_treatment,input[].annealing[].time,param,ETLSF,thermalAnnealingTime,min,m → min,registry,
 perovskite,input[].perovskite.method,drop,,,,,,1step — PVK 가 곧 1-step 스핀코팅
-perovskite,input[].perovskite.a_site[].material · ratio,entity,PVK,산출 개체 formula,,(FA0.99MA0.01)Pb(I0.99Br0.01)3 꼴로 조합,확인,registry 는 전구체 질량(perovskiteMaterial1Weight 등)이라 형식이 다름 — 조성식을 산출 개체 formula 로
-perovskite,input[].perovskite.b_site[].material · ratio,entity,PVK,산출 개체 formula,,위와 같음,확인,
-perovskite,input[].perovskite.x_site[].material · ratio,entity,PVK,산출 개체 formula,,위와 같음,확인,
+perovskite,input[].perovskite.a_site[].material · ratio,entity,PVK,페로브스카이트 개체 formula,,FA0.99MA0.01PbI2.97Br0.03 꼴로 조합,확인,registry 는 전구체 질량(perovskiteMaterial1Weight 등)이라 형식이 다름 — PVK 산출을 적층체 + 페로브스카이트 재료로 나눠 재료 formula 로(10-14)
+perovskite,input[].perovskite.b_site[].material · ratio,entity,PVK,페로브스카이트 개체 formula,,위와 같음,확인,
+perovskite,input[].perovskite.x_site[].material · ratio,entity,PVK,페로브스카이트 개체 formula,,위와 같음,확인,
 perovskite,input[].perovskite.molarity,param,PVK,precursorMolarity,M,,추가후보,용액 몰농도
 perovskite,input[].perovskite.solvent[].material,param,PVK,solvent1 · solvent2,-,목록 순서대로,registry,DMF·DMSO
 perovskite,input[].perovskite.solvent[].volume,param,PVK,solvent1Volume · solvent2Volume,mL,,registry,
@@ -71,13 +71,13 @@ htl,input[].spin_coating[].time,param,HTL,spinCoatingTime,s,,registry,
 htl,input[].spin_coating[].type,param,(없음),spinCoatingMode,-,,추가후보,
 anode,input[].anode_metal,param,TOPEL,material,-,,registry,Au(160건 — 10건형에는 없음)
 anode,input[].condition,drop,,,,,,vacuum evaporation — TOPEL 이 곧 진공 열증착
-jv,analysis.JV[].measurement_conditions.sweep_direction,step,JV,scanDirection,-,Forward → forward · Reverse → reverse,확인,곡선마다 방향이 달라 JV 스텝을 방향별 두 개로 나눔 — 스텝 안 반복 = 셀
+jv,analysis.JV[].measurement_conditions.sweep_direction,step,JV,scanDirection,-,Forward → forward · Reverse → reverse,확인,JV 스텝을 (방향·면적)별로 나눔 — 스텝 안 반복 = 셀(파라미터 행엔 RepeatNo 없음)
 jv,analysis.JV[].pv_cell_parameters.efficiency,result,JV,powerConversionEfficiency,%,,registry,Composite(forward/reverseScan) — 반복마다 값 하나
 jv,analysis.JV[].pv_cell_parameters.jsc,result,JV,shortCircuitCurrentDensity,mA/cm2,,registry,
 jv,analysis.JV[].pv_cell_parameters.voc,result,JV,openCircuitVoltage,V,,registry,
 jv,analysis.JV[].pv_cell_parameters.fill_factor,result,JV,fillFactor,%,,registry,
-jv,analysis.JV[].V · J · I,file,JV,resultFile,csv,배열 → DataArtifact/<key>.csv(V·J·I 열),registry,반복마다 파일 하나 — 배열은 5시트에 넣지 않음(10-14 결정)
-jv,analysis.JV[].pv_cell_parameters.cell_dimension,param,JV,activeArea,cm2,,registry,input 의 cell_dimension 이 없을 때(10건형)
+jv,analysis.JV[].V · J · I,file,JV,resultFile,csv,배열 → DataArtifact csv(V·J·I 열) · OriginalFileName = fileinfo original_name(확장자 .csv),registry,반복마다 파일 하나 — 배열은 5시트에 넣지 않음(10-14 결정)
+jv,analysis.JV[].pv_cell_parameters.cell_dimension,param,JV,activeArea,cm2,,registry,곡선 값 = Jsc 계산에 쓴 면적(Isc/면적 = Jsc 확인) · 없으면 소자 블록 값
 jv,analysis.JV[].pv_cell_parameters.irradiance,param,JV,incidentLightIntensity,mW/cm2,,registry,전부 100
 jv,analysis.JV[].calculations.rseries,result,JV,seriesResistance,ohm,,추가후보,
 jv,analysis.JV[].calculations.rshunt,result,JV,shuntResistance,kohm,,추가후보,
@@ -85,5 +85,5 @@ jv,analysis.JV[].pv_cell_parameters.pmax · vopt · iopt,result,JV,maximumPowerP
 jv,analysis.JV[].measurement_conditions.nplc · voltage_settling_time,param,JV,(측정 조건),,,추가후보,낮음
 jv,analysis.JV[].pv_cell_parameters.isc · analysis.JV[].calculations.fitted_isc · analysis.JV[].calculations.fitted_voc,drop,,,,,,Jsc × 면적 · 맞춤 중간값
 jv,analysis.JV[].efficiency · fill_factor · jsc · voc · cell_dimension · sweep_direction,drop,,,,,,pv_cell_parameters 의 사본
-jv,analysis.JV[].key · analysis.JV[].measurement_conditions.sample_id,drop,,,,,,곡선 파일 이름(key)에만 씀
+jv,analysis.JV[].key · analysis.JV[].measurement_conditions.sample_id,drop,,,,,,key = 방향_원본 파일명(시각 뺌) — 2328/2328 일치라 파일 이름에 남음
 jv,analysis.JV[].measurement_conditions.note · configuration_file,drop,,,,,,측정기 기본 문구(글자 깨짐) · 설정 파일명

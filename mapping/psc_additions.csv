@@ -18,8 +18,8 @@ registry,analysis.JV[].pv_cell_parameters.vopt,JV,voltageAtMaximumPowerPoint,res
 registry,analysis.JV[].pv_cell_parameters.iopt,JV,currentDensityAtMaximumPowerPoint,result,mA/cm2,performance > electrical > photovoltaic > currentVoltage > forward/reverseScan > Current density at maximum power point,확인,ChemDX 는 전류(mA) — MPSP 는 전류밀도. 면적으로 나눌지(유도값) 결정. 지금 빠짐
 registry,analysis.JV[].measurement_conditions.voltage_settling_time,JV,voltageSettlingTime,param,s,characterization > measurement > jvMeasurement > acquisitionCondition > Voltage setting time,후보,지금 빠짐
 registry,analysis.JV[].measurement_conditions.nplc,JV,nplc,param,PLC,characterization > measurement > jvMeasurement > acquisitionCondition > Integration time,확인,PLC 단위(전원 주기) — 초로 바꾸려면 전원 주파수 필요. 지금 빠짐
-structure,analysis.JV[].pv_cell_parameters.cell_dimension,JV,activeArea,param,cm2,,변환기로 해소 예정,Parameter 행엔 RepeatNo 없음 — 셀 면적이 섞인 JV 스텝(2026 328 중 5)은 (방향·면적)별로 스텝을 나누면 소실 없음. 소자 블록 값(0.045216)과 곡선 값(0.0452) 중 무엇을 쓸지도 결정
-converter,fileinfo[].original_name,JV,(OriginalFileName),file,,,후보,측정 원본 파일명(측정 시각 포함) — 지금은 곡선 key + .csv. 변환기에서 원본 이름을 쓰도록 바꿀 수 있음(registry 무관)
+structure,analysis.JV[].pv_cell_parameters.cell_dimension,JV,activeArea,param,cm2,,해소(10-14),Parameter 행엔 RepeatNo 없음 → 변환기가 JV 를 (방향·면적)별 스텝으로(2026 +8 스텝). 면적 = 곡선 값(Jsc 계산 면적) · 소자 블록 값은 완성소자 Note
+converter,fileinfo[].original_name,JV,(OriginalFileName),file,,,해소(10-14),원본 파일명(측정 시각 포함)에 확장자만 .csv(내용 = 배열에서 만든 csv)
 converter,input[].etl[].material,ETLCD,(산출 개체 이름·화학식),entity,,,후보,SnO2_CBD 는 스텝 종류(ETLCD)로만 남음 — 산출 개체에 SnO2 를 적을지
 data,input[].note (MACl 이 note 에만),PVK,,,,,확인,Metadata Note 에 글로는 남음(구조화 안 됨) — note 파싱 여부 결정
 converter,analysis.JV[].pv_cell_parameters.isc · calculations.fitted_isc · fitted_voc,JV,,,,,버림 제안,Isc = Jsc × 면적(MPSP 노드 없음) · fitted = 맞춤 중간값

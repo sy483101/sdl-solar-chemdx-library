@@ -6,7 +6,7 @@
 - 이름은 registry 의 '옛 → 새' 메모·대소문자를 너그럽게 맞추고, 적을 때는 registry 이름을 그대로 쓴다.
 엔진(sdl_platform)은 부르는 쪽이 sys.path 에 올린다(build_library.py).
 """
-import copy, csv, io, itertools
+import copy, csv, io, itertools, os
 
 from sdl_platform.v05 import draft as D
 
@@ -156,8 +156,12 @@ def convert(rec, seq):
 
     b, s = blocks["perovskite"], step_of(d, "PVK")
     pvk = b["perovskite"]
-    out = next(e for e in d["entities"] if e["key"] == s["outputs"][0]["entity"])
-    out["formula"] = formula(pvk)                                      # 조성 = PVK 산출 개체 화학식(확인 대상)
+    # PVK 산출 = 적층체 + 페로브스카이트 재료(화학식은 재료에 — 사용자 10-14). 둘을 잇는 PartOf 행은 엔진이 아직 안 써서
+    # 재료 Note 에 글로(prefill 환류 7-2). 이름은 PSC 회신에 따라 바뀔 수 있다.
+    stack = next(e for e in d["entities"] if e["key"] == s["outputs"][0]["entity"])
+    mat = D.new_entity("pvk", "페로브스카이트", formula=formula(pvk), note=f"{stack['name']} 의 PVK 층 재료")
+    d["entities"].insert(d["entities"].index(stack) + 1, mat)
+    s["outputs"].append({"entity": mat["key"]})
     put(s, "precursorMolarity", *lv(pvk, "molarity"))                 # 추가후보
     for i, x in enumerate(pvk.get("solvent") or []):
         put(s, f"solvent{i + 1}", *lv(x, "material"))
@@ -204,43 +208,48 @@ def convert(rec, seq):
     if "anode_metal" in blocks:
         put(step_of(d, "TOPEL"), "material", *lv(blocks["anode_metal"], "anode_metal"))
 
-    # JV — 스캔 방향별 스텝 하나, 스텝 안 반복 = 곡선(셀) 하나
+    # JV — (스캔 방향, 셀 면적)별 스텝 하나, 스텝 안 반복 = 곡선(셀) 하나. 파라미터 행엔 RepeatNo 가 없어
+    # 곡선마다 다른 조건은 스텝을 나눠야 적힌다(사용자 10-14). 면적 = 곡선 값(Jsc = Isc/면적 이 이 값으로 계산됨).
     tmpl = step_of(d, "JV")
     at = d["steps"].index(tmpl)
     d["steps"].remove(tmpl)
     tmpl["results"] = [r for r in tmpl["results"] if r["name"] not in ("Image", "remark")]   # ChemDX 에 없음
     blobs = {}
     area = lv(dev, "cell_dimension")[0]
+    if area not in (None, ""):                         # 소자 블록 면적(설계값) — 곡선 값과 다를 수 있어 소자 개체에 남김
+        next(e for e in d["entities"] if e["key"] == tmpl["inputs"][0]["entity"])["note"] = f"ChemDX 소자 cell_dimension {area} cm2"
     ar = lv(dev, "ar")[0]
+    files = {f["key"]: f["original_name"] for f in rec.get("fileinfo") or []}
     for direction in ("Forward", "Reverse"):
-        curves = [c for c in rec["analysis"].get("JV") or []
-                  if lv(c.get("measurement_conditions"), "sweep_direction")[0] == direction]
-        if not curves:
-            continue
-        s = copy.deepcopy(tmpl)
-        s["key"] = f"{tmpl['key']}{direction[0].lower()}"
-        pv = [c.get("pv_cell_parameters") or {} for c in curves]
-        put(s, "scanDirection", direction.lower())
-        put(s, "activeArea", area if area not in (None, "") else lv(pv[0], "cell_dimension")[0], "cm2")
-        put(s, "incidentLightIntensity", *lv(pv[0], "irradiance"))
-        put(s, "antireflectionFIlmUsage", {0: "no", 1: "yes"}.get(ar))
-        if len({lv(p, "cell_dimension")[0] for p in pv}) > 1:
-            s["note"] = "곡선마다 cell_dimension 다름: " + ", ".join(fmt(lv(p, "cell_dimension")[0]) for p in pv)
-        for r in s["results"]:
-            src = {"powerConversionEfficiency": "efficiency", "shortCircuitCurrentDensity": "jsc",
-                   "openCircuitVoltage": "voc", "fillFactor": "fill_factor"}.get(r["name"])
-            r["values"] = []
-            for i, (c, p) in enumerate(zip(curves, pv), 1):
-                if r["name"] == "resultFile":
-                    fid, data = f"{s['key']}-{i}", curve_csv(c)
-                    blobs[fid] = data
-                    r["values"].append({"repeatNo": i, "value": "", "unit": "",
-                                        "file": {"id": fid, "name": f"{c.get('key') or i}.csv", "size": len(data)}})
-                else:
-                    v, u = lv(p, src)
-                    r["values"].append({"repeatNo": i, "value": "" if v in (None, "") else fmt(v), "unit": u, "file": None})
-        d["steps"].insert(at, s)
-        at += 1
+        groups = {}                                    # 면적 → 곡선(처음 나온 순)
+        for c in rec["analysis"].get("JV") or []:
+            if lv(c.get("measurement_conditions"), "sweep_direction")[0] == direction:
+                groups.setdefault(lv(c.get("pv_cell_parameters"), "cell_dimension")[0], []).append(c)
+        for j, (a, curves) in enumerate(groups.items(), 1):
+            s = copy.deepcopy(tmpl)
+            s["key"] = f"{tmpl['key']}{direction[0].lower()}{j}"
+            pv = [c.get("pv_cell_parameters") or {} for c in curves]
+            put(s, "scanDirection", direction.lower())
+            put(s, "activeArea", a if a not in (None, "") else area, "cm2")
+            put(s, "incidentLightIntensity", *lv(pv[0], "irradiance"))
+            put(s, "antireflectionFIlmUsage", {0: "no", 1: "yes"}.get(ar))
+            for r in s["results"]:
+                src = {"powerConversionEfficiency": "efficiency", "shortCircuitCurrentDensity": "jsc",
+                       "openCircuitVoltage": "voc", "fillFactor": "fill_factor"}.get(r["name"])
+                r["values"] = []
+                for i, (c, p) in enumerate(zip(curves, pv), 1):
+                    if r["name"] == "resultFile":
+                        fid, data = f"{s['key']}-{i}", curve_csv(c)
+                        blobs[fid] = data
+                        # 원본 측정 txt 이름(측정 시각 포함) — 내용은 배열에서 만든 csv 라 확장자만 .csv
+                        name = os.path.splitext(files.get(c.get("key"), ""))[0] or c.get("key") or str(i)
+                        r["values"].append({"repeatNo": i, "value": "", "unit": "",
+                                            "file": {"id": fid, "name": f"{name}.csv", "size": len(data)}})
+                    else:
+                        v, u = lv(p, src)
+                        r["values"].append({"repeatNo": i, "value": "" if v in (None, "") else fmt(v), "unit": u, "file": None})
+            d["steps"].insert(at, s)
+            at += 1
     return d, blobs
 
 
