@@ -1,0 +1,13 @@
+# 데이터는 git 밖($SOLAR_DATA_DIR) — 레포 안에 실수로 두었을 때를 막는다
+raw/
+library/
+data/
+scratch/
+*.zip
+# 비밀
+.env
+# 기타
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
