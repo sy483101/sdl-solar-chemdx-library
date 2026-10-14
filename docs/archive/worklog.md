@@ -26,3 +26,7 @@
   검증: 세트 1개 template.xlsx 를 원본과 대조(값·곡선 파일명 일치) · 두 번 빌드 = xlsx 셀 내용·나머지 파일 동일(xlsx 바이트만 다름) ·
   dirty 판정에 untracked 포함(filter_krict 도). dev 빌드 `library/dev-20261014`(코드 0a60847) 170세트 · 오류 0.
   다음 = PSC 회신 → registry 판 → 재빌드 · 사용자 결정(확인 4건 · 기본값 셈 · xlsx 시각).
+- **매핑 검토 2차(2026-10-14)** — 결정: 지표 건수에 registry 기본값 포함. 조성 = SDLEXO 로 다 표현(formula + 조성 노드 species·amount·role·원소, FA·MA 원소 사전 있음),
+  MPSP 는 가능하나 사이트 비율의 basis 칸 없음 · 5시트 constituent 행은 sdl-prefill 엔진 미착수 · 적재기는 재료 개체에만. 스캔 방향 3곳 일치.
+  condition = ChemDX 층별 칸(registry 아님). 농도·mol% = QUDT 단위 있음 · MPSP feedstock_n Concentration / additive_n Amount.
+  소실 검사(scratch 스크립트, 원본 잎 값 ↔ 빌드 셀): JV 부가값·측정 조건·소자 condition·원본 파일명·note 속 MACl 이 라이브러리층에서 빠짐 → registry 추가후보로.

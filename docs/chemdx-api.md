@@ -75,3 +75,13 @@
   5시트: Entity `ChemicalFormula` 칸(지금 엔진으로 됨) · Entity **constituent 행**(PartOf = 재료 개체 · Member = 화학종 · Role · Fraction) — 플랫폼 적재기
   `v05/load.py parts()` 가 이미 ②로 바꾼다. 단 sdl-prefill 엔진은 constituent 행을 아직 만들지 않고(템플릿 문서 "미착수") data_counts 도 안 센다.
   적재기는 PartOf 가 **재료** 개체여야 받는다 — 지금 formula 를 단 PVK 산출 개체(적층체)는 부품으로 분류될 수 있어, 페로브스카이트 재료 개체를 따로 두는 편이 맞다.
+- **condition** — ChemDX 입력 양식이 층 블록마다 둔 칸(registry 가 아님). 2026: 소자 블록 air 160 · anode vacuum evaporation 160 · etl air 10 · perovskite air 10.
+  registry 쪽 분위기 칸 = ETLCT `spinCoatinglabAtmosphere`(고정 문장) → MPSP `process > physical > spinCoating_n > Atmosphere` · PVK `solutionAgingAtmosphere`(용액 보관).
+- **농도·mol% 표현** — 단위는 QUDT 로 해석됨(플랫폼 `ontology/qudt.resolve_unit`): mol% → PERCENT_MOL · M → MOL-PER-L · mg/mL → MilliGM-PER-MilliL · wt% → PERCENT_WT.
+  자리(MPSP 0.509): 용액 농도·molarity = `spinCoating_n > feedstock_n > Concentration`(PSC `concentration` 이 이미 여기) · 첨가제 양 = `precursor_n > additive_n > Amount`
+  (PSC `additiveWeight`·`additiveVolume` 이 이미 여기 — mol% 는 같은 노드에 단위만 다르게) · 재료 성분으로 보면 `materialEntity > composition > constituent_n > Concentration·Fraction`.
+  SDLEXO: 스텝 값 = `aeo:ProcessParameter`(QuantityValue) · 투입 하나의 양·농도 = `aeo:Feedstock`(feedstock_n 대응) · 재료 성분 = 조성 노드(species·amount).
+- **소실 검사**(dev-20261014, 2026 170건 — 원본 잎 값을 template.xlsx 셀·csv 에서 찾음): 곡선 2,328 = csv 2,328.
+  설계상 버림 = 시스템 칸 · fileinfo · process[] 사본 · 측정기 문구. 바꿔서 남음 = type → 단위셀 · ar → no/yes · 사이트 비율 → 조성식 · SnO2_CBD → ETLCD 스텝 · 등록 시각 → 날짜만.
+  **실제로 빠짐** = JV 부가값(rseries·rshunt·pmax·vopt·iopt·isc·fitted_isc·fitted_voc) · nplc · voltage_settling_time · 소자 블록 condition · 곡선별 cell_dimension(0.0452, 소자 블록 0.045216 을 씀) ·
+  fileinfo.original_name(측정 시각이 든 원본 파일명) · note 에만 있는 MACl.

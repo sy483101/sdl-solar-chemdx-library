@@ -18,6 +18,8 @@
   미입력 1,312(JV 결과 Kind — PSC Composite 보류) · 확인 660(registry 에 없는 값 → Process Note). 숫자 = `reports/indicator-dev-20261014.md`.
 - **PSC registry 정리 = 보류(사용자 10-14)** — 내일(10-15) PSC 회신 받으면 sdl-prefill 받기 절차 → 판 올림 → 이 레포는 다시 빌드만
   (convert.py 가 '→' 메모·새 이름 모두 읽음 — ASOL 합침되면 반용매·열처리가 PVK 파라미터로 들어간다).
-- **사용자에게 물을 것**: ① 확인 4건(조성식 위치 = PVK 산출 개체 formula · JV 스캔 방향별 스텝 · 실험실 온습도 = PVK · MACl 농도 vs mol%)
-  ② **registry 기본값(Source=default)을 지표 건수에 넣을지** — 웹 입력과 같은 셈이면 공정 16,540, ChemDX 가 준 값만이면 7,156 ③ T3.5 xlsx 작성 시각.
+- 결정(10-14): 지표 건수에 registry 기본값 포함(웹과 같은 셈). 스캔 방향 = 곡선마다 확실(3곳 일치) → JV 방향별 스텝 유지.
+- **소실 검사(10-14, dev 빌드)** — 라이브러리층에서 빠지는 값(원본층엔 있음): JV 부가값(Rs·Rsh·Pmax·Vmp·Imp·Isc·fitted) · 측정 조건(nplc·settling) ·
+  소자 블록 condition(air) · 측정 원본 파일명(fileinfo — 측정 시각 포함) · note 에만 적힌 MACl. → PSC registry 받을 때 추가후보(결과·파라미터)로 넣어 해소할 것.
+- **사용자에게 물을 것**: 조성 표현(formula 만 / constituent 행까지 — sdl-prefill 기능 필요) · 실험실 온습도 넣을 스텝 · MACl 농도 칸 의미(랩 확인) · T3.5 xlsx 작성 시각.
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).

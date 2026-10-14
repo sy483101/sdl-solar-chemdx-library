@@ -64,6 +64,7 @@ $SOLAR_DATA_DIR/
       웹 zip 과 바이트 수준으로 같은 형식이 목적. `validate` 알림은 `report.txt` + 빌드 요약.
 - [x] **T3.3 실험 ID** — `build_library.py`: 같은 등록일 안 ChemDX ID 순(D1). 서버 장부 겹침은 아직 미확인. 같은 원본 → 같은 ID(재빌드해도 안 바뀜).
 - [~] **T3.4 정량지표 집계** — `reports/indicator-<빌드>.md` 생성까지(공정 중 manual 따로 셈). 웹 대조 남음.
+      **결정(10-14 사용자)**: 지표 건수 = `data_counts` 그대로 — registry 기본값(Source=default)도 센다(웹 입력과 같은 셈).
       (원안) → `reports/indicator-<빌드>.md`(git, 숫자만): 세트 수 · `data_counts` 합(조성·구조·공정·분석) · 알림 남은 세트 수.
       완료 = 표본 세트를 sdl-prefill 웹에서 "레시피 불러오기"로 열어 같은 건수가 나오는지 대조.
 - [~] **T3.5 재현성** — 10-14: 두 번 빌드 → csv·metadata·report·manifest 세트 동일, template.xlsx 는 셀 내용 동일·바이트만 다름
