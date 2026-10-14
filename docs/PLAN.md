@@ -46,7 +46,8 @@ $SOLAR_DATA_DIR/
       (원안) → `mapping/chemdx_to_psc.csv`(git): 필드마다 하나로 —
       Metadata 칸 | Entity(원료 정보 등) | Step(StepType) | Parameter(StepType·이름·단위) | 결과(VocabAlias 이름·Kind·값/파일) | 버림(사유).
       **용어 = PSC registry**(기준 판을 표 머리에 기록). 레코드 하나가 공정 스텝 몇 개로 펼쳐지는지(소자 적층·층별 공정)는 T1.1 결과로 정한다.
-- [ ] **T2.3 추가 후보** → `mapping/psc_additions.csv`: PSC registry 에 없는 StepType·파라미터·결과 이름 →
+- [~] **T2.3 추가 후보** — `mapping/psc_additions.csv`(10-14, 22행 — 분류별). PSC 회신 받기 절차 때 sdl-prefill 에서 반영. SDL-MPSP 고려 = prefill 환류 6절.
+      (원안) → `mapping/psc_additions.csv`: PSC registry 에 없는 StepType·파라미터·결과 이름 →
       sdl-prefill 받기 절차로 다음 PSC 판에(열린 결정 D5 — PSC 회신과 합칠지). **SDL-MPSP 추가 요청** → `mapping/sdl_mpsp_requests.csv`(정본 = 플랫폼).
 - [ ] **T2.4 SDLEXO·MPSP 판정**: 새 StepType → SDLEXO · 새 결과/파라미터 → MPSP. 판정 방식 = 열린 결정 D4.
 - [ ] **T2.5 registry 고리**: 추가 후보를 넣은 PSC registry 를 판 확정 전에 시험할 길 — sdl-prefill 에 범용 고리(예: registry 폴더 환경변수)를

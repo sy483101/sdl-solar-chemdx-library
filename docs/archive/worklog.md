@@ -30,3 +30,7 @@
   MPSP 는 가능하나 사이트 비율의 basis 칸 없음 · 5시트 constituent 행은 sdl-prefill 엔진 미착수 · 적재기는 재료 개체에만. 스캔 방향 3곳 일치.
   condition = ChemDX 층별 칸(registry 아님). 농도·mol% = QUDT 단위 있음 · MPSP feedstock_n Concentration / additive_n Amount.
   소실 검사(scratch 스크립트, 원본 잎 값 ↔ 빌드 셀): JV 부가값·측정 조건·소자 condition·원본 파일명·note 속 MACl 이 라이브러리층에서 빠짐 → registry 추가후보로.
+- **매핑 검토 3차(2026-10-14 밤)** — sdl-prefill `docs/review/mpsp-upstream-feedback.md` 6절에 SDL-MPSP 고려사항 기록(cb5c821, make test 116 passed):
+  사이트 비율 basis 없음 · Role 예시에 사이트 없음(자유 문자열로 적기 — 사용자 결정) · CBD 분위기 없음. `mapping/psc_additions.csv` 22행(분류: registry·mpsp·converter·structure·data).
+  확인: JV Rs·Rsh·Pmax·Vmpp·Jmpp·settling·분주 방식 = MPSP 노드 있음 → registry 이름 + J1 판정만. 적재기 MPSP 매핑 = 플랫폼 J1(랩·이름 기준) → 분위기 이름은 기법별로.
+  constituent 행 = 플랫폼 템플릿 v0.6 설계, prefill 흡수 전. 정정: note 속 MACl 은 Metadata Note 에 남음(구조화 안 됨).

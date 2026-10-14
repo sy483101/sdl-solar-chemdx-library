@@ -84,4 +84,12 @@
 - **소실 검사**(dev-20261014, 2026 170건 — 원본 잎 값을 template.xlsx 셀·csv 에서 찾음): 곡선 2,328 = csv 2,328.
   설계상 버림 = 시스템 칸 · fileinfo · process[] 사본 · 측정기 문구. 바꿔서 남음 = type → 단위셀 · ar → no/yes · 사이트 비율 → 조성식 · SnO2_CBD → ETLCD 스텝 · 등록 시각 → 날짜만.
   **실제로 빠짐** = JV 부가값(rseries·rshunt·pmax·vopt·iopt·isc·fitted_isc·fitted_voc) · nplc · voltage_settling_time · 소자 블록 condition · 곡선별 cell_dimension(0.0452, 소자 블록 0.045216 을 씀) ·
-  fileinfo.original_name(측정 시각이 든 원본 파일명) · note 에만 있는 MACl.
+  fileinfo.original_name(측정 시각이 든 원본 파일명). (정정 10-14: note 에만 있는 MACl 은 Metadata Note 에 글로 남음 — 빠짐이 아니라 구조화 안 됨.)
+  분류·처리 계획 = `mapping/psc_additions.csv`(registry 이름만 없는 것 / MPSP 갈래도 없는 것 / 변환기에서 고칠 것 / 구조 한계 / 자료 품질).
+- **조성 분리(검토 10-14)** — PVK 스텝 산출을 **적층체**(다음 스텝으로 넘어가는 것)와 **페로브스카이트 재료 개체**(화학식·성분)로 나누는 쪽이 맞다:
+  SDLEXO 는 성분을 재료에 둔다(`aeo:madeOf` 부품 → 재료 · 적재기 constituent 행은 재료 개체에만). 엔진은 한 스텝 산출 여럿을 받는다(Process output 행 1→N).
+  둘의 연결 = 5시트 part 행(PartOf 적층체 · Member 재료 → SDLEXO Placement) — `madeOf` 를 직접 적는 행은 5시트에 없다(템플릿 v0.6 검토 거리).
+- **분위기(SDLEXO)** — 스텝 파라미터는 `aeo:hasParameter` → SetPointParameter(값 + QUDT) + `rdfs:seeAlso` SDL-MPSP 잎(플랫폼 J1 판정, 랩·이름 기준).
+  그래서 분위기 이름은 기법별로 나눠야 한 이름 = 한 MPSP 잎: spinCoating_n·heatTreatment_n·thermalEvaporation_n 에는 Atmosphere 있음, chemicalBathDeposition_n 에는 없음.
+  `aeo:Environment` 는 개체를 두거나 쓰는 조건, `aeo:MeasurementCondition` 은 측정 조건 — 공정 분위기는 스텝 파라미터.
+- 조성 Role = 자유 문자열로 `A-site`·`B-site`·`X-site` 그대로(사용자 10-14). SDL-MPSP 고려사항 = sdl-prefill `docs/review/mpsp-upstream-feedback.md` 6절(cb5c821).
