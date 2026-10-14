@@ -12,3 +12,6 @@
   결정(interview-me): D3 = 그룹 2 · D2 = `created_at` 연도 · 2차 = `2_krict/<스냅샷>/<연도>/<ID>.json`(바이트 그대로) + manifest.
   `scripts/filter_krict.py` — 검증: 2.zip 과 3,333/3,333 바이트 동일 · 타기관 0 · 두 번 실행 manifest 동일 · 기존 스냅샷 덮어쓰기 거부. 구조 문서 `docs/chemdx-api.md`.
   다음 = D6 · 2026년분(170건, 07-24 이후 없음) 재수집 여부 · 첨부 바이트 필요 여부 → T2.1.
+- **T2.1 필드 전수(2026-10-14)** — 결정: D6 = 마감 10-26 · 2026년분 ≈170건 확인(재수집 안 함) · 측정 곡선은 JSON 배열 → DataArtifact txt/csv(배열 지양) ·
+  변환 데이터도 `SOLAR_DATA_DIR`(git 밖) · D7 잠정 레코드 = 세트 · D1 = KRICT-PSC 체계. `scripts/field_inventory.py` → `mapping/fields.csv`
+  (경로 242 · 2026 채워진 119 · 미사용 25 · 자체 검사 `_selftest`). 관찰(중복 위치 · numstr · 단위 변형 · 깨진 note)은 `docs/chemdx-api.md`. 다음 = D1 세부 → T2.2.

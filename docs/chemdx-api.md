@@ -45,3 +45,15 @@
 | `fileinfo` | 업로드 원본 파일 목록(key · uploadType · original_name · save_name=서버 경로 · uploader). **파일 바이트는 받지 않았다** |
 
 - 첨부 파일명에 측정일로 보이는 `YYYYMMDD` 가 있다 — KRICT 3,333 중 등록연도와 같음 2,856 · 다름 313 · 없음 155 · 섞임 9.
+
+## 필드 전수에서 본 것 (T2.1, `mapping/fields.csv`)
+
+- **같은 값이 여러 곳에**: JV 요약(efficiency·fill_factor·jsc·voc·cell_dimension)이 `analysisInfo.JV[]` · `analysis.JV[]` · `analysis.JV[].pv_cell_parameters` 세 곳.
+  공정 파라미터는 `input[]`(층별 레시피)과 `process[]`(ChemDX 가 층→스텝으로 추론, `order` = inferred / to check)에 겹친다. 매핑은 한 곳만 고른다.
+- **`input[]` 블록 = 층 하나** — 블록 안 키 조합으로 층을 안다(예: `etl_treatment` 옆의 `annealing` = ETL 처리 열처리). 2026 170건은 대부분
+  tco → etl → etl_treatment → perovskite → perovskite_treatment → htl(+htl_doping·solvent) → anode_metal → 소자 정보 블록.
+- **숫자가 문자열로**(값 종류 `numstr`) — 온도·시간·rpm·비율 대부분. 숫자와 문자열이 한 필드에 섞여 있다.
+- **표기 변형**: 시간 단위 `m`·`min`·`s`·`time` · 온도 `oC`·`℃` · `1step`·`1-step` · `Bar coating`·`bar coating` · `rpm` 에 `vacuum deposition` 같은 다른 칸 값.
+  농도는 `conc_unit` 칸이 따로(`unit` 이 비어 있음).
+- **측정 곡선** = `analysis.JV[].V·I·J`(점 100~171개) — DataArtifact 로 뺄 대상. 2026 170건은 JV 만(2,328 곡선), PL·XRD·UV-Vis 없음.
+- `analysis.JV[].measurement_conditions.note` 는 대부분 측정기 기본 문구("시료에 관한 부가적인 설명을 이곳에 적으세요")이고 상당수가 글자 깨짐(EUC-KR → Latin-1).

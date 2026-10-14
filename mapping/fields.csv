@@ -1,0 +1,243 @@
+﻿path,all(/3333),2021(/103),2022(/578),2023(/674),2024(/407),2025(/1401),2026(/170),kinds,units,examples
+_id,3333,103,578,674,407,1401,170,str ×3330; numstr ×3,,618488f1fddaa8512e713c81 ×1; 61849110b38fcc06ca6fceff ×1; 618cc1b363da0f14e87b5f81 ×1; 618cc66063da0f14e87b5f86 ×1; 618cc89a7cf88d06aa6636ac ×1
+analysis.JV,0,0,0,0,0,0,0,empty ×160,,
+analysis.JV[].I,3173,101,572,671,385,1274,170,num[] ×32757,A ×32757,[170] ×14003; [100] ×8776; [150] ×6925; [171] ×1490; [120] ×899
+analysis.JV[].J,3173,101,572,671,385,1274,170,num[] ×32757,A/cm2 ×32757,[170] ×14003; [100] ×8776; [150] ×6925; [171] ×1490; [120] ×899
+analysis.JV[].V,3173,101,572,671,385,1274,170,num[] ×32757,V ×32757,[170] ×14003; [100] ×8776; [150] ×6925; [171] ×1490; [120] ×899
+analysis.JV[].calculations.fitted_isc,3173,101,572,671,385,1274,170,num ×32740; empty ×17,mA ×32740,1.0600000000000003 ×587; 1.07 ×552; 1.09 ×527; 1.08 ×508; 1.1 ×507
+analysis.JV[].calculations.fitted_voc,3173,101,572,671,385,1274,170,num ×32757,V ×32757,1.11 ×1895; 1.12 ×1833; 1.1 ×1823; 1.08 ×1788; 1.09 ×1695
+analysis.JV[].calculations.rseries,3173,101,572,671,385,1274,170,num ×32757,ohm ×32757,45.21 ×15; 39.8 ×15; 45.13 ×14; 56 ×14; 45.63 ×14
+analysis.JV[].calculations.rshunt,3173,101,572,671,385,1274,170,num ×32740; empty ×17,Kohm ×32740,5.37 ×20; 3.8200000000000003 ×19; 4.12 ×19; 2.67 ×19; 6.9 ×19
+analysis.JV[].cell_dimension,3173,101,572,671,385,1274,170,num ×32757,cm2 ×32757,0.045200000000000004 ×4374; 0.09179999999999999 ×4327; 0.094 ×3858; 0.092 ×3843; 0.08040000000000001 ×3068
+analysis.JV[].efficiency,3173,101,572,671,385,1274,170,num ×32754; empty ×3,% ×32754,18.3 ×56; 18.49 ×56; 17.69 ×54; 17.59 ×54; 17.49 ×52
+analysis.JV[].fill_factor,3173,101,572,671,385,1274,170,num ×32754; empty ×3,% ×32754,100 ×73; 76.89 ×31; 78.13 ×31; 79.23 ×30; 79.72 ×30
+analysis.JV[].jsc,3173,101,572,671,385,1274,170,num ×32757,mA/cm2 ×32757,2.22 ×103; 2.2 ×94; 2.2300000000000004 ×93; 2.21 ×91; 2.17 ×89
+analysis.JV[].key,3173,101,572,671,385,1274,170,str ×32754; numstr ×3,,Reverse_20240718_20240717_opaque_ref_sam ×18; Reverse_240328-4_20240412 ×15; Forward_20240718_20240717_opaque_ref_sam ×14; Reverse_240403-3_20240412 ×12; 20220926_sample-03_nio_4pacz_64 triple 6 ×11
+analysis.JV[].measurement_conditions.configuration_file,3168,101,572,668,385,1272,170,str ×30797; num ×1894; empty ×66,,Configuration for I-V meas.conf ×24076; Configuration for I-V meas WBG.conf ×1436; Configuration for I-V 25cm2meas.conf ×1023; Configuration for I-V 213cm2 meas.conf ×827; Configuration for I-V measurement.conf ×822
+analysis.JV[].measurement_conditions.note,3173,101,572,671,385,1274,170,str ×32748; num ×6; empty ×3,,½Ã·á¿¡ °üÇÑ ºÎ°¡ÀûÀÎ ¼³¸íÀ» ÀÌ°÷¿¡ ÀûÀ¸¼ ×21683; 시료에 관한 부가적인 설명을 이곳에 적으세요. ^^ ×11045; ÷ῡ ΰ ̰ . ^^ ×12; ½Ã·á¿¡ °üÇÑ ºÎ°¡ÀûÀÎ¼³¸íÀ» ÀÌ°÷¿¡ ÀûÀ¸¼¼ ×8; 8585 ×6
+analysis.JV[].measurement_conditions.nplc,3173,101,572,671,385,1274,170,num ×32757,,0.01 ×29917; 0.1 ×2748; 1 ×92
+analysis.JV[].measurement_conditions.sample_id,3171,101,572,671,385,1272,170,str ×31888; num ×867; empty ×2,,1 ×121; 2 ×119; 3 ×101; 4 ×78; 5 ×71
+analysis.JV[].measurement_conditions.sweep_direction,3173,101,572,671,385,1274,170,str ×32757,,Reverse ×20323; Forward ×12434
+analysis.JV[].measurement_conditions.voltage_settling_time,3173,101,572,671,385,1274,170,num ×32757,s ×32757,0.01 ×32547; 0.02 ×210
+analysis.JV[].pv_cell_parameters.cell_dimension,3173,101,572,671,385,1274,170,num ×32757,cm2 ×32757,0.045200000000000004 ×4374; 0.09179999999999999 ×4327; 0.094 ×3858; 0.092 ×3843; 0.08040000000000001 ×3068
+analysis.JV[].pv_cell_parameters.efficiency,3173,101,572,671,385,1274,170,num ×32754; empty ×3,% ×32754,18.3 ×56; 18.49 ×56; 17.69 ×54; 17.59 ×54; 17.49 ×52
+analysis.JV[].pv_cell_parameters.fill_factor,3173,101,572,671,385,1274,170,num ×32754; empty ×3,% ×32754,100 ×73; 76.89 ×31; 78.13 ×31; 79.23 ×30; 79.72 ×30
+analysis.JV[].pv_cell_parameters.iopt,3173,101,572,671,385,1274,170,num ×32757,mA ×32757,1.02 ×584; 1.01 ×580; 1.03 ×563; 1.74 ×423; 1.73 ×405
+analysis.JV[].pv_cell_parameters.irradiance,3173,101,572,671,385,1274,170,num ×32757,mW/cm2 ×32757,100 ×32757
+analysis.JV[].pv_cell_parameters.isc,3173,101,572,671,385,1274,170,num ×32757,mA ×32757,1.0600000000000003 ×598; 1.07 ×556; 1.09 ×530; 1.08 ×519; 1.1 ×517
+analysis.JV[].pv_cell_parameters.jsc,3173,101,572,671,385,1274,170,num ×32757,mA/cm2 ×32757,2.22 ×103; 2.2 ×94; 2.2300000000000004 ×93; 2.21 ×91; 2.17 ×89
+analysis.JV[].pv_cell_parameters.pmax,3173,101,572,671,385,1274,170,num ×32757,W ×32757,0.00147 ×297; 0.00149 ×294; 0.00166 ×292; 0.00148 ×288; 0.00146 ×287
+analysis.JV[].pv_cell_parameters.voc,3173,101,572,671,385,1274,170,num ×32757,V ×32757,1.12 ×2264; 1.11 ×2094; 1.09 ×1948; 1.07 ×1861; 1.1 ×1552
+analysis.JV[].pv_cell_parameters.vopt,3173,101,572,671,385,1274,170,num ×32757,mV ×32757,950.5 ×613; 933.35 ×560; 1020 ×547; 975.15 ×448; 967.7000000000002 ×443
+analysis.JV[].sweep_direction,3173,101,572,671,385,1274,170,str ×32757,,Reverse ×20323; Forward ×12434
+analysis.JV[].voc,3173,101,572,671,385,1274,170,num ×32757,V ×32757,1.12 ×2264; 1.11 ×2094; 1.09 ×1948; 1.07 ×1861; 1.1 ×1552
+analysis.PL,0,0,0,0,0,0,0,empty ×1,,
+analysis.PL[].filename,34,0,0,0,5,29,0,str ×101,,1.txt ×4; 2.txt ×4; 4.txt ×3; 3.txt ×3; 10.txt ×3
+analysis.PL[].intensity,34,0,0,0,5,29,0,num[] ×101,,[3648] ×78; [1751] ×20; [3649] ×3
+analysis.PL[].key,34,0,0,0,5,29,0,str ×101,,Pr69e ×1; 3L2h3 ×1; 1J1XK ×1; CDfka ×1; 27BSc ×1
+analysis.PL[].layer,1,0,0,0,1,0,0,empty ×96; num ×5,,3 ×5
+analysis.PL[].wavelength,34,0,0,0,5,29,0,num[] ×101,nm ×101,[3648] ×78; [1751] ×20; [3649] ×3
+analysis.SEM,0,0,0,0,0,0,0,empty ×1,,
+analysis.SEM[].filename,1,0,0,0,0,1,0,str ×24,,cross F_25kx-1.tif ×1; cross F_25kx-2.tif ×1; cross F_25kx-3.tif ×1; cross F_25kx-4.tif ×1; cross F_25kx-5.tif ×1
+analysis.SEM[].key,1,0,0,0,0,1,0,str ×24,,4Y7Pw ×1; beh7f ×1; GrzTf ×1; XsHBe ×1; OxEvG ×1
+analysis.SEM[].layer,0,0,0,0,0,0,0,empty ×24,,
+analysis.UVVIS[].absorbance,18,0,0,0,1,17,0,num[] ×117,AU ×117,[301] ×36; [1101] ×20; [101] ×17; [601] ×16; [1401] ×12
+analysis.UVVIS[].filename,18,0,0,0,1,17,0,str ×117,,1.txt ×5; 2.txt ×4; 3.txt ×4; 4.txt ×4; 5.txt ×4
+analysis.UVVIS[].key,18,0,0,0,1,17,0,str ×117,,siT8y ×1; 7H8bA ×1; l09tO ×1; mu7JA ×1; vW6MN ×1
+analysis.UVVIS[].layer,1,0,0,0,1,0,0,empty ×112; num ×5,,3 ×5
+analysis.UVVIS[].wavelength,18,0,0,0,1,17,0,num[] ×117,nm ×117,[301] ×36; [1101] ×20; [101] ×17; [601] ×16; [1401] ×12
+analysis.XRD[].degree,72,0,0,0,2,70,0,num[] ×257,2theta ×257,[1751] ×209; [1501] ×17; [2851] ×12; [2301] ×6; [1901] ×4
+analysis.XRD[].filename,72,0,0,0,2,70,0,str ×257,,1.TXT ×16; 5.TXT ×16; 2.TXT ×15; 4.TXT ×15; 3.TXT ×14
+analysis.XRD[].intensity,72,0,0,0,2,70,0,num[] ×257,cps ×257,[1751] ×209; [1501] ×17; [2851] ×12; [2301] ×6; [1901] ×4
+analysis.XRD[].key,72,0,0,0,2,70,0,str ×257,,b5yaj ×1; q3DAm ×1; DpFG4 ×1; 0BsE7 ×1; q7eGK ×1
+analysis.XRD[].layer,1,0,0,0,1,0,0,empty ×252; num ×5,,3 ×5
+analysisInfo,0,0,0,0,0,0,0,empty ×24,,
+analysisInfo.JV,0,0,0,0,0,0,0,empty ×12,,
+analysisInfo.JV[].cell_dimension,3173,101,572,671,385,1274,170,num ×32757,,0.045200000000000004 ×4374; 0.09179999999999999 ×4327; 0.094 ×3858; 0.092 ×3843; 0.08040000000000001 ×3068
+analysisInfo.JV[].efficiency,3173,101,572,671,385,1274,170,num ×32754; empty ×3,,18.3 ×56; 18.49 ×56; 17.69 ×54; 17.59 ×54; 17.49 ×52
+analysisInfo.JV[].fill_factor,3173,101,572,671,385,1274,170,num ×32754; empty ×3,,100 ×73; 76.89 ×31; 78.13 ×31; 79.23 ×30; 79.72 ×30
+analysisInfo.JV[].jsc,3173,101,572,671,385,1274,170,num ×32757,,2.22 ×103; 2.2 ×94; 2.2300000000000004 ×93; 2.21 ×91; 2.17 ×89
+analysisInfo.JV[].key,3173,101,572,671,385,1274,170,str ×32754; numstr ×3,,Reverse_20240718_20240717_opaque_ref_sam ×18; Reverse_240328-4_20240412 ×15; Forward_20240718_20240717_opaque_ref_sam ×14; Reverse_240403-3_20240412 ×12; 20220926_sample-03_nio_4pacz_64 triple 6 ×11
+analysisInfo.JV[].voc,3173,101,572,671,385,1274,170,num ×32757,,1.12 ×2264; 1.11 ×2094; 1.09 ×1948; 1.07 ×1861; 1.1 ×1552
+analysisInfo.PL[].key,34,0,0,0,5,29,0,str ×101,,Pr69e ×1; 3L2h3 ×1; 1J1XK ×1; CDfka ×1; 27BSc ×1
+analysisInfo.PL[].layer,1,0,0,0,1,0,0,num ×5,,3 ×5
+analysisInfo.PL[].layer_name,1,0,0,0,1,0,0,str ×5,,Perovskite ×5
+analysisInfo.PL[].layer_role,1,0,0,0,1,0,0,str ×5,,Perovskite ×5
+analysisInfo.SEM[].key,1,0,0,0,0,1,0,str ×24,,4Y7Pw ×1; beh7f ×1; GrzTf ×1; XsHBe ×1; OxEvG ×1
+analysisInfo.UVVIS[].key,18,0,0,0,1,17,0,str ×117,,siT8y ×1; 7H8bA ×1; l09tO ×1; mu7JA ×1; vW6MN ×1
+analysisInfo.UVVIS[].layer,1,0,0,0,1,0,0,num ×5,,3 ×5
+analysisInfo.UVVIS[].layer_name,1,0,0,0,1,0,0,str ×5,,Perovskite ×5
+analysisInfo.UVVIS[].layer_role,1,0,0,0,1,0,0,str ×5,,Perovskite ×5
+analysisInfo.XRD[].key,72,0,0,0,2,70,0,str ×257,,b5yaj ×1; q3DAm ×1; DpFG4 ×1; 0BsE7 ×1; q7eGK ×1
+analysisInfo.XRD[].layer,1,0,0,0,1,0,0,num ×5,,3 ×5
+analysisInfo.XRD[].layer_name,1,0,0,0,1,0,0,str ×5,,Perovskite ×5
+analysisInfo.XRD[].layer_role,1,0,0,0,1,0,0,str ×5,,Perovskite ×5
+analysis_old.JV,0,0,0,0,0,0,0,empty ×8,,
+analysis_old.JV[].I,856,101,572,183,0,0,0,num[] ×8328,A ×8328,[170] ×7569; [100] ×480; [141] ×162; [151] ×71; [171] ×46
+analysis_old.JV[].J,856,101,572,183,0,0,0,num[] ×8328,A/cm2 ×8328,[170] ×7569; [100] ×480; [141] ×162; [151] ×71; [171] ×46
+analysis_old.JV[].V,856,101,572,183,0,0,0,num[] ×8328,V ×8328,[170] ×7569; [100] ×480; [141] ×162; [151] ×71; [171] ×46
+analysis_old.JV[].calculations.fitted_isc,856,101,572,183,0,0,0,num ×8328,mA ×8328,1.88 ×306; 1.91 ×298; 1.9200000000000002 ×287; 1.9300000000000002 ×283; 1.9 ×282
+analysis_old.JV[].calculations.fitted_voc,856,101,572,183,0,0,0,num ×8328,V ×8328,1.08 ×498; 1.07 ×492; 1.13 ×447; 1.14 ×447; 1.12 ×445
+analysis_old.JV[].calculations.rseries,856,101,572,183,0,0,0,num ×8328,ohm ×8328,43.38 ×8; 47.99 ×7; 45.3 ×6; 52.8 ×6; 46.96 ×6
+analysis_old.JV[].calculations.rshunt,856,101,572,183,0,0,0,num ×8328,Kohm ×8328,2.45 ×9; 5.23 ×8; 4.13 ×8; 4.12 ×8; 3.8200000000000003 ×7
+analysis_old.JV[].key,856,101,572,183,0,0,0,str ×8327; numstr ×1,,"20220926_sample-03_nio_4pacz_64 triple 6 ×11; 20220926_sample-01_nio_4pacz_64 triple 4 ×9; 20220926_sample-07_nio_4pacz_64 triple 8 ×9; 4PACz(0.15)-FAI(2.0)-NiOx 1, Sol 1 -- R- ×8; 4PACz(0.15)-FAI(4.0)-NiOx 1, Sol 1 -- R- ×8"
+analysis_old.JV[].measurement_conditions.configuration_file,856,101,572,183,0,0,0,str ×8085; num ×243,,Configuration for I-V meas.conf ×6981; Configuration for I-V meas_R.conf ×731; 2 ×243; Configuration for I-V meas new.conf ×163; Configuration for I-V 1cm2meas.conf ×120
+analysis_old.JV[].measurement_conditions.note,856,101,572,183,0,0,0,str ×8328,,시료에 관한 부가적인 설명을 이곳에 적으세요. ^^ ×8328
+analysis_old.JV[].measurement_conditions.nplc,856,101,572,183,0,0,0,num ×8328,,0.01 ×7848; 0.1 ×480
+analysis_old.JV[].measurement_conditions.sample_id,856,101,572,183,0,0,0,str ×8320; num ×8,,R 10-3 ×50; R 10-2 ×50; R 6-2 ×50; R 8-3 ×50; R 3-3 ×49
+analysis_old.JV[].measurement_conditions.sweep_direction,856,101,572,183,0,0,0,str ×8328,,Reverse ×6117; Forward ×2211
+analysis_old.JV[].measurement_conditions.voltage_settling_time,856,101,572,183,0,0,0,num ×8328,s ×8328,0.01 ×8166; 0.02 ×162
+analysis_old.JV[].pv_cell_parameters.cell_dimension,856,101,572,183,0,0,0,num ×8328,cm2 ×8328,0.092 ×3510; 0.094 ×2518; 0.08 ×595; 0.08042 ×545; 0.0707 ×367
+analysis_old.JV[].pv_cell_parameters.efficiency,856,101,572,183,0,0,0,num ×8328,% ×8328,17.69 ×20; 18.3 ×20; 17.7 ×20; 17.97 ×19; 17.56 ×19
+analysis_old.JV[].pv_cell_parameters.fill_factor,856,101,572,183,0,0,0,num ×8328,% ×8328,79.2 ×12; 80.1 ×12; 79.12 ×12; 79.55 ×11; 79.1 ×10
+analysis_old.JV[].pv_cell_parameters.iopt,856,101,572,183,0,0,0,num ×8328,mA ×8328,1.74 ×268; 1.75 ×232; 1.73 ×230; 1.77 ×218; 1.76 ×218
+analysis_old.JV[].pv_cell_parameters.irradiance,856,101,572,183,0,0,0,num ×8328,mW/cm2 ×8328,100 ×8328
+analysis_old.JV[].pv_cell_parameters.isc,856,101,572,183,0,0,0,num ×8328,mA ×8328,1.88 ×304; 1.91 ×298; 1.9 ×291; 1.87 ×286; 1.9200000000000002 ×280
+analysis_old.JV[].pv_cell_parameters.jsc,856,101,572,183,0,0,0,num ×8328,mA/cm2 ×8328,20.32 ×41; 20.37 ×38; 20.47 ×38; 20.52 ×37; 20.5 ×37
+analysis_old.JV[].pv_cell_parameters.pmax,856,101,572,183,0,0,0,num ×8328,W ×8328,0.00164 ×142; 0.0016200000000000001 ×142; 0.00165 ×141; 0.00166 ×141; 0.00163 ×138
+analysis_old.JV[].pv_cell_parameters.voc,856,101,572,183,0,0,0,num ×8328,V ×8328,1.14 ×490; 1.07 ×483; 1.12 ×475; 1.09 ×439; 1.06 ×437
+analysis_old.JV[].pv_cell_parameters.vopt,856,101,572,183,0,0,0,num ×8328,mV ×8328,966.8500000000001 ×297; 926.65 ×274; 987 ×267; 936.7 ×265; 956.8 ×264
+author,3333,103,578,674,407,1401,170,num ×3333,,50 ×495; 56 ×489; 142 ×466; 39 ×374; 133 ×223
+created_at,3333,103,578,674,407,1401,170,str ×3333,,2024-07-11 01:47:04 ×2; 2024-10-28 03:30:43 ×2; 2025-10-23 06:07:50 ×2; 2025-10-23 07:24:28 ×2; 2025-10-23 09:33:49 ×2
+fileinfo,0,0,0,0,0,0,0,empty ×27,,
+fileinfo[].fileType,0,0,0,0,0,0,0,empty ×22212,,
+fileinfo[].key,3306,103,578,672,392,1391,170,str ×34386; numstr ×3,,InputFile ×1132; Reverse_20240718_20240717_opaque_ref_sam ×18; Reverse_240328-4_20240412 ×15; Forward_20240718_20240717_opaque_ref_sam ×14; Reverse_240403-3_20240412 ×12
+fileinfo[].original_name,3306,103,578,672,392,1391,170,str ×34389,,input.xlsx ×1132; 20221226 20221215 bulk macl 5mg mabr 1.0 ×16; 1.TXT ×16; 5.TXT ×16; 20221226 20221213 bulk macl 5mg mabr 1.0 ×15
+fileinfo[].save_name,3306,103,578,672,392,1391,170,str ×34389,,KRICT-SC-03353/Reverse_20240726_LJW_samp ×18; KRICT-SC-03354/Reverse_20240718_20240717 ×18; KRICT-SC-01746/Reverse_20241016-sam-br5( ×15; KRICT-SC-01746/Forward_20241016-sam-br5( ×15; KRICT-SC-01742/Reverse_20241015-sam-br5( ×14
+fileinfo[].uploadType,3306,103,578,672,392,1391,170,str ×34389,,JV ×32758; InputFile ×1132; XRD ×257; UVVIS ×117; PL ×101
+fileinfo[].uploader,3306,103,578,672,392,1391,170,num ×34389,,142 ×6813; 56 ×6287; 39 ×3504; 131 ×2108; 140 ×1769
+group,3333,103,578,674,407,1401,170,num ×3333,,2 ×3333
+id,3333,103,578,674,407,1401,170,str ×3333,,KRICT-SC-00002 ×1; KRICT-SC-00003 ×1; KRICT-SC-00004 ×1; KRICT-SC-00005 ×1; KRICT-SC-00006 ×1
+input[],0,0,0,0,0,0,0,empty ×5654,,
+input[].annealing,0,0,0,0,0,0,0,empty ×1,,
+input[].annealing[].temperature,2955,90,492,475,386,1342,170,numstr ×3041; num ×1383,oC ×4424,100 ×2685; 150 ×850; 300 ×508; 170 ×183; 250 ×176
+input[].annealing[].time,2458,90,492,456,356,894,170,numstr ×2549; num ×1378,m ×2407; min ×1381; time ×139,10 ×2304; 60 ×756; 2 ×203; 90 ×177; 30 ×153
+input[].anode_metal,3209,103,578,673,394,1301,160,str ×3209,,Au ×1614; Ag ×1153; Cu ×248; ITO ×173; Carbon ×18
+input[].ar,2392,103,578,561,294,686,170,num ×2392,,0 ×2389; 1 ×3
+input[].blocking_buffer_layer[].conc_unit,1,0,0,1,0,0,0,str ×1,,mg/ml ×1
+input[].blocking_buffer_layer[].concentration,1,0,0,1,0,0,0,numstr ×1,,99.5 ×1
+input[].blocking_buffer_layer[].material,1089,103,482,145,164,195,0,str ×1089,,BCP ×1078; PEIE ×7; TiO2 ×4
+input[].blocking_buffer_layer[].quantity,1,0,0,1,0,0,0,numstr ×1,ml ×1,100 ×1
+input[].cell_dimension,646,0,0,0,16,470,160,numstr ×646,cm2 ×646,0.045216 ×333; 0.092 ×86; 25 ×85; 213 ×59; 0.0908 ×24
+input[].chemical_bath_deposition,0,0,0,0,0,0,0,empty ×143,,
+input[].chemical_bath_deposition.bath_annealing[].temperature,10,0,0,6,4,0,0,numstr ×10,oC ×10,40 ×6; 70 ×4
+input[].chemical_bath_deposition.bath_annealing[].time,10,0,0,6,4,0,0,numstr ×10,m ×10,30 ×6; 180 ×4
+input[].condition,1796,0,0,107,312,1207,170,str ×4488,,air ×3307; glove-box ×819; vacuum evaporation ×362
+input[].device_type,3325,103,578,673,406,1395,170,str ×3325,,p-i-n ×1713; n-i-p ×1612
+input[].etl,0,0,0,0,0,0,0,empty ×19,,
+input[].etl[].conc_unit,802,4,0,21,95,682,0,str ×992,,mg/ml ×897; wt% ×95
+input[].etl[].concentration,825,4,0,25,114,682,0,numstr ×981; str ×38,,7.3 ×495; 70 ×232; 2 ×166; 4 ×31; 1:5 ratio (in H2O) ×26
+input[].etl[].etl.material,94,0,0,0,2,92,0,str ×94,,C60 ×94
+input[].etl[].material,3226,103,578,674,401,1300,170,str ×3544,,C60 ×1534; SnO2_NP ×782; TiO2 ×579; SnO2_CBD ×483; PC60BM ×61
+input[].etl[].quantity,360,2,4,4,84,266,0,numstr ×483; num ×65; str ×2,ml ×550,1 ×265; 0.1 ×154; 0.3 ×93; 0.5 ×20; 0.03 ×7
+input[].etl[].thermal_evaporation[].evaporation_rate,94,0,0,0,2,92,0,numstr ×67; num ×27,Å/s ×94,0.15 ×66; 0.175 ×27; 0.10 ×1
+input[].etl[].thermal_evaporation[].vacuum_evaporation_thickness,94,0,0,0,2,92,0,numstr ×94,nm ×94,15 ×82; 10 ×4; 20 ×4; 25 ×4
+input[].etl[].thermal_evaporation[].vacuum_pressure,94,0,0,0,2,92,0,numstr ×67; num ×27,uTorr ×94,0.8 ×67; 0.3 ×27
+input[].etl_doping[].volume,7,0,0,0,7,0,0,str ×7,ul ×7,Ce 200mg/mL ×4; Ce 10mg/mL ×1; Ce 20mg/mL ×1; Ce 100mg/mL ×1
+input[].etl_treatment[].conc_unit,368,0,0,0,0,206,162,str ×368,,mg/ml ×368
+input[].etl_treatment[].concentration,368,0,0,0,0,206,162,numstr ×368,,1 ×368
+input[].etl_treatment[].material,373,0,0,0,0,211,162,str ×373,,KCl ×362; PTA ×11
+input[].etl_treatment[].quantity,375,0,0,0,0,213,162,numstr ×362; num ×13,ml ×375,0.3 ×347; 0.03 ×26; 300 ×2
+input[].htl[].conc_unit,2007,4,13,144,397,1289,160,str ×2124,,mg/ml ×2051; wt% ×73
+input[].htl[].concentration,2096,4,13,223,404,1292,160,numstr ×2112; str ×85; num ×16,mg/ml ×236,10 ×835; 90.9 ×321; 0.4 ×247; 0.15 ×184; 2 ×175
+input[].htl[].material,3316,103,578,674,407,1384,170,str ×3587,,PTAA ×1216; NiO_4PACz ×913; Spiro-OMeTAD ×616; Me-4PACz ×388; NiO ×277
+input[].htl[].quantity,1160,4,13,50,154,769,170,numstr ×1184; num ×104,ml ×1288,0.07 ×439; 0.2 ×290; 100 ×220; 0.1 ×178; 0.15 ×35
+input[].htl_doping,0,0,0,0,0,0,0,empty ×7,,
+input[].htl_doping[].material,475,0,26,80,31,178,160,str ×1232,,Li-TFSI ×474; tBP ×427; Co-TFSI ×330; OA-TFSI ×1
+input[].htl_doping[].volume,483,0,34,80,31,178,160,numstr ×1187; num ×52; str ×1,ul ×1240,23 ×375; 39 ×331; 10 ×330; 20.03 ×76; 33.97 ×76
+input[].htl_treatment[].material,29,0,0,0,29,0,0,str ×29,,Ethanol ×29
+input[].htl_treatment[].quantity,14,0,0,0,14,0,0,numstr ×14,ml ×14,0.2 ×8; 0.15 ×6
+input[].humidity,1322,0,0,132,291,729,170,numstr ×1287; num ×35,% ×1322,25 ×429; 15 ×235; 10 ×229; 20 ×152; 13 ×65
+input[].module[].coating_speed,857,0,0,51,123,683,0,numstr ×1399; num ×76,mm/s ×1475,30 ×748; 10 ×312; 1 ×276; 5 ×82; 25 ×30
+input[].module[].feeding_amount,857,0,0,51,123,683,0,numstr ×1462; num ×13,ul ×1323; µl ×152,100 ×857; 300 ×465; 450 ×112; 500 ×21; 400 ×11
+input[].module[].gap,857,0,0,51,123,683,0,numstr ×1334; num ×141,um ×1323; µm ×152,0.2 ×766; 100 ×650; 0.1 ×59
+input[].module[].type,1225,0,0,310,145,770,0,str ×3295,,bar coating ×1833; Bar coating ×1462
+input[].note,1876,0,243,413,287,763,170,str ×1661; numstr ×210; num ×23,,nip 로봇팔 실험 조건 / step3 > condition > pero ×33; step5 > etl > thermal_evaporation > evap ×21; C60 BCP thickness control ×16; nip 로봇팔 실험 조건 ×13; 20230913 ×13
+input[].perovskite.a_site,0,0,0,0,0,0,0,empty ×27,,
+input[].perovskite.a_site[].material,3298,103,578,674,407,1366,170,str ×8475,,FA ×3298; MA ×3005; Cs ×2145; Rb ×27
+input[].perovskite.a_site[].ratio,3298,103,578,674,407,1366,170,numstr ×4471; num ×4004,% ×7300,5 ×2700; 15 ×1233; 80 ×1076; 95 ×819; 20 ×513
+input[].perovskite.additive[].conc_unit,360,0,0,1,0,199,160,str ×360,,mg/ml ×351; wt% ×9
+input[].perovskite.additive[].concentration,360,0,0,1,0,199,160,numstr ×360,,15 ×338; 1 ×9; 18 ×8; 12 ×4; 20 ×1
+input[].perovskite.additive[].material,1148,20,177,377,55,359,160,str ×1158,,MACl ×1136; PEAI ×13; H3PO2 ×9
+input[].perovskite.additive[].quantity,1106,18,170,376,55,327,160,num ×634; numstr ×482,mol% ×1116,5 ×462; 25 ×333; 20 ×105; 0.15 ×65; 10 ×52
+input[].perovskite.annealing[].temperature,2782,60,177,600,406,1369,170,numstr ×2465; num ×1002,oC ×3467,100 ×1894; 150 ×1316; 170 ×223; 175 ×21; 200 ×9
+input[].perovskite.annealing[].time,2779,60,177,600,406,1366,170,numstr ×2559; num ×905,m ×2240; min ×1224,40 ×804; 60 ×764; 15 ×507; 5 ×378; 20 ×324
+input[].perovskite.antisolvent[].dripping_time,1243,0,0,163,321,589,170,numstr ×1271; str ×1,s ×1272,30 ×597; 12 ×347; 15 ×126; 20 ×106; 10 ×46
+input[].perovskite.antisolvent[].material,1896,60,177,578,321,590,170,str ×1927,,DEE ×1316; EA ×515; CF ×36; Toluene ×29; TFT ×23
+input[].perovskite.antisolvent[].quantity,1897,60,177,579,321,590,170,numstr ×1069; num ×853,ul ×1922,1000 ×936; 600 ×336; 850 ×239; 500 ×137; 300 ×49
+input[].perovskite.atmosphere,0,0,0,0,0,0,0,empty ×1,,
+input[].perovskite.atmosphere[].humidity,63,0,0,22,17,24,0,numstr ×63,RH% ×63,19.9 ×9; 19.4 ×7; 12.1 ×7; 11.5 ×6; 21.5 ×5
+input[].perovskite.atmosphere[].temperature,66,0,0,25,17,24,0,numstr ×66,oC ×66,21.4 ×11; 23.6 ×10; 20.7 ×9; 22.8 ×6; 23.0 ×5
+input[].perovskite.atmosphere[].type,3,0,0,3,0,0,0,str ×3,,N2 ×3
+input[].perovskite.b_site,0,0,0,0,0,0,0,empty ×27,,
+input[].perovskite.b_site[].material,3298,103,578,674,407,1366,170,str ×3299,,Pb ×3299
+input[].perovskite.b_site[].ratio,3298,103,578,674,407,1366,170,numstr ×1675; num ×1624,% ×2808,100 ×3298; 77 ×1
+input[].perovskite.method,3233,103,578,615,389,1378,170,str ×3233,,1step ×2380; 2step ×630; 1-step ×223
+input[].perovskite.module,0,0,0,0,0,0,0,empty ×60,,
+input[].perovskite.module[].coating_speed,501,0,0,19,30,452,0,numstr ×996,mm/s ×996,15 ×495; 8 ×476; 7 ×23; 9 ×1; 10 ×1
+input[].perovskite.module[].feeding_amount,501,0,0,19,30,452,0,numstr ×996,ul ×996,270 ×471; 300 ×455; 100 ×30; 85 ×21; 170 ×16
+input[].perovskite.module[].gap,501,0,0,19,30,452,0,numstr ×996,um ×996,0.2 ×990; 100 ×6
+input[].perovskite.module[].type,875,0,0,293,52,530,0,str ×1370,,Bar coating ×996; bar coating ×374
+input[].perovskite.molarity,2176,103,504,483,258,658,170,num ×1629; numstr ×547,M ×1683,1.5 ×1427; 1.4 ×244; 1.6 ×176; 1.9 ×102; 2.2 ×93
+input[].perovskite.solvent[].material,3008,103,508,611,383,1233,170,str ×6010,,DMF ×3008; DMSO ×2996; NMP ×6
+input[].perovskite.solvent[].volume,3006,103,508,609,383,1233,170,numstr ×3544; num ×2487; str ×9,ml ×6040,0.8 ×2242; 0.2 ×1460; 0.1 ×1319; 0.9 ×514; 0.11 ×94
+input[].perovskite.spin_coating[].rpm,1694,60,177,551,325,571,10,numstr ×2171; num ×751,,5000 ×1194; 500 ×655; 1000 ×614; 3000 ×378; 6000 ×79
+input[].perovskite.spin_coating[].time,1052,0,0,146,325,571,10,numstr ×2280,s ×1941,5 ×616; 8 ×608; 30 ×443; 13 ×309; 200 ×146
+input[].perovskite.spin_coating[].type,1052,0,0,146,325,571,10,str ×2178,,drop&run ×2165; dynamic ×13
+input[].perovskite.sputtering,0,0,0,0,0,0,0,empty ×1,,
+input[].perovskite.thermal_evaporation[].evaporation_rate,152,0,0,3,22,127,0,numstr ×560; str ×12,Å/s ×572,0.4 ×196; 0.8 ×128; 0.15 ×126; 0.035 ×27; 0.43 ×27
+input[].perovskite.thermal_evaporation[].vacuum_evaporation_thickness,152,0,0,3,22,127,0,str ×551; numstr ×21,nm ×572,FAI ×131; CsI ×126; pbI2 ×98; Pbbr2 ×98; PbCl2 ×33
+input[].perovskite.thermal_evaporation[].vacuum_pressure,152,0,0,3,22,127,0,num ×464,uTorr ×464,5 ×419; 6 ×45
+input[].perovskite.vacuum_suction[],6,0,0,0,0,6,0,numstr ×6,s ×6,36 ×5; 33 ×1
+input[].perovskite.x_site,0,0,0,0,0,0,0,empty ×27,,
+input[].perovskite.x_site[].material,3300,103,578,674,407,1368,170,str ×6624,,I ×3299; Br ×3198; Cl ×127
+input[].perovskite.x_site[].ratio,3300,103,578,674,407,1368,170,numstr ×3757; num ×2867,% ×5606,5 ×875; 95 ×805; 78 ×620; 22 ×620; 20 ×573
+input[].perovskite_treatment,0,0,0,0,0,0,0,empty ×1,,
+input[].perovskite_treatment[].conc_unit,1192,96,339,270,89,234,164,str ×1355,,mg/ml ×1355
+input[].perovskite_treatment[].concentration,1232,96,339,294,104,235,164,numstr ×815; num ×547; str ×35,mg/ml ×691,1 ×285; 100 ×188; 6.3 ×153; 3 ×131; 200 ×119
+input[].perovskite_treatment[].material,1634,99,407,535,107,316,170,str ×1799,,FAI ×385; OABr ×350; MABr+MACl ×260; MACl ×229; MABr ×177
+input[].perovskite_treatment[].quantity,827,92,30,148,80,307,170,numstr ×786; num ×173,ml ×959,0.2 ×816; 0.3 ×73; 0.1 ×32; 0.03 ×16; 200 ×10
+input[].solvent,0,0,0,0,0,0,0,empty ×76,,
+input[].solvent[].material,335,0,0,0,0,175,160,str ×355,,CB ×328; IPA ×26; Toluene ×1
+input[].solvent[].volume,317,0,0,0,0,157,160,numstr ×317,ml ×317,1.1 ×307; 1 ×10
+input[].spin_coating,0,0,0,0,0,0,0,empty ×1,,
+input[].spin_coating[].rpm,2096,96,530,609,146,545,170,numstr ×2113; num ×1467; str ×118,,3000 ×1466; 5000 ×1333; 4000 ×758; vacuum deposition ×118; 2000 ×16
+input[].spin_coating[].time,1161,2,26,272,146,545,170,numstr ×2376; num ×16,s ×2006,30 ×2214; 25 ×173; 15 ×1; 20 ×1; 5 ×1
+input[].spin_coating[].type,1057,1,26,272,143,455,160,str ×2185,,drop&run ×1543; dynamic ×642
+input[].surface_treatment,137,26,0,11,22,78,0,str ×137,,70C ×102; 100C ×24; air_exposure ×11
+input[].tco,3330,103,578,673,407,1399,170,str ×3331,,ITO ×1869; FTO ×1405; FTO_Asahi ×53; Quartz ×4
+input[].temperature,1322,0,0,132,291,729,170,numstr ×1280; num ×42,℃ ×1052; oC ×270,22 ×672; 24 ×217; 25 ×163; 22.6 ×41; 15 ×36
+input[].thermal_evaporation[].evaporation_rate,715,3,0,131,239,342,0,numstr ×997; num ×48,Å/s ×919; A/s ×126,0.2 ×371; 0.1 ×251; 0.15 ×211; 0.13 ×167; 0.10 ×24
+input[].thermal_evaporation[].vacuum_evaporation_thickness,748,3,0,156,239,350,0,numstr ×1051; num ×46; str ×16,nm ×1113,15 ×599; 5 ×345; 10 ×73; 4 ×22; 9 ×22
+input[].thermal_evaporation[].vacuum_pressure,551,3,0,120,217,211,0,num ×446; numstr ×434,uTorr ×880,0.8 ×365; 5 ×315; 0.2 ×57; 1.0 ×43; 3 ×27
+input[].type,1700,6,0,369,325,830,170,str ×1700,,unit_cell ×1363; module ×337
+jvcnt,3333,103,578,674,407,1401,170,num ×3333,,8 ×475; 16 ×379; 4 ×339; 2 ×334; 1 ×200
+plcnt,2,0,0,0,1,0,1,num ×2,,1 ×1; 0 ×1
+process,0,0,0,0,0,0,0,empty ×4,,
+process[].block,3329,103,578,674,407,1397,170,num ×11166,,4 ×2763; 3 ×2215; 5 ×2215; 2 ×2172; 6 ×761
+process[].layer_name,3328,103,577,674,407,1397,170,str ×10267; empty ×899,,Perovskite ×2828; PTAA (HTL) ×1208; C60 (ETL) ×969; Spiro-OMeTAD (HTL) ×605; TiO2 (ETL) ×530
+process[].layer_role,3328,103,577,674,407,1397,170,str ×10267; empty ×899,,Perovskite ×2828; HTL ×2792; ETL ×2334; perovskite treatment ×1582; buffer ×372
+process[].order,3329,103,578,674,407,1397,170,str ×11166,,inferred ×9755; to check ×1411
+process[].steps[].bath_annealing[].temperature,10,0,0,6,4,0,0,numstr ×10,oC ×10,40 ×6; 70 ×4
+process[].steps[].bath_annealing[].time,10,0,0,6,4,0,0,numstr ×10,m ×10,30 ×6; 180 ×4
+process[].steps[].coating_speed,857,0,0,51,123,683,0,numstr ×2395; num ×76,mm/s ×2471,30 ×748; 15 ×495; 8 ×476; 10 ×313; 1 ×276
+process[].steps[].dripping_time,1243,0,0,163,321,589,170,numstr ×1271; str ×1,s ×1272,30 ×597; 12 ×347; 15 ×126; 20 ×106; 10 ×46
+process[].steps[].during,1481,60,177,549,306,379,10,str ×1512,,p1 ×883; p3 ×629
+process[].steps[].evaporation_rate,742,3,0,134,257,348,0,numstr ×1624; num ×75; str ×12,Å/s ×1585; A/s ×126,0.15 ×403; 0.2 ×371; 0.1 ×251; 0.4 ×196; 0.13 ×167
+process[].steps[].feeding_amount,857,0,0,51,123,683,0,numstr ×2458; num ×13,ul ×2319; µl ×152,300 ×920; 100 ×887; 270 ×471; 450 ×112; 500 ×21
+process[].steps[].gap,857,0,0,51,123,683,0,numstr ×2330; num ×141,um ×2319; µm ×152,0.2 ×1756; 100 ×656; 0.1 ×59
+process[].steps[].id,3329,103,578,674,407,1397,170,str ×22900,,p1 ×11166; p2 ×6249; p3 ×2988; p4 ×1555; p5 ×744
+process[].steps[].material,1896,60,177,578,321,590,170,str ×1927,,DEE ×1316; EA ×515; CF ×36; Toluene ×29; TFT ×23
+process[].steps[].quantity,1897,60,177,579,321,590,170,numstr ×1069; num ×853,ul ×1922,1000 ×936; 600 ×336; 850 ×239; 500 ×137; 300 ×49
+process[].steps[].rpm,2690,103,578,641,354,844,170,numstr ×4284; num ×2218; str ×118,,5000 ×2527; 3000 ×1844; 4000 ×758; 500 ×657; 1000 ×614
+process[].steps[].step,3329,103,578,674,407,1397,170,str ×22900,,annealing ×7891; spin_coating ×6621; module ×4665; antisolvent ×1928; thermal_evaporation ×1779
+process[].steps[].step_no,3329,103,578,674,407,1397,170,num ×22900,,1 ×11166; 2 ×6249; 3 ×2988; 4 ×1555; 5 ×744
+process[].steps[].temperature,3250,103,578,617,406,1376,170,numstr ×5506; num ×2385,oC ×7891,100 ×4579; 150 ×2166; 300 ×508; 170 ×406; 250 ×176
+process[].steps[].time,3308,103,578,674,407,1376,170,numstr ×9770; num ×2299,m ×4647; s ×3953; min ×2605; time ×139,30 ×2935; 10 ×2500; 60 ×1520; 5 ×1113; 40 ×806
+process[].steps[].type,2429,1,26,537,399,1296,170,str ×9028,,drop&run ×3708; Bar coating ×2458; bar coating ×2207; dynamic ×655
+process[].steps[].vacuum_evaporation_thickness,775,3,0,159,257,356,0,numstr ×1166; str ×567; num ×46,nm ×1779,15 ×681; 5 ×345; FAI ×131; CsI ×126; pbI2 ×98
+process[].steps[].vacuum_pressure,578,3,0,123,235,217,0,num ×937; numstr ×501,uTorr ×1438,5 ×734; 0.8 ×432; 0.2 ×57; 0.3 ×54; 6 ×45
+public,2593,103,578,674,401,837,0,num ×2593,,2 ×1927; 0 ×666
+recipe_version,3333,103,578,674,407,1401,170,num ×3333,,1 ×3333
+tags,0,0,0,0,0,0,0,empty ×2052,,
+updated_at,3333,103,578,674,407,1401,170,str ×3333,,2025-09-04 04:57:01 ×458; 2025-09-04 04:57:00 ×313; 2025-09-04 04:56:59 ×272; 2024-06-03 08:38:39 ×215; 2025-10-29 00:14:32 ×100

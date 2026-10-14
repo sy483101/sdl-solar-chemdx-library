@@ -1,7 +1,7 @@
 # PLAN — ChemDX 태양전지 → SDL 라이브러리
 
 > 범위·결정 근거 = `docs/intent/project-scope.md`. 상태 표기: `[ ]` 미착수 · `[~]` 진행 · `[x]` 완료(검증 결과는 worklog).
-> 순서 원칙 = **① 2026년분 정량지표 숫자를 먼저**(연차보고서), ② 그 외는 같은 파이프라인을 다시 돌리는 것.
+> 순서 원칙 = **① 2026년분 정량지표 숫자를 먼저**(연차보고서 마감 **2026-10-26** — KRICT 2026 등록 170건, 사용자 확인), ② 그 외는 같은 파이프라인을 다시 돌리는 것.
 
 ## 데이터 배치 (`$SOLAR_DATA_DIR`, git 밖)
 
@@ -40,7 +40,8 @@ $SOLAR_DATA_DIR/
 
 ## WS2 매핑 — 매핑기
 
-- [ ] **T2.1 필드 전수** → `mapping/fields.csv`: 필드 경로 · 채워진 비율 · 값 예 · 단위 표기 — 원본에서 자동 추출(손으로 고르지 않음).
+- [x] **T2.1 필드 전수** → `mapping/fields.csv`(`scripts/field_inventory.py`): 필드 경로 · 연도별 채워진 레코드 수 · 값 종류 · 단위 · 값 예 — 원본에서 자동 추출.
+      20261014판 = 경로 242(2026 레코드에서 채워진 것 119 · 어디서도 안 채워진 것 25). 관찰 = `docs/chemdx-api.md` "필드 전수에서 본 것".
 - [ ] **T2.2 매핑표** → `mapping/chemdx_to_psc.csv`(git): 필드마다 하나로 —
       Metadata 칸 | Entity(원료 정보 등) | Step(StepType) | Parameter(StepType·이름·단위) | 결과(VocabAlias 이름·Kind·값/파일) | 버림(사유).
       **용어 = PSC registry**(기준 판을 표 머리에 기록). 레코드 하나가 공정 스텝 몇 개로 펼쳐지는지(소자 적층·층별 공정)는 T1.1 결과로 정한다.
@@ -53,6 +54,7 @@ $SOLAR_DATA_DIR/
 ## WS3 변환기 — 라이브러리층
 
 - [ ] **T3.1 record → draft**: 매핑표대로 sdl-prefill draft JSON(meta · entities · steps — 파라미터·결과·투입/산출) 생성.
+      **측정 곡선(`analysis` 의 x·y 배열 — JV·PL·UV-Vis·XRD)은 DataArtifact 로 txt/csv 를 뽑아내고 5시트에 배열을 넣지 않는다**(사용자 결정 10-14 — 배열 지양).
       엔진 도우미(`draft.new_step`·`draft.new_entity`·`draft.validate`)를 쓴다. 첨부 파일 = draft 의 file 자리 + 바이트.
 - [ ] **T3.2 draft → 세트 폴더**: `sheets.to_zip`(웹 내려받기와 같은 함수) 결과를 `library/<빌드>/<2026|other>/` 에 풀어 둔다 —
       웹 zip 과 바이트 수준으로 같은 형식이 목적. `validate` 알림은 `report.txt` + 빌드 요약.
@@ -72,10 +74,10 @@ $SOLAR_DATA_DIR/
 
 | # | 질문 | 막히는 곳 |
 |---|---|---|
-| D1 | 가져온 세트의 실험 ID 체계 — sdl-prefill 웹 입력 PSC 실험(`PSC-EXP-날짜-NNN`, 서버 장부)과 겹치지 않게 | T3.3 |
+| D1 | 가져온 세트의 실험 ID 체계 — **KRICT-PSC 랩 데이터로(사용자 10-14)** → `PSC-EXP-{YYYYMMDD}-{NNN}`. 남은 것: 날짜·번호 기준 · 서버 장부(웹 입력분)와 겹침 | T3.3 |
 | ~~D2~~ | **결정(10-14)**: `created_at`(ChemDX 등록일) 연도. 날짜 없는 레코드 없음 | T1.3 |
 | ~~D3~~ | **결정(10-14)**: ChemDX 그룹 2(`KRICT-SC-` 접두어와 1:1). 그룹 3 `SC-` = UNIST | T1.2 |
 | D4 | SDLEXO·MPSP 판정 방식(플랫폼 J1·J3 와 같은 3판정 등) | T2.4 |
 | D5 | PSC registry 추가분 반영 시점 — 대기 중인 PSC 회신과 합칠지 | T2.3 |
-| D6 | 연차보고서 마감일 → ① 숫자가 필요한 날 | 전체 순서 |
-| D7 | 레코드 → 실험 세트 단위(소자 하나 = 세트 하나?) | T2.2·T3.1 |
+| ~~D6~~ | **결정(10-14)**: 연차보고서 마감 2026-10-26 | 전체 순서 |
+| D7 | 레코드 → 실험 세트 단위 — **잠정: 레코드 하나 = 세트 하나(사용자 10-14)**. PSC 랩 데이터에 매핑해 보고 확정 | T2.2·T3.1 |
