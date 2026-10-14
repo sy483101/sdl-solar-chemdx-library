@@ -7,9 +7,13 @@
 
 ```
 $SOLAR_DATA_DIR/
-├── raw/<스냅샷 YYYYMMDD>/          원본층 — 받은 응답 그대로
-│   ├── manifest.json               받은 시각 · API 조건 · 건수 · 레코드별 해시 · 2026/그외 분류
-│   └── <recordId>/record.json + files/…
+├── raw/                            원본층 — 두 단(CLAUDE.md 데이터 규칙)
+│   ├── 1_full/downloads/           1차 — 사용자가 받은 그대로(타기관 포함, 손대지 않음). 구조 = docs/chemdx-api.md
+│   │   ├── latest.json             최신 run 을 가리킴
+│   │   └── run-<UTC시각>-<id>/      records.json(전체 배열) · N.zip(그룹별) · N/N/<ID>.json(zip 푼 것) — 세 벌이 같은 내용
+│   └── 2_krict/<스냅샷 YYYYMMDD>/   2차 — scripts/filter_krict.py 로만 만든다(그룹 2 · 등록연도별 · 파일 바이트 그대로)
+│       ├── manifest.json           출처 run · 규칙 · 코드 커밋 · 연도별 건수 · 파일별 sha256
+│       └── <등록연도>/<ID>.json
 └── library/<빌드 이름>/             라이브러리층 — 원본 + 코드 + 매핑으로 재생성
     ├── manifest.json               원본 스냅샷 · 이 레포 커밋 · sdl-prefill 커밋 · registry 판 · 매핑표 판
     ├── 2026/<ExperimentID>/        ① 정량지표용 — template.xlsx · metadata.json · DataArtifact/ · report.txt
@@ -21,16 +25,18 @@ $SOLAR_DATA_DIR/
 - [x] 범위 합의(interview-me) → `docs/intent/project-scope.md`
 - [x] 레포 · 규칙(`CLAUDE.md`) · 계획(이 문서) · `HANDOFF.md` · `.gitignore` · `.env.example`
 - [x] private GitHub 레포 `sy483101/sdl-solar-chemdx-library` 생성·push(웹에서 빈 레포 → git push — 아래 함정)
+- [x] `SOLAR_DATA_DIR` = `~/Research/sdl-solar-chemdx-data`(`.env`) · `raw/1_full/` · `raw/2_krict/` 생성 — 원본층 두 단(사용자 결정)
 
 ## WS1 수집 — 원본층
 
-- [ ] **T1.1 ChemDX API 조사** → `docs/chemdx-api.md`: 인증 · 엔드포인트 · 페이지 나누기 · 레코드 스키마 · 첨부(비정형) 받는 법 ·
+- [~] **T1.1 ChemDX API 조사** — 받은 데이터 구조는 조사 완료(`docs/chemdx-api.md`, 사용자가 자기 도구로 받음). API 자체는 미조사. → `docs/chemdx-api.md`: 인증 · 엔드포인트 · 페이지 나누기 · 레코드 스키마 · 첨부(비정형) 받는 법 ·
       **기관 필드**(KRICT 판별 — 표기 변형 전수) · **생산 시점 필드**(2026 판별) · 서버 쪽 필터 가능 여부 · 호출 제한.
       입력 = API 문서·계정(사용자 제공). 완료 = 표본 몇 건을 실제로 받아 필드 목록과 대조.
-- [ ] **T1.2 수집기** `fetch`: 벌크 수신 → KRICT 아닌 레코드는 쓰지 않음 → `raw/<스냅샷>/` 에 그대로 저장. 끊겨도 이어 받기(받은 것 건너뜀).
-      완료 = 같은 조건 두 번 실행 시 매니페스트 해시 동일 · 타기관 레코드 0(전수 검사).
-- [ ] **T1.3 분류** 2026 / 그 외 — 기준 필드는 열린 결정 D2. 매니페스트에 분류 기록(폴더를 나누지 않고 라이브러리에서 나눔).
-      완료 = 분류별 건수 + 경계 사례(날짜 없음 등) 목록을 사용자 확인.
+- [~] **T1.2 수집기** — 필터 `scripts/filter_krict.py` 완료(zip 과 바이트 대조 · 두 번 실행 매니페스트 동일 · 타기관 0). 자동 수집기 필요 여부는 미정.
+      (원안) `fetch`: 벌크 수신 → `raw/1_full/<스냅샷>/` 에 그대로 저장 → KRICT 만 `raw/2_krict/<스냅샷>/` 로 복사. 끊겨도 이어 받기(받은 것 건너뜀).
+      완료 = 같은 조건 두 번 실행 시 매니페스트 해시 동일 · 2차에 타기관 레코드 0(전수 검사).
+- [x] **T1.3 분류** — `created_at`(ChemDX 등록일) 연도로 `2_krict/<스냅샷>/<연도>/` 에 나눔(D2). 날짜 없는 레코드 0 · UTC/KST 연말 경계 0.
+      KRICT 20261014판: 2021 103 · 2022 578 · 2023 674 · 2024 407 · 2025 1,401 · 2026 170(마지막 등록 07-24) = 3,333.
 
 ## WS2 매핑 — 매핑기
 
@@ -67,8 +73,8 @@ $SOLAR_DATA_DIR/
 | # | 질문 | 막히는 곳 |
 |---|---|---|
 | D1 | 가져온 세트의 실험 ID 체계 — sdl-prefill 웹 입력 PSC 실험(`PSC-EXP-날짜-NNN`, 서버 장부)과 겹치지 않게 | T3.3 |
-| D2 | "2026년 생산" 판정 필드(실험일? 등록일?) · 날짜 없는 레코드 처리 | T1.3 |
-| D3 | KRICT 판별 규칙(기관 표기 변형 · 공동연구 레코드) | T1.2 |
+| ~~D2~~ | **결정(10-14)**: `created_at`(ChemDX 등록일) 연도. 날짜 없는 레코드 없음 | T1.3 |
+| ~~D3~~ | **결정(10-14)**: ChemDX 그룹 2(`KRICT-SC-` 접두어와 1:1). 그룹 3 `SC-` = UNIST | T1.2 |
 | D4 | SDLEXO·MPSP 판정 방식(플랫폼 J1·J3 와 같은 3판정 등) | T2.4 |
 | D5 | PSC registry 추가분 반영 시점 — 대기 중인 PSC 회신과 합칠지 | T2.3 |
 | D6 | 연차보고서 마감일 → ① 숫자가 필요한 날 | 전체 순서 |
