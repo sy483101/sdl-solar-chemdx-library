@@ -20,7 +20,7 @@ $SOLAR_DATA_DIR/
 
 - [x] 범위 합의(interview-me) → `docs/intent/project-scope.md`
 - [x] 레포 · 규칙(`CLAUDE.md`) · 계획(이 문서) · `HANDOFF.md` · `.gitignore` · `.env.example`
-- [ ] private GitHub 레포 `sy483101/sdl-solar-chemdx-library` 생성·push
+- [x] private GitHub 레포 `sy483101/sdl-solar-chemdx-library` 생성·push(웹에서 빈 레포 → git push — 아래 함정)
 
 ## WS1 수집 — 원본층
 

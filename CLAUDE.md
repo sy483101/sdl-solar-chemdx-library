@@ -53,3 +53,5 @@
 - sdl-prefill 의 실험 ID 장부(`idbook`)는 **서버**(borona·NCP)에 있다 — 이 레포는 오프라인 변환이라 장부에 기록되지 않는다. ID 겹침 = 열린 결정 D1.
 - 개발 Mac 의 Python = 3.9(sdl-prefill `requirements.txt` 판). 엔진을 import 하므로 같은 환경을 쓴다.
 - 연구원망(KREONet)은 밖으로 나가는 SSH(22)를 막는다 — GitHub 는 HTTPS 로.
+- 연구원 DNS(203.250.2.5)가 `api.github.com` 을 SERVFAIL(10-14 — `github.com` 은 정상, IP 직접 접속도 정상) → `gh` 로그인·레포 생성 불가.
+  git push(HTTPS·키체인)는 된다. GitHub API 가 필요한 일(PR·이슈·레포 생성)은 웹에서 하거나 DNS 가 풀린 뒤에.
