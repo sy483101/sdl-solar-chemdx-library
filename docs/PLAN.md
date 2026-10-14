@@ -42,7 +42,8 @@ $SOLAR_DATA_DIR/
 
 - [x] **T2.1 필드 전수** → `mapping/fields.csv`(`scripts/field_inventory.py`): 필드 경로 · 연도별 채워진 레코드 수 · 값 종류 · 단위 · 값 예 — 원본에서 자동 추출.
       20261014판 = 경로 242(2026 레코드에서 채워진 것 119 · 어디서도 안 채워진 것 25). 관찰 = `docs/chemdx-api.md` "필드 전수에서 본 것".
-- [ ] **T2.2 매핑표** → `mapping/chemdx_to_psc.csv`(git): 필드마다 하나로 —
+- [~] **T2.2 매핑표** — 초안 10-14: 2026 경로 119 전부(85행 = registry 50 · 추가후보 14 · 확인 9 · 버림 12), PSC-RCP-03 골격·'→' 정리 후 이름. 사용자 검토 대기.
+      (원안) → `mapping/chemdx_to_psc.csv`(git): 필드마다 하나로 —
       Metadata 칸 | Entity(원료 정보 등) | Step(StepType) | Parameter(StepType·이름·단위) | 결과(VocabAlias 이름·Kind·값/파일) | 버림(사유).
       **용어 = PSC registry**(기준 판을 표 머리에 기록). 레코드 하나가 공정 스텝 몇 개로 펼쳐지는지(소자 적층·층별 공정)는 T1.1 결과로 정한다.
 - [ ] **T2.3 추가 후보** → `mapping/psc_additions.csv`: PSC registry 에 없는 StepType·파라미터·결과 이름 →
@@ -74,7 +75,7 @@ $SOLAR_DATA_DIR/
 
 | # | 질문 | 막히는 곳 |
 |---|---|---|
-| D1 | 가져온 세트의 실험 ID 체계 — **KRICT-PSC 랩 데이터로(사용자 10-14)** → `PSC-EXP-{YYYYMMDD}-{NNN}`. 남은 것: 날짜·번호 기준 · 서버 장부(웹 입력분)와 겹침 | T3.3 |
+| ~~D1~~ | **결정(10-14)**: `PSC-EXP-{created_at 날짜}-{NNN}` — NNN = 같은 등록일 안 ChemDX ID 순(하루 최대 356). ChemDX ID 는 metadata 에 남김. 서버 장부(웹 입력분)와 겹침은 T3.3 에서 확인 | T3.3 |
 | ~~D2~~ | **결정(10-14)**: `created_at`(ChemDX 등록일) 연도. 날짜 없는 레코드 없음 | T1.3 |
 | ~~D3~~ | **결정(10-14)**: ChemDX 그룹 2(`KRICT-SC-` 접두어와 1:1). 그룹 3 `SC-` = UNIST | T1.2 |
 | D4 | SDLEXO·MPSP 판정 방식(플랫폼 J1·J3 와 같은 3판정 등) | T2.4 |

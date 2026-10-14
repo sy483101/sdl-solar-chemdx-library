@@ -11,5 +11,8 @@
 - 기준: sdl-prefill `a2bc356`(registry v0.5.3 · template `5sheet-1.1`). PSC registry 회신 대기 중.
 - 확인(10-14): 2026년분 ≈170건 맞음(재수집 불필요) · **마감 10-26**(D6) · 측정 곡선은 JSON 배열 → DataArtifact 용 txt/csv 로 뽑는다(배열 지양).
 - T2.1 완료: `mapping/fields.csv`(경로 242, 2026 에서 채워진 것 119) — 관찰은 `docs/chemdx-api.md` 끝. D7 잠정(레코드 = 세트) · D1 = KRICT-PSC 체계(`PSC-EXP-…`).
-- **다음** = T2.2 매핑표 — 2026 에서 채워진 경로부터 PSC registry 용어로. 그 전에 D1 남은 것(날짜·번호 기준 · 서버 장부 겹침) 확인.
+- D1 결정: `PSC-EXP-{created_at 날짜}-{NNN}`(같은 날 ChemDX ID 순).
+- T2.2 초안 `mapping/chemdx_to_psc.csv` — 2026 데이터 = PSC-RCP-03(n-i-p, FTO/SnO2 CBD/KCl/PVK/OABr/Spiro/Au) 골격. registry 이름은 v0.5.3 '→' 정리 후(BOTEL·ETLCD·ETLCT·PVK…).
+  **막힌 곳**: 엔진은 registry 를 글자 그대로 읽는다 — v0.5.3 에는 `ETLCD` 등이 `CBD → ETLCD` 로만 있어 정리된 PSC 판이 있어야 T3 가 돈다(PSC 회신 대기 중).
+- **다음** = 사용자 검토(확인 9행 · 추가후보 14행) + PSC registry 정리 시점 결정(D5) → T2.3·T3.
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).

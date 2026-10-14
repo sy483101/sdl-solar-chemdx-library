@@ -15,3 +15,7 @@
 - **T2.1 필드 전수(2026-10-14)** — 결정: D6 = 마감 10-26 · 2026년분 ≈170건 확인(재수집 안 함) · 측정 곡선은 JSON 배열 → DataArtifact txt/csv(배열 지양) ·
   변환 데이터도 `SOLAR_DATA_DIR`(git 밖) · D7 잠정 레코드 = 세트 · D1 = KRICT-PSC 체계. `scripts/field_inventory.py` → `mapping/fields.csv`
   (경로 242 · 2026 채워진 119 · 미사용 25 · 자체 검사 `_selftest`). 관찰(중복 위치 · numstr · 단위 변형 · 깨진 note)은 `docs/chemdx-api.md`. 다음 = D1 세부 → T2.2.
+- **T2.2 매핑표 초안(2026-10-14)** — D1 결정(created_at 날짜 + 같은 날 ChemDX ID 순). PSC registry v0.5.3 조사: 2026 ChemDX = PSC-RCP-03 과 같은 n-i-p 공정.
+  `mapping/chemdx_to_psc.csv` 85행(2026 채워진 경로 119 전부 포함 확인) — layer(input 블록) × 경로 → meta·step·param·result·file·drop, '→' 정리 후 이름.
+  주요 제안: 조성(a/b/x_site 비율)은 PVK 산출 개체 formula · JV 는 scanDirection 별 스텝 2개(반복 = 셀) · 곡선 = resultFile csv.
+  막힌 곳: 정리된 PSC registry 판 없이는 엔진이 ETLCD 등을 모른다 → D5(PSC 회신 대기 vs 데이터팀 정리) 사용자 결정 필요.
