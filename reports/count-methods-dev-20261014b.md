@@ -1,6 +1,6 @@
 # 데이터 건수 셈법 · 트리플 — dev-20261014b (2026)
 
-빌드 `dev-20261014b`(코드 8a20b79 · sdl-prefill legacy-final-27-gf5044e8-dirty · registry 0.5.3) · 이 스크립트 0acdc2f-dirty · 플랫폼 적재기 v0.10-192-g3d0d595-dirty. 정의·논의 = `docs/intent/data-count-methods.md`.
+빌드 `dev-20261014b`(코드 8a20b79 · sdl-prefill legacy-final-27-gf5044e8-dirty · registry 0.5.3) · 이 스크립트 e335621 · 플랫폼 적재기 v0.10-192-g3d0d595-dirty. 정의·논의 = `docs/intent/data-count-methods.md`.
 
 | 셈법 | 정의 | 건수 | 세트당 | 트리플 ÷ 건수 |
 |---|---|---:|---:|---:|
@@ -11,7 +11,7 @@
 | (참고) B·C + 곡선 파일 | 원자료 파일도 1건씩 | 11,980 · 11,810 | | |
 | (참고) ML 표본 행 | Y 를 낸 측정(스텝·반복) 하나 = 1건 | 2,328 | 14 | |
 
-세트 170 · Y 값 9,312 · 곡선 파일 2,328 · 공정 칸 중 registry 기본값 9,400. 공정 파라미터 자리 128 중 ChemDX 값이 든 자리 60 · **세트마다 값이 달라지는 자리 22** (Process Note 에만 있는 몰농도·첨가제 비율 등은 빠짐):
+세트 170 · Y 값 9,312 · 곡선 파일 2,328 · 공정 칸 중 registry 기본값 9,400. 공정 파라미터 자리 128 중 ChemDX 값이 든 자리 60 · **세트마다 값이 달라지는 자리 22**(이름 20) (Process Note 에만 있는 몰농도·첨가제 비율 등은 빠짐):
 
 BOTEL.material, ETLCD.thermalAnnealingTIme, ETLSF.material, ETLSF.spinCoatingVolume, HTL.dopant1Name, HTL.dopant2Name, HTL.solvent, JV.activeArea, JV.scanDirection, PVK.laboratoryRelativeHumidity, PVK.laboratoryTemperature, PVK.solvent1, PVK.solvent1Volume, PVK.solvent2, PVK.solvent2Volume, PVK.spinCoatingSpeed, PVK.spinCoatingTime, PVKSF.concentration, PVKSF.material, PVKSF.thermalAnnealingTime
 
