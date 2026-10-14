@@ -57,3 +57,21 @@
   농도는 `conc_unit` 칸이 따로(`unit` 이 비어 있음).
 - **측정 곡선** = `analysis.JV[].V·I·J`(점 100~171개) — DataArtifact 로 뺄 대상. 2026 170건은 JV 만(2,328 곡선), PL·XRD·UV-Vis 없음.
 - `analysis.JV[].measurement_conditions.note` 는 대부분 측정기 기본 문구("시료에 관한 부가적인 설명을 이곳에 적으세요")이고 상당수가 글자 깨짐(EUC-KR → Latin-1).
+
+## 매핑 검토 메모 (2026-10-14, 사용자 질문 4건)
+
+- **스캔 방향** — 곡선마다 세 곳이 일치: `measurement_conditions.sweep_direction` · 곡선 key 접두어(`Forward_`·`Reverse_`) · V 배열 진행(Forward = 오름, Reverse = 내림).
+  2026: 2,328 중 2,327 셋 다 일치, 1개는 Forward 인데 V 가 내림(이상치). 옛 연도는 key 에 접두어 없는 것이 있으나 sweep_direction 칸은 있다.
+- **실험실 온습도** — 스텝 안이 아니라 **소자 정보 블록**(device_type·type·note·cell_dimension·ar 와 같은 input 블록)에 소자당 한 값. `process[]` 에도 없다.
+  2026: 22 ℃ 164 · 습도 25 % 160. 반면 `condition`(air·glove-box·vacuum evaporation)은 층 블록마다 있어 스텝별 분위기다.
+- **MACl 농도 vs mol%** — 농도 칸(`concentration`+`conc_unit`)은 2025-07-18 부터. 짝이 전부 **mg/ml = 0.6 × mol%**(25→15 · 30→18 · 20→12)이고
+  molarity(1.4~2.5 M)와 무관 — 화학량론이면 2.2 M × 25 % × 67.52 g/mol ≈ 37 mg/ml 여야 한다. → 농도는 고정 환산(기준 ≈ 0.89 M 상당)으로 보이며 실제 용액 농도로 읽으면 안 된다.
+  mol% 는 2021~ 내내 있고 note(`1.6M MACl 30mol%`)와도 맞음 = 1차 값. 일부 레코드는 MACl 이 note 에만 있다(additive 비어 있음, 예 KRICT-SC-03583 `2.2M MACl 35mol%`). 랩 확인 대상.
+- **조성 표현** — SDLEXO(`sdl-ontology-platform/data/ontology/tbox_aeonto.ttl`, SDL-0.3.3+up0.509):
+  ① `aeo:hasChemicalFormula`(문자열, 산출 재료·소자에 — 원소 파싱) ② `aeo:hasStructure` → `aeo:Structure` → `aeo:hasComposition` → 조성 노드
+  {`aeo:species` "FA" · `aeo:amount` 99(사이트 안 백분율 척도) · `aeo:hasConstituentRole` A-site(ConstituentRole 정의에 A/B-site 명시) · `aeo:containsElement`}.
+  MPSP 0.509(SDL-MPSP v0.3.3): `materialEntity > chemicalFormula > Submitted` · `materialEntity > composition > constituent_n > Name·Fraction·Role·Concentration`
+  (Role 예시는 dopant·host 등 — 사이트는 자유 문자열) · 공정 쪽 `spinCoating_n > precursor_n > Composition·additive_n > Amount` · `feedstock_n > Concentration`(용액 농도 = molarity 후보).
+  5시트: Entity `ChemicalFormula` 칸(지금 엔진으로 됨) · Entity **constituent 행**(PartOf = 재료 개체 · Member = 화학종 · Role · Fraction) — 플랫폼 적재기
+  `v05/load.py parts()` 가 이미 ②로 바꾼다. 단 sdl-prefill 엔진은 constituent 행을 아직 만들지 않고(템플릿 문서 "미착수") data_counts 도 안 센다.
+  적재기는 PartOf 가 **재료** 개체여야 받는다 — 지금 formula 를 단 PVK 산출 개체(적층체)는 부품으로 분류될 수 있어, 페로브스카이트 재료 개체를 따로 두는 편이 맞다.
