@@ -93,3 +93,12 @@
   그래서 분위기 이름은 기법별로 나눠야 한 이름 = 한 MPSP 잎: spinCoating_n·heatTreatment_n·thermalEvaporation_n 에는 Atmosphere 있음, chemicalBathDeposition_n 에는 없음.
   `aeo:Environment` 는 개체를 두거나 쓰는 조건, `aeo:MeasurementCondition` 은 측정 조건 — 공정 분위기는 스텝 파라미터.
 - 조성 Role = 자유 문자열로 `A-site`·`B-site`·`X-site` 그대로(사용자 10-14). SDL-MPSP 고려사항 = sdl-prefill `docs/review/mpsp-upstream-feedback.md` 6절(cb5c821).
+- **범위 관계(검토 10-14)** — SDLEXO 는 SDL-MPSP 를 `owl:imports` 한다(어휘 ⊇ MPSP) + 구조(Step·ProcessParameter·Performance·재료·Environment…)를 더한다.
+  MPSP 용어를 SDLEXO 가 하나씩 다시 선언하지 않는다 — 값은 SDLEXO 구조 노드에 붙고 `rdfs:seeAlso` 로 MPSP 잎을 가리킨다. registry 는 랩이 고른 이름표라 MPSP 를 다 덮을 필요는 없고
+  **랩 데이터를 다 덮어야** 한다(데이터 ⊆ registry → MPSP 매핑, MPSP 에 없는 것 = Hold → SDL-MPSP 요청). 빈 곳은 registry 쪽 — 파라미터는 Process Note 글로만, 결과(Rs 등)는 지금 안 적힘.
+- **Environment·측정 조건(SDLEXO)** — `aeo:Environment` = 개체를 두거나 쓰는 조건 전체(주변 온도·습도·분위기·조명)의 상위, `aeo:MeasurementCondition` ⊂ Environment =
+  측정 한 번의 조건(MPSP 각 기법 `acquisitionCondition` 블록, 예 JV 조명·온도·스캔). 연결 = 성능 `measuredUnder` · 소자/재료 `operatesUnder` · `hasOperatingCondition` → ProcessParameter.
+  공정 스텝 조건(스핀 분위기·열처리 온도)은 Environment 가 아니라 스텝의 ProcessParameter. **플랫폼 적재기(v05/load.py)는 아직 MeasurementCondition·measuredUnder 를 만들지 않는다** —
+  측정 스텝 조건도 스텝 SetPointParameter(+ seeAlso acquisitionCondition 잎)로 들어간다(플랫폼 몫).
+- **반복마다 다른 측정 조건** — Value 는 RepeatNo 로 반복마다 받지만 Parameter 행엔 RepeatNo 가 없다. 2026 JV 스텝 328 중 셀 면적이 섞인 것 5(전 연도 5,239 중 33) —
+  스캔 방향과 같은 방식으로 **이 레포 변환기에서 스텝을 (방향, 면적)별로 나누면** 소실 없음(prefill 변경 불필요). prefill 환류 7-4 에 구조 검토 거리로 기록.

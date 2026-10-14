@@ -22,5 +22,8 @@
 - **소실 검사(10-14)** — 라이브러리층에 제자리가 없는 값 22건 = `mapping/psc_additions.csv`(원본층엔 다 있음). 대부분 registry 이름만 없음(MPSP 노드 있음) →
   **PSC 회신(10-15) 받기 절차 때 sdl-prefill 에서 함께 넣기**. MPSP 갈래도 없는 것 3건 = sdl-prefill `docs/review/mpsp-upstream-feedback.md` 6절(cb5c821).
 - 조성: 마감까지 화학식 문자열만. constituent 행 = 플랫폼 템플릿 v0.6 설계 → prefill 흡수 WP(마감 뒤). **PVK 산출을 적층체 + 페로브스카이트 재료로 나누는 안**(사용자 기울어짐) — 확정 대기.
-- **사용자에게 물을 것**: PVK 산출 분리 확정 · 소자 블록 condition 둘 스텝 · 실험실 온습도 넣을 스텝 · MACl 농도 칸 의미(랩) · T3.5 xlsx 작성 시각.
+- prefill 기록(10-14): `docs/review/mpsp-upstream-feedback.md` 6절(SDL-MPSP 고려 · cb5c821) · 7절(prefill 요청 — 조성 행 흡수·건수 규칙 · PVK 분리 연결 행 · PSC 추가후보 · 파라미터 RepeatNo · f5044e8).
+- **검토 대기(PSC 회신 10-15 때)**: `mapping/psc_additions.csv` — 특히 몰농도 `precursorMolarity`(M) · 첨가제 `additiveMolarRatio`(mol%) 를 PSC registry 에(이름·단위·MPSP 경로·J1).
+- **이 레포 변환기에서 할 것(확정 대기)**: ① PVK 산출 = 적층체 + 페로브스카이트 재료(화학식은 재료로) ② JV 스텝을 (방향, 면적)별로 ③ OriginalFileName = ChemDX 원본 파일명.
+- **사용자에게 물을 것**: 위 ①~③ 진행 · 소자 블록 condition 둘 스텝 · 실험실 온습도 넣을 스텝 · MACl 농도 칸 의미(랩) · T3.5 xlsx 작성 시각.
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).

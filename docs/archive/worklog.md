@@ -34,3 +34,6 @@
   사이트 비율 basis 없음 · Role 예시에 사이트 없음(자유 문자열로 적기 — 사용자 결정) · CBD 분위기 없음. `mapping/psc_additions.csv` 22행(분류: registry·mpsp·converter·structure·data).
   확인: JV Rs·Rsh·Pmax·Vmpp·Jmpp·settling·분주 방식 = MPSP 노드 있음 → registry 이름 + J1 판정만. 적재기 MPSP 매핑 = 플랫폼 J1(랩·이름 기준) → 분위기 이름은 기법별로.
   constituent 행 = 플랫폼 템플릿 v0.6 설계, prefill 흡수 전. 정정: note 속 MACl 은 Metadata Note 에 남음(구조화 안 됨).
+- **매핑 검토 4차(2026-10-14 밤)** — prefill 환류 7절(f5044e8, make test 116 passed). 확인: SDLEXO 는 MPSP 를 import(어휘 ⊇) — 빈 곳은 registry(랩 이름표).
+  Environment ⊃ MeasurementCondition(측정 = acquisitionCondition), 공정 조건 = 스텝 ProcessParameter, 적재기는 MeasurementCondition 미구현(플랫폼).
+  Parameter 행 RepeatNo 없음 → 셀 면적 섞인 JV 스텝 5/328 — 변환기에서 (방향, 면적)별 분리로 해소 가능. 변환기 할 일 3건 확정 대기.
