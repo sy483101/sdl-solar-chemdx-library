@@ -1,4 +1,5 @@
-"""데이터 건수 셈법 비교(A · A′ · B · C) + 지식그래프 트리플 수 — ChemDX 라이브러리 빌드 실데이터. 정의 = docs/intent/data-count-methods.md.
+"""데이터 건수 셈법 비교(A 트리플 · B 설계인자+묶음+응답 · C X 1+응답 항목 · 참고 칸 단위) — ChemDX 라이브러리 빌드 실데이터.
+정의 = docs/intent/data-count-methods.md "재논의(10-15)" 절 · 설득 문서 = docs/data-count-methods-brief.md.
 
 라이브러리 빌드 하나 → reports/count-methods-<빌드>.md(숫자만, git).
 트리플 = sdl-ontology-platform 적재기(v05.load)로 실제 그래프를 만들어 센다 — 플랫폼 sdl_platform 을 쓰므로
@@ -24,11 +25,13 @@ J2 = {(r["context"]["lab"], r["context"]["name"]): r["id"]
       for r in json.loads((PLATFORM / "reference_data/normalization/J2.json").read_text())
       if r["status"] in ("auto", "approved", "corrected")}
 EXTRA_J2 = {"페로브스카이트": "material"}         # 변환기가 만든 재료 개체(convert.py) — J2 판정 전
-ASSEMBLED = ("component", "device")               # 산출물이 부품·소자 = 구조(구성) 정보 있음
+INFO = ("CAS", "ChemicalFormula", "Supplier", "Product", "Lot")   # 조성 정보 칸 = prefill sheets.INFO
+# 관측 변동 중 변동 인자(환경)·측정 설정 → 고정·변동 인자 묶음. 데이터팀 1차 분류(사용자 10-15) — 랩 확인 전
+BUNDLE = {"laboratoryTemperature", "laboratoryRelativeHumidity", "scanDirection"}
 
 
 def read(d, lab):
-    """세트 폴더 → 플랫폼 read_package 와 같은 모양."""
+    """세트 폴더 → (시트 그대로 — 셈용, 플랫폼 read_package 와 같은 모양 — 트리플용)."""
     wb = openpyxl.load_workbook(d / "template.xlsx", read_only=True)
     out = {}
     for ws in wb.worksheets:
@@ -39,7 +42,7 @@ def read(d, lab):
         r["TargetAmount"] = r.pop("Amount", "")
     for r in out["Entity"]:
         r["Type"] = r.get("Type") or J2.get((lab, r["Name"])) or EXTRA_J2[r["Name"]]
-    return {s: [{c: r.get(c, "") for c in cols} for r in out[s]] for s, cols in COLUMNS.items()}
+    return out, {s: [{c: r.get(c, "") for c in cols} for r in out[s]] for s, cols in COLUMNS.items()}
 
 
 def is_y(r):
@@ -59,34 +62,54 @@ def main(lib):
     man = json.loads((lib / "manifest.json").read_text())
     lab = man["recipe"].split()[0]
     sets = [s for s in man["sets"] if s["group"] == "2026"]
-    pkgs = [read(lib / "2026" / s["experimentId"], lab) for s in sets]
+    raws, pkgs = zip(*(read(lib / "2026" / s["experimentId"], lab) for s in sets))
 
     n = collections.Counter(sets=len(sets))
     slots = collections.defaultdict(set)          # (스텝 코드, 이름, 같은 이름 n번째) → 세트들에 나온 값
-    manual = set()
-    for s, p in zip(sets, pkgs):
+    ents = collections.defaultdict(set)           # (개체 이름, 정보 칸) → 세트들에 나온 값
+    manual, declared, per_set = set(), set(), []
+    for s, p in zip(sets, raws):
         c = s["counts"]
         ys = [r for r in p["Result"] if is_y(r)]
-        types = {r["ID"]: r["Type"] for r in p["Entity"]}
-        struct = any(types.get(r["EntityID"]) in ASSEMBLED for r in p["Process"] if r["RowType"] == "output")
-        n["A"] += c["composition"] + c["structure"] + c["process"] + c["analysis"]
+        n["A_cells"] += c["composition"] + c["structure"] + c["process"] + c["analysis"]
         n["A_manual"] += c["composition"] + c["structure"] + c["process_manual"] + c["analysis"]
-        n["B"] += (c["composition"] > 0) + struct + (c["process"] > 0) + len(ys)       # Y 는 반복마다
-        n["C"] += 1 + len({(r["StepID"], r["Name"]) for r in ys})                       # Y 는 측정 항목마다 1
+        n["C"] += 1 + len({(r["StepID"], r["Name"]) for r in ys})                       # 응답은 측정 항목마다 1
         n["Y"] += len(ys)
         n["Y_items"] += len({(r["StepID"], r["Name"]) for r in ys})
         n["Y_files"] += sum(r["OriginalFileName"] != "" for r in ys)
         n["ml_rows"] += len({(r["StepID"], r["RepeatNo"]) for r in ys})
         n["defaults"] += c["process"] - c["process_manual"]
         code = {r["ID"]: r["StepTypeCode"] for r in p["Process"] if r["RowType"] == "step"}
-        seen = collections.Counter()
+        seen, mine = collections.Counter(), []
         for r in p["Condition"]:
             k = (code[r["StepID"]], r["Name"])
             seen[k] += 1
-            slots[k + (seen[k],)].add(r["Value"])
+            k += (seen[k],)
+            slots[k].add(r["Value"])
+            mine.append(k)
             if r["Source"] == "manual":
-                manual.add(k + (seen[k],))
-    vary = sorted({f"{k[0].split('→')[-1].strip()}.{k[1]}" for k, v in slots.items() if len(v) > 1})
+                manual.add(k)
+            if r.get("Variable") == "Y":                                                # 랩 선언
+                declared.add(k)
+        ent = [e for e in p["Entity"] if (e.get("RowType") or "entity") == "entity" and e.get("Source") != "import"]
+        info = [(e["Name"], f) for e in ent for f in INFO if e.get(f, "") != ""]
+        for e in ent:
+            for f in INFO:
+                if e.get(f, "") != "":
+                    ents[(e["Name"], f)].add(e[f])
+        # 응답: 시편(측정 대상 개체)·스텝·항목마다 1, 같은 시편 반복이면 n 과 무관하게 2(값 + 불확도)
+        rep = collections.Counter((r["TargetEntityID"], r["StepID"], r["Name"]) for r in ys)
+        per_set.append((mine, info, sum(min(v, 2) for v in rep.values())))
+    # 설계인자 = 랩 선언 ∪ 세트마다 값이 달라진 자리(묶음 이름 제외)
+    design = {k for k, v in slots.items() if len(v) > 1 and k[1] not in BUNDLE} | declared
+    design_ent = {k for k, v in ents.items() if len(v) > 1}
+    for mine, info, resp in per_set:
+        n["B_comp"] += sum(k in design_ent for k in info)   # ponytail: 범주 = 시트 위치(개체 정보 → 조성, 파라미터 → 공정) — MPSP 경로 세분·구조는 다른 랩 데이터 때
+        n["B_proc"] += sum(k in design for k in mine)
+        n["B_resp"] += resp
+    n["B"] = n["sets"] + n["B_comp"] + n["B_proc"] + n["B_resp"]
+    vary = sorted({f"{k[0].split('→')[-1].strip()}.{k[1]}" for k in design})
+    bundle = sorted({f"{k[0].split('→')[-1].strip()}.{k[1]}" for k, v in slots.items() if len(v) > 1 and k[1] in BUNDLE})
 
     full = triples(pkgs)
     assert not full.unexpressed, collections.Counter(u["reason"] for u in full.unexpressed)   # 행을 뺀 그래프는 미표현이 생길 수 있다(스캔 방향 등)
@@ -104,16 +127,22 @@ def main(lib):
     lines = [
         f"# 데이터 건수 셈법 · 트리플 — {lib.name} (2026)", "",
         f"빌드 `{lib.name}`(코드 {man['code']} · sdl-prefill {man['sdlPrefill']} · registry {man['registryVersion']}) · "
-        f"이 스크립트 {commit(HERE)} · 플랫폼 적재기·J2 {commit(PLATFORM)}. 정의 = `docs/intent/data-count-methods.md`.", "",
+        f"이 스크립트 {commit(HERE)} · 플랫폼 적재기·J2 {commit(PLATFORM)}. 정의 = `docs/intent/data-count-methods.md`(재논의 10-15).", "",
         "| 셈법 | 정의 | 건수 | 세트당 | 트리플 ÷ 건수 |", "|---|---|---:|---:|---:|",
-        f"| A 칸 단위(현행 `data_counts`) | 채워진 칸 = 1건(registry 기본값 포함) | {n['A']:,} | {per(n['A'])} | {t['full'] / n['A']:.1f} |",
-        f"| A′ 칸 단위 · 기본값 제외 | 연구자가 적은 칸만 | {n['A_manual']:,} | {per(n['A_manual'])} | {t['full'] / n['A_manual']:.1f} |",
-        f"| B 범주 + Y(반복마다) | 조성·구조·공정 각 1 + Y 측정 결과 행마다 1 | {n['B']:,} | {per(n['B'])} | {t['full'] / n['B']:.1f} |",
-        f"| C X 1 + Y(항목마다) | X 1 + Y 측정 항목(스텝·결과 이름)마다 1 | {n['C']:,} | {per(n['C'])} | {t['full'] / n['C']:.1f} |",
-        f"| (참고) ML 표본 행 | Y 를 낸 측정(스텝·반복) 하나 = 1 | {n['ml_rows']:,} | {per(n['ml_rows'])} | |", "",
-        f"세트 {rows} · Y 측정 결과 행 {n['Y']:,}(그중 파일 {n['Y_files']:,}) · Y 측정 항목 {n['Y_items']:,} · 공정 칸 중 registry 기본값 {n['defaults']:,}. "
-        f"공정 파라미터 자리 {len(slots)} 중 ChemDX 값이 든 자리 {len(manual)} · **세트마다 값이 달라지는 자리 {sum(len(v) > 1 for v in slots.values())}**(이름 {len(vary)}) "
-        "(Process Note 에만 있는 몰농도·첨가제 비율 등은 빠짐):", "", ", ".join(vary), "",
+        f"| **A** 트리플 | 플랫폼 적재기로 만든 그래프의 트리플 수 | {t['full']:,} | {per(t['full'])} | 1.0 |",
+        f"| **B** 설계인자 + 묶음 + 응답 | 고정·변동 인자 묶음 1 + 설계인자 각 1 + 응답(시편·항목마다 1, 같은 시편 반복이면 2) | {n['B']:,} | {per(n['B'])} | {t['full'] / n['B']:.1f} |",
+        f"| **C** X 1 + 응답 항목 | X 전체 1 + 측정 항목(스텝·결과 이름)마다 1 | {n['C']:,} | {per(n['C'])} | {t['full'] / n['C']:.1f} |",
+        f"| (참고) 칸 단위(현행 `data_counts`) | 채워진 칸 = 1건(registry 기본값 포함) | {n['A_cells']:,} | {per(n['A_cells'])} | {t['full'] / n['A_cells']:.1f} |",
+        f"| (참고) 칸 단위 · 기본값 제외 | 연구자가 적은 칸만 | {n['A_manual']:,} | {per(n['A_manual'])} | {t['full'] / n['A_manual']:.1f} |",
+        f"| (참고) ML 표본 행 | 응답을 낸 측정(스텝·반복) 하나 = 1 | {n['ml_rows']:,} | {per(n['ml_rows'])} | |", "",
+        f"**B 내역** = 묶음 {n['sets']:,} + 설계인자 조성 {n['B_comp']:,}(세트당 {per(n['B_comp'])}) · 공정 {n['B_proc']:,}({per(n['B_proc'])}) "
+        f"+ 응답 {n['B_resp']:,}({per(n['B_resp'])}). 범주 = 시트 위치(개체 정보 → 조성 · 파라미터 → 공정) · 구조 설계인자 없음(소자 구조 고정). "
+        "시편 = 측정 대상 개체 — 픽셀이 소자 개체 하나의 반복으로 들어가 있어 픽셀 10개도 2건(공통 원칙은 전 실험실 실데이터 확인 뒤).", "",
+        f"세트 {rows} · 응답(측정 결과 행) {n['Y']:,}(그중 파일 {n['Y_files']:,}) · 측정 항목 {n['Y_items']:,} · 공정 칸 중 registry 기본값 {n['defaults']:,}. "
+        f"공정 파라미터 자리 {len(slots)} 중 ChemDX 값이 든 자리 {len(manual)} · 세트마다 값이 달라지는 자리 {sum(len(v) > 1 for v in slots.values())} "
+        f"→ **설계인자 {len(design)}**(랩 선언 {len(declared)}) · 묶음 {sum(len(v) > 1 and k[1] in BUNDLE for k, v in slots.items())} "
+        f"· 개체 정보 설계인자 {', '.join(f'{a}.{b}' for a, b in sorted(design_ent))} (Process Note 에만 있는 몰농도·첨가제 비율 등은 빠짐).", "",
+        f"설계인자: {', '.join(vary)}", "", f"묶음으로 보낸 관측 변동: {', '.join(bundle)}", "",
         "## 트리플(플랫폼 적재기 v05.load — 미표현 0)", "",
         "| 부분 | 트리플 |", "|---|---:|",
         f"| 합계 | **{t['full']:,}**(세트당 {t['full'] / rows:,.0f}) |",

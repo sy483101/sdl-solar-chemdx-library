@@ -30,7 +30,8 @@
   **이전 dev 빌드는 10세트(03731~03740, 곡선 172개)에서 activeArea 를 소자 블록 0.045216 으로 잘못 적었음 — 실제 측정 면적 0.0908**. 소자 블록 값은 완성소자 Note.
   ③ 곡선 파일 OriginalFileName = ChemDX 원본 파일명(확장자 .csv). 소실 검사: cell_dimension 전부 남음 · 곡선 key = 방향_원본명(2328/2328) → 소실 없음.
 - **보류(사용자 10-14 밤)**: 소자 블록 condition 둘 스텝 · 실험실 온습도 넣을 스텝 · MACl 농도 칸 의미(랩) · T3.5 xlsx 작성 시각 — 사용자가 다시 꺼낼 때까지 묻지 않음.
-- **데이터 건수 셈법(10-14 정의 확정)** = `docs/intent/data-count-methods.md` — A 칸 단위 · B 범주 + Y(반복마다) · C X 1 + Y(항목마다), 보고 때 고름.
-  ChemDX 2026: A 28,398 · B 12,150 · **C 1,850(세트당 10.9 ≈ 계획 11.0)** · 트리플 340,431(`scripts/count_methods.py`).
-  랩별 registry 추산(`scripts/lab_estimate.py` → `reports/lab-estimate-registry-v0.5.3.md`): 계획 숫자는 B·C 규모, A 는 7~11배. 랩 확인 목록 4건(문서 끝).
+- **데이터 건수 셈법(10-15 재논의)** = `docs/intent/data-count-methods.md` "재논의" 절 · 설득 문서 `docs/data-count-methods-brief.md`
+  (+ 페이지 https://claude.ai/artifact/F2E9csXYfGCHKbVDRtHHwo, 비공개 — 공유는 사용자가). A 트리플 · B 묶음 1 + 설계인자 각 1 + 응답(시편마다 1, 같은 시편 반복 2) ·
+  C 조건 1 + 측정 항목. ChemDX 2026: A 340,431 · **B 6,695(39.4)** · C 1,850(10.9 ≈ 계획 11.0)(`scripts/count_methods.py`). 보고 수치는 1차 실데이터 수집 뒤.
+  기본값 확인 중(n≥2 · 묶음 → 공정 칸 · C 의 1 = 전체) · 픽셀 = 시편 원칙은 전 실험실 실데이터 확인 뒤 · `lab_estimate.py` 는 10-14 정의.
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).
