@@ -67,12 +67,15 @@ $SOLAR_DATA_DIR/
       (원안) `sheets.to_zip`(웹 내려받기와 같은 함수) 결과를 `library/<빌드>/<2026|other>/` 에 풀어 둔다 —
       웹 zip 과 바이트 수준으로 같은 형식이 목적. `validate` 알림은 `report.txt` + 빌드 요약.
 - [x] **T3.3 실험 ID** — `build_library.py`: 같은 등록일 안 ChemDX ID 순(D1). 서버 장부 겹침은 아직 미확인. 같은 원본 → 같은 ID(재빌드해도 안 바뀜).
-- [~] **T3.4 정량지표 집계** — `reports/indicator-<빌드>.md` 생성까지(공정 중 manual 따로 셈). 웹 대조 남음.
+- [x] **T3.4 정량지표 집계** — 10-15: 집계 주 숫자 = **산정 건수 A**(세트별 `sheets.set_count` — 웹 미리보기와 같은 함수 · manifest `counts.setCount`).
+      웹 대조 = 빌드가 내려받은 xlsx 를 웹처럼(글자) 다시 읽어 같은 A 인지 세트마다 assert(712/712). 웹 '레시피 불러오기'(open-file)는 측정값·파일을 비우는
+      설계라 원안 대조는 불가. 이 레포 `count_methods.py`(따로 짠 셈)와도 같음(2026 3,490 · other 10,487). 칸 단위 `data_counts` 는 참고 열로.
       **결정(10-14 사용자)**: 지표 건수 = `data_counts` 그대로 — registry 기본값(Source=default)도 센다(웹 입력과 같은 셈).
       (원안) → `reports/indicator-<빌드>.md`(git, 숫자만): 세트 수 · `data_counts` 합(조성·구조·공정·분석) · 알림 남은 세트 수.
       완료 = 표본 세트를 sdl-prefill 웹에서 "레시피 불러오기"로 열어 같은 건수가 나오는지 대조.
-- [~] **T3.5 재현성** — 10-14: 두 번 빌드 → csv·metadata·report·manifest 세트 동일, template.xlsx 는 셀 내용 동일·바이트만 다름
-      (openpyxl 작성 시각 — 엔진 쪽). 고정 방법(내용 비교로 갈음 / sdl-prefill 에 고리) 결정 남음.
+- [x] **T3.5 재현성** — 10-15 결정(사용자 "착수" — 추천안): **셀 내용 비교로 갈음**(정본 = JSON-LD, xlsx 는 참고). `scripts/compare_builds.py` =
+      xlsx 셀 내용 · 나머지 바이트 · manifest(@id 빼고). 같은 커밋 두 번 빌드 → 12,287 파일 다름 0(manifest 코드 dirty 판정에서 reports/ 제외 후).
+      10-14: 두 번 빌드 → csv·metadata·report·manifest 세트 동일, template.xlsx 는 셀 내용 동일·바이트만 다름(openpyxl 작성 시각 — 엔진 쪽).
       (원안) 같은 원본·커밋으로 두 번 빌드 → 폴더 해시 동일(날짜 같은 비결정 칸이 있으면 고정 방법을 정함).
 
 ## WS4 JSON-LD — 결정(10-15): (B)안 · 본거지 = 플랫폼 PRJ22 · 합의 = `docs/intent/json-ld.md`

@@ -76,6 +76,7 @@
 | `code` · `sdlPrefill` | 이 레포 · sdl-prefill 커밋(`git describe`, 커밋 안 된 변경이 있으면 `-dirty`) |
 | `registryVersion` · `templateVersion` · `recipe` | registry 판 · 템플릿 판 · 변환 골격 레시피 |
 | `path` · `chemdxId` · `group` | 빌드 안 세트 폴더 · ChemDX 레코드 ID · 2026 / other |
+| `counts.setCount` | 산정 건수 A(`sheets.set_count` — 웹 미리보기와 같은 셈) |
 | `counts`(composition·structure·process·analysis·process_manual) | 칸 단위 참고 지표(`sheets.data_counts`) |
 | `findings`(error·miss·warn) · `totals` | 세트별 엔진 알림 수 · 묶음별 합계 |
 | `skipped`(chemdxId·group·reason) | 변환기 골격 밖이라 건너뛴 레코드와 이유(실험 ID 번호는 비워 둠) |
