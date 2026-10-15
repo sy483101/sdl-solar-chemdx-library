@@ -86,3 +86,5 @@
   확인: 적재기 그래프는 추론 0 · TBox 0 · 값 노드(이름 없음) 57,894 · MPSP 연결 44,252 · 공유 참조 105. 조건 = VoID void:triples(명시적·ABox) · 빌드 그래프에서(Fuseki 아님) ·
   판 고정 · 공유 참조 1번 · 구성·클래스별 인스턴스 병기. `count_methods.py` 에 TBox 검사·겹치지 않는 구성·classPartition → 집계 갱신. 논의 기록 · 2판 C 절 · hwpx 다시 빌드(5쪽, 렌더 확인).
   (A 질문으로 오해해 답한 것: 그래프에서 측정 노드가 스텝과 안 이어져 A 를 그래프로 뽑으면 20.5 → 11.0 — 플랫폼 요청 후보로만 남김, 반영 안 함.)
+- **HANDOFF 문구 정정(2026-10-15, sdl-prefill 세션)** — "웹과 같은 셈"(칸 단위) → 웹은 sdl-prefill `fd629ed` 부터 셈법 A(`sheets.set_count`) 표시.
+  `sheets.data_counts`(칸 단위)는 sdl-prefill 에 그대로 남아 이 레포 `build_library.py`·`count_methods.py`·`lab_estimate.py` 의 참고 지표는 무변. 문서만.

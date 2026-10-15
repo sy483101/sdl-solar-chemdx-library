@@ -18,7 +18,7 @@
   미입력 1,312(JV 결과 Kind — PSC Composite 보류) · 확인 660(registry 에 없는 값 → Process Note). 숫자 = `reports/indicator-dev-20261014.md`.
 - **PSC registry 정리 = 보류(사용자 10-14)** — 내일(10-15) PSC 회신 받으면 sdl-prefill 받기 절차 → 판 올림 → 이 레포는 다시 빌드만
   (convert.py 가 '→' 메모·새 이름 모두 읽음 — ASOL 합침되면 반용매·열처리가 PVK 파라미터로 들어간다).
-- 결정(10-14): 지표 건수에 registry 기본값 포함(웹과 같은 셈). 스캔 방향 = 곡선마다 확실(3곳 일치) → JV 방향별 스텝 유지.
+- 결정(10-14): 칸 단위 참고 지표(`sheets.data_counts`)에 registry 기본값 포함. **웹 화면은 10-15부터 셈법 A**(sdl-prefill `fd629ed` — `sheets.set_count`: `산정 데이터 XX건 (레시피 1 · 측정/분석 XX)`, 미등재 결과도 산정) — `data_counts` 는 그대로라 이 레포 집계 무변. 스캔 방향 = 곡선마다 확실(3곳 일치) → JV 방향별 스텝 유지.
 - **소실 검사(10-14)** — 라이브러리층에 제자리가 없는 값 22건 = `mapping/psc_additions.csv`(원본층엔 다 있음). 대부분 registry 이름만 없음(MPSP 노드 있음) →
   **PSC 회신(10-15) 받기 절차 때 sdl-prefill 에서 함께 넣기**. MPSP 갈래도 없는 것 3건 = sdl-prefill `docs/review/mpsp-upstream-feedback.md` 6절(cb5c821).
 - 조성: 마감까지 화학식 문자열만. constituent 행 = 플랫폼 템플릿 v0.6 설계 → prefill 흡수 WP(마감 뒤).
