@@ -13,6 +13,7 @@
 - **성공**: 세트 수 = 폴더 수 · 건수 = sdl-prefill `data_counts` 셈법(웹 입력분과 같은 셈) · 원본 + 코드 + 매핑 + prefill 커밋으로 라이브러리 재생성 가능.
 - **제약**: 데이터(수 GB)는 git 밖, 맥에만 · git 에는 코드와 매핑기만 · prefill 엔진은 고치지 않고 라이브러리로 씀 · 타기관 데이터는 보관하지 않음.
 - **범위 밖**: 빌더·ABOX·Fuseki 적재 · sdl-prefill 웹 화면 연동 · JSON-LD 확정(검토만).
+  → 10-15 개정: JSON-LD = 정본(플랫폼 빌더가 세트마다) — `docs/intent/json-ld.md`.
 
 ## 레포를 나눈 이유
 

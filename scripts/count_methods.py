@@ -3,15 +3,14 @@
 
 라이브러리 빌드 하나 → reports/count-methods-<빌드>.md(숫자만, git).
 트리플 = sdl-ontology-platform 적재기(v05.load)로 실제 그래프를 만들어 센다 — 플랫폼 sdl_platform 을 쓰므로
-build_library.py 와 다른 프로세스로 돈다(CLAUDE.md 함정). 플랫폼은 v0.6 시트 이름(Condition·Result·TargetAmount)을 읽어
-메모리에서 이름만 바꿔 넣고, 비어 있는 Entity Type 은 플랫폼 J2 판정(개체 이름 → material·component·device)으로 채운다.
+build_library.py 와 다른 프로세스로 돈다(CLAUDE.md 함정). 세트 폴더는 적재기의 read_set 으로 그대로 읽는다(5sheet-1.1 ·
+빈 Entity Type = 재료 — 플랫폼 PRJ22). 파생 링크(materialize 의 추론)는 넣지 않는다 — C = 명시적 트리플.
 
 사용: python3 -I scripts/count_methods.py <library/<빌드>>
      python3 -I scripts/count_methods.py --triples <폴더>   # <폴더>/<랩>/<레시피>/template.xlsx → 레시피별 트리플 수(JSON) — lab_estimate.py 가 부른다
 """
 import collections, json, os, pathlib, subprocess, sys
 
-import openpyxl
 from rdflib import OWL, RDF, RDFS, BNode
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -20,33 +19,12 @@ sys.path.insert(0, str(PLATFORM))                 # PYTHONPATH 의 다른 sdl_pl
 import sdl_platform  # noqa: E402
 assert pathlib.Path(sdl_platform.__file__).resolve().is_relative_to(PLATFORM), sdl_platform.__file__
 from sdl_platform.v05 import load as L  # noqa: E402
-from sdl_platform.v05.sheets import COLUMNS  # noqa: E402
 
-RENAME = {"Parameter": "Condition", "Value": "Result"}   # prefill 5sheet-1.1 → 플랫폼 v0.6
-J2 = {(r["context"]["lab"], r["context"]["name"]): r["id"]
-      for r in json.loads((PLATFORM / "reference_data/normalization/J2.json").read_text())
-      if r["status"] in ("auto", "approved", "corrected")}
-EXTRA_J2 = {"페로브스카이트": "material"}         # 변환기가 만든 재료 개체(convert.py) — J2 판정 전
 INFO = ("CAS", "ChemicalFormula", "Supplier", "Product", "Lot")   # 조성 정보 칸 = prefill sheets.INFO
 # 관측 변동 중 변동 인자(환경)·측정 설정 → 고정·변동 인자 묶음. 데이터팀 1차 분류(사용자 10-15) — 랩 확인 전
 BUNDLE = {"laboratoryTemperature", "laboratoryRelativeHumidity", "scanDirection"}
 # C 조건(사용자 10-15): 명시적·ABox 트리플만(VoID void:triples) — 스키마(TBox) 트리플이 섞이면 멈춘다
 TBOX = {OWL.Class, OWL.ObjectProperty, OWL.DatatypeProperty, OWL.Ontology, RDFS.subClassOf, RDFS.domain, RDFS.range}
-
-
-def read(d, lab):
-    """세트 폴더 → (시트 그대로 — 셈용, 플랫폼 read_package 와 같은 모양 — 트리플용)."""
-    wb = openpyxl.load_workbook(d / "template.xlsx", read_only=True)
-    out = {}
-    for ws in wb.worksheets:
-        rows = list(ws.iter_rows(values_only=True))
-        out[RENAME.get(ws.title, ws.title)] = [{h: L._s(v) for h, v in zip(rows[0], r)}
-                                               for r in rows[1:] if any(v not in (None, "") for v in r)]
-    for r in out["Process"]:
-        r["TargetAmount"] = r.pop("Amount", "")
-    for r in out["Entity"]:
-        r["Type"] = r.get("Type") or J2.get((lab, r["Name"])) or EXTRA_J2.get(r["Name"], "")   # 없으면 적재기가 미표현으로 남긴다
-    return out, {s: [{c: r.get(c, "") for c in cols} for r in out[s]] for s, cols in COLUMNS.items()}
 
 
 def is_y(r):
@@ -64,17 +42,16 @@ def triples(pkgs, keep=lambda s, r: True):
 
 def main(lib):
     man = json.loads((lib / "manifest.json").read_text())
-    lab = man["recipe"].split()[0]
     sets = [s for s in man["sets"] if s["group"] == "2026"]
-    raws, pkgs = zip(*(read(lib / "2026" / s["experimentId"], lab) for s in sets))
+    pkgs = [L.read_set(lib / s.get("path", f"{s['group']}/{s['experimentId']}") / "template.xlsx") for s in sets]   # path 없음 = 옛 배치(~dev-20261014b)
 
     n = collections.Counter(sets=len(sets))
     slots = collections.defaultdict(set)          # (스텝 코드, 이름, 같은 이름 n번째) → 세트들에 나온 값
     ents = collections.defaultdict(set)           # (개체 이름, 정보 칸) → 세트들에 나온 값
     manual, declared, per_set = set(), set(), []
-    for s, p in zip(sets, raws):
+    for s, p in zip(sets, pkgs):
         c = s["counts"]
-        ys = [r for r in p["Result"] if is_y(r)]
+        ys = [r for r in p["Value"] if is_y(r)]
         n["cells"] += c["composition"] + c["structure"] + c["process"] + c["analysis"]
         n["cells_manual"] += c["composition"] + c["structure"] + c["process_manual"] + c["analysis"]
         n["Y"] += len(ys)
@@ -84,7 +61,7 @@ def main(lib):
         n["defaults"] += c["process"] - c["process_manual"]
         code = {r["ID"]: r["StepTypeCode"] for r in p["Process"] if r["RowType"] == "step"}
         seen, mine = collections.Counter(), []
-        for r in p["Condition"]:
+        for r in p["Parameter"]:
             k = (code[r["StepID"]], r["Name"])
             seen[k] += 1
             k += (seen[k],)
@@ -121,9 +98,9 @@ def main(lib):
     assert not full.unexpressed, collections.Counter(u["reason"] for u in full.unexpressed)   # 행을 뺀 그래프는 미표현이 생길 수 있다(스캔 방향 등)
     without = lambda keep: len(full.g) - len(triples(pkgs, keep).g)   # 그 행들이 만든 트리플  # noqa: E731
     t = {"full": len(full.g),
-         "Y": without(lambda s, r: not (s == "Result" and is_y(r))),
-         "condition": without(lambda s, r: s != "Condition"),
-         "defaults": without(lambda s, r: not (s == "Condition" and r["Source"] == "default"))}
+         "Y": without(lambda s, r: not (s == "Value" and is_y(r))),
+         "condition": without(lambda s, r: s != "Parameter"),
+         "defaults": without(lambda s, r: not (s == "Parameter" and r["Source"] == "default"))}
     t["rest"] = t["full"] - t["Y"] - t["condition"]
     # C 조건: 적재기 그래프(추론 없음)에서 센다 · 구성과 클래스별 인스턴스(VoID classPartition)를 함께 적는다
     g = full.g
@@ -140,7 +117,7 @@ def main(lib):
     lines = [
         f"# 데이터 건수 셈법 · 트리플 — {lib.name} (2026)", "",
         f"빌드 `{lib.name}`(코드 {man['code']} · sdl-prefill {man['sdlPrefill']} · registry {man['registryVersion']}) · "
-        f"이 스크립트 {commit(HERE)} · 플랫폼 적재기·J2 {commit(PLATFORM)}. 정의 = `docs/intent/data-count-methods.md`(재논의 10-15).", "",
+        f"이 스크립트 {commit(HERE)} · 플랫폼 적재기 {commit(PLATFORM)}. 정의 = `docs/intent/data-count-methods.md`(재논의 10-15).", "",
         "| 셈법 | 정의 | 건수 | 세트당 | 트리플 ÷ 건수 |", "|---|---|---:|---:|---:|",
         f"| **A** 레시피 1 + 측정·분석 | 레시피 전체 1 + 측정·분석(대상·스텝·항목마다 1, 같은 자리 2회 이상이면 2) | {n['A']:,} | {per(n['A'])} | {t['full'] / n['A']:.1f} |",
         f"| **C** 트리플 | 플랫폼 적재기로 만든 그래프의 트리플 수 | {t['full']:,} | {per(t['full'])} | 1.0 |",
@@ -162,7 +139,7 @@ def main(lib):
         f"| Y 측정 결과 행 {n['Y']:,} | {t['Y']:,}(행당 {t['Y'] / n['Y']:.1f}) |",
         f"| 공정 조건(Parameter) | {t['condition']:,} — 그중 registry 기본값 {t['defaults']:,} |",
         f"| 메타데이터·개체·스텝·투입/산출 | {t['rest']:,} |", "",
-        "적재 조건: prefill 5sheet-1.1 → 플랫폼 v0.6 시트 이름만 바꿈 · Entity Type = 플랫폼 J2(페로브스카이트 재료 개체만 material 로 보탬). "
+        "적재 조건: 적재기가 세트 폴더를 그대로 읽음(read_set · 빈 Entity Type = 재료 — 플랫폼 PRJ22) · 파생 링크(추론) 제외. "
         "부분별 트리플 = 그 행을 뺀 그래프와의 차이(공유 노드 탓 합이 약간 어긋날 수 있음).", "",
         "**C 조건(10-15)** = 명시적·인스턴스(ABox) 트리플(VoID `void:triples`) — 이 빌드를 적재기로 만든 그래프에서 센다(추론 없음 · TBox 0 확인). "
         "저장소(Fuseki)에서 세지 않는다(이름 없는 값 노드는 다시 적재하면 중복 · 다른 연도·온톨로지 그래프가 섞임). "
@@ -184,6 +161,6 @@ def main(lib):
 if __name__ == "__main__":
     if sys.argv[1] == "--triples":
         root = pathlib.Path(sys.argv[2])
-        print(json.dumps({d.name: len(triples([read(d, d.parent.name)[1]]).g) for d in sorted(root.glob("*/*"))}))
+        print(json.dumps({d.name: len(triples([L.read_set(d / "template.xlsx")]).g) for d in sorted(root.glob("*/*"))}))
     else:
         main(pathlib.Path(sys.argv[1]).resolve())

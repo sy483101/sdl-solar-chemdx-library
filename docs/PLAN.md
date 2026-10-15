@@ -15,9 +15,9 @@ $SOLAR_DATA_DIR/
 │       ├── manifest.json           출처 run · 규칙 · 코드 커밋 · 연도별 건수 · 파일별 sha256
 │       └── <등록연도>/<ID>.json
 └── library/<빌드 이름>/             라이브러리층 — 원본 + 코드 + 매핑으로 재생성
-    ├── manifest.json               원본 스냅샷 · 이 레포 커밋 · sdl-prefill 커밋 · registry 판 · 매핑표 판
-    ├── 2026/<ExperimentID>/        ① 정량지표용 — template.xlsx · metadata.json · DataArtifact/ · report.txt
-    └── other/<ExperimentID>/       ② 그 외
+    ├── manifest.json               JSON-LD(PROV·DCAT) — 원본 스냅샷 · 이 레포 커밋 · sdl-prefill 커밋 · registry 판 · 세트 목록(실험 IRI)
+    └── <랩>/<연도>/<ExperimentID>/  플랫폼 라이브러리 규격(10-15~ · dev-20261015) — template.xlsx · metadata.json · DataArtifact/ · report.txt
+                                    (+ set.jsonld — 플랫폼 빌더가 나오면). ① 정량지표 = <랩>/2026 · ② 그 외 = 다른 연도. ~dev-20261014b 는 2026|other/<ID>
 ```
 
 ## WS0 착수 준비 — 2026-10-14
@@ -73,9 +73,11 @@ $SOLAR_DATA_DIR/
       (openpyxl 작성 시각 — 엔진 쪽). 고정 방법(내용 비교로 갈음 / sdl-prefill 에 고리) 결정 남음.
       (원안) 같은 원본·커밋으로 두 번 빌드 → 폴더 해시 동일(날짜 같은 비결정 칸이 있으면 고정 방법을 정함).
 
-## WS4 JSON-LD 검토 (결정만 — 구현은 결정 뒤)
+## WS4 JSON-LD — 결정(10-15): (B)안 · 본거지 = 플랫폼 PRJ22 · 합의 = `docs/intent/json-ld.md`
 
-- [ ] 두 안 비교 문서 → 사용자 결정:
+- [x] 결정(10-15 사용자): 빌더가 세트마다 `set.jsonld`(정본 — 그래프 DB·RDB 가 당겨감, xlsx 는 참고) · manifest = JSON-LD · 세트 metadata.json 은 그대로.
+      이 레포 몫 = 빌드 폴더 규격(`<랩>/<연도>/<ID>`) · manifest JSON-LD · count_methods 적재기 맞춤(완료) · `set.jsonld` 넣기(플랫폼 뒤).
+- (옛 검토안) 두 안 비교 문서 → 사용자 결정:
       (A) 5시트 열 → 자체 `@context`(SDLEXO·MPSP IRI)로 세트마다 `set.jsonld` ·
       (B) 플랫폼 적재기(`sdl-ontology-platform` `v05.load`)를 세트 단위로 돌려 ABOX 조각을 JSON-LD 로 직렬화(별도 프로세스 — 함정 참조).
       비교 축 = 플랫폼 ABOX 와 같은 뜻이 보장되는가 · 유지비(매핑 두 벌?) · 세트 폴더 하나만 보고 읽히는가.

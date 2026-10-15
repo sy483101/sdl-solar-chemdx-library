@@ -13,7 +13,8 @@
 - 3층 구조 — **원본층**(받은 그대로) → **라이브러리층**(세트별 폴더) → ABOX층(Fuseki). **이 레포의 범위 = 라이브러리층까지.**
   ABOX화(빌더·Fuseki 적재)는 `sdl-ontology-platform` 의 일(적재기 `v05.load` 가 5시트 패키지를 읽는다).
 - 라이브러리 세트 = **sdl-prefill 이 내려주는 zip 과 같은 폴더 구조**: `{ExperimentID}/template.xlsx`(5시트) · `metadata.json` ·
-  `DataArtifact/`(비정형 데이터) · `report.txt`(남은 알림). JSON-LD 는 검토 대상(PLAN WS4).
+  `DataArtifact/`(비정형 데이터) · `report.txt`(남은 알림). 빌드 안 위치 = `<랩>/<연도>/<실험ID>/`(플랫폼 라이브러리 규격).
+  JSON-LD = 플랫폼 빌더가 세트마다 `set.jsonld`(정본 — `docs/intent/json-ld.md`) · 빌드 `manifest.json` = JSON-LD.
 - 정량지표: **세트 수 = 폴더 수**, **건수 = sdl-prefill `sheets.data_counts`**(웹 입력분과 같은 셈법 — 조성·구조·공정·분석).
 
 ## 데이터 규칙 (YOU MUST)

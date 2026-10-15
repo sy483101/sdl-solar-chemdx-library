@@ -2,7 +2,7 @@
 
 > 이 파일 = "지금"의 스냅샷만. 규칙·함정 = `CLAUDE.md` · 계획 = `docs/PLAN.md` · 이력 = `docs/archive/worklog.md` · 합의 = `docs/intent/`.
 
-## 지금 — 2026-10-15 데이터 건수 C 재정의(연구책임자 논의 뒤)
+## 지금 — 2026-10-15 JSON-LD 정본 착수(데이터 건수 셈법은 prefill 반영 끝)
 
 - 1차 원본 = 사용자가 받은 `raw/1_full/downloads/run-20261014T054004Z-rx23_glu`(13,271건 · 16그룹). 구조·필드 = `docs/chemdx-api.md`.
 - 2차 원본 = `raw/2_krict/20261014/<등록연도>/<ID>.json` + `manifest.json` — `scripts/filter_krict.py`(그룹 2 · `created_at` 연도 · 바이트 그대로).
@@ -49,4 +49,10 @@
   정본 = PSC 받기 절차·판 올림 → 매핑표 반영 → 깨끗한 체크아웃으로 다시 빌드 + dev 아닌 이름(이름 규칙 미정 — 그때 사용자). `dev-20261014` = 옛 빌드(면적 오류) · 지우지 않음.
   **다음 후보(사용자 답 대기)**: ① `build_library.py` 매니페스트·indicator 에 세트별 `set_count`(A) 넣고 웹 대조(T3.4) — prefill 기록은 "이 레포 무변"이라 사용자 결정 ·
   ② T3.5 xlsx 작성 시각 · ③ WS4 JSON-LD 비교 · ④ T2.2 매핑표 검토.
+- **JSON-LD 정본(10-15 interview-me · 사용자 "착수")** = `docs/intent/json-ld.md` — 플랫폼 빌더가 세트마다 `set.jsonld`(그래프 DB·RDB 가 당겨감 · xlsx 는 참고) ·
+  본거지 = 플랫폼 PRJ22 다음 묶음(요청 7건 · prefill 요청 3건 — 그 문서 "넘길 요청"). 이 레포 몫 완료: ① 빌드 폴더 `<빌드>/<랩>/<연도>/<실험ID>/`
+  (플랫폼 라이브러리 규격 — `SDL_LIBRARY_DIR=library/<빌드>` 로 바로 읽힘, 링크 없음 · 폴더 소견 0) ② `manifest.json` = JSON-LD(PROV·DCAT · 세트 `@id` = ABox 실험 IRI)
+  ③ `count_methods.py` = 적재기 `read_set` 그대로(시트 이름 바꾸기·J2 채우기 삭제). **새 dev 빌드 `dev-20261015`** = b 와 셀 내용·파일 같음(170/170) — 배치·manifest 만 다름.
+  지금 적재기(9ead95b)로 C = **341,103**(플랫폼 시험 적재와 같음 · 빈 Type = 재료 탓 +672 — 소자 680·부품 672 가 재료로) · A 3,490 · B 6,695 그대로
+  (`reports/count-methods-dev-20261015.md`). **보고 숫자는 그대로**(C 340,431 = 판 고정 · 2판 보고자료 · 그래프 = b 기준). 남은 이 레포 몫 = 플랫폼 빌더 뒤 `set.jsonld` 넣기.
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).

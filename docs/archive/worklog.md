@@ -92,3 +92,11 @@
   `count_methods.py` A 와 일치(결과 11,640 전부 JV, step_role measure). 이 레포 A 는 스텝 역할로 거르지 않지만 ChemDX 는 결과가 JV 뿐이라 같음.
   PSC 회신 미도착(prefill inbox). 두 dev 빌드 차이 = 변환기 3건(0a60847 → 8a20b79 — PVK 재료 개체 · JV (방향, 면적)별 스텝 +8 · 곡선 원본 파일명) → 공정 +48 · 미입력 +32.
   b = 작업 기준, 정본 아님(PSC 정리·매핑표 검토 전, prefill dirty 빌드). 코드 변경 없음. 다음 = HANDOFF "다음 후보"(사용자 답 대기).
+- **JSON-LD 정본 착수(2026-10-15 밤, interview-me)** — 사용자: 템플릿 빈틈 · JSON-LD 로 만들 수 있나 · 장점 살릴 길 → 인터뷰 8문항 →
+  빌더(플랫폼)가 세트마다 `set.jsonld`(그래프 DB·RDB 정본, xlsx 참고) · 본거지 플랫폼 PRJ22 · 이 레포 빌드 폴더 = 플랫폼 라이브러리 규격 ·
+  manifest 만 JSON-LD(세트 metadata.json 은 그대로 — 매핑 출처 하나). 합의 = `docs/intent/json-ld.md`(근거 표 · 플랫폼 요청 7 · prefill 요청 3).
+  조사(플랫폼 9ead95b · prefill f43d853): 결과↔스텝 끊김은 registry 아닌 적재기·TBox · PartOf 열은 있으나 엔진이 안 씀 · RepeatNo 버림 · QuantityValue 빈 노드 ·
+  적재기가 1b388fb 부터 라이브러리 폴더를 바로 읽고 5sheet-1.1 시트 이름 사용 → 옛 count_methods 의 이름 바꾸기가 C 를 조용히 줄일 상태였음.
+  구현: `build_library.py`(`<랩>/<연도>/<ID>` · manifest `@context`·세트 `@id`·`path`) · `count_methods.py`(read_set — RENAME·J2·read() 삭제).
+  검증: dev-20261015 = b 와 non-xlsx 파일 md5 같음 · xlsx 셀 내용 170/170 같음 · 적재기 library_sets 170 · check_set 소견 0 · manifest rdflib 파싱 2,401 트리플 ·
+  hasPart 170 · 실험 IRI = ABox 노드 · `--triples` 경로 동작 · A 3,490 · B 6,695 · C 341,103(현 적재기 — 빈 Type = 재료로 +672). 보고 숫자는 b·옛 판 그대로.

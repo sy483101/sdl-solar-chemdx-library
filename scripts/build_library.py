@@ -1,5 +1,6 @@
 """2차 원본 스냅샷 → 라이브러리층: 레코드마다 draft(convert.py) → 엔진 검증·zip(sheets.to_zip, 웹 내려받기와 같은 함수)
-→ <out>/<2026|other>/<실험ID>/ 로 풀기 + manifest.json + reports/indicator-<빌드>.md(숫자만, git).
+→ <out>/<랩>/<연도>/<실험ID>/ 로 풀기(플랫폼 라이브러리 규격 — 적재기가 실험 ID 에서 같은 경로를 계산) + manifest.json(JSON-LD)
++ reports/indicator-<빌드>.md(숫자만, git).
 
 사용: python3 scripts/build_library.py <2_krict/YYYYMMDD> <library/<빌드 이름>> [연도 …]   (연도 생략 = 전부)
 """
@@ -15,6 +16,13 @@ from sdl_platform.v05 import draft as D, sheets  # noqa: E402
 import convert  # noqa: E402
 
 COLS = ("composition", "structure", "process", "analysis")
+# manifest = JSON-LD — 키는 그대로 두고 @context 만 덧붙인다(사용자 10-15 · docs/intent/json-ld.md). 표준 어휘가 없는 키 = @vocab(정의 = 그 문서).
+CONTEXT = {"@version": 1.1, "@base": "file:///",
+           "@vocab": "https://github.com/sy483101/sdl-solar-chemdx-library/blob/main/docs/intent/json-ld.md#",
+           "dcat": "http://www.w3.org/ns/dcat#", "dcterms": "http://purl.org/dc/terms/", "prov": "http://www.w3.org/ns/prov#",
+           "aeod": "http://sdl.platform/data#",            # 플랫폼 ABox 의 실험 노드와 같은 IRI(세트 = 실험 ID)
+           "source": {"@id": "prov:wasDerivedFrom", "@type": "@id"},   # 2차 원본 스냅샷 폴더(file IRI)
+           "years": "dcterms:temporal", "sets": "dcterms:hasPart", "experimentId": "dcterms:identifier"}
 
 
 def commit(path):
@@ -37,17 +45,21 @@ def main(snap, out, years):
         findings = D.validate(d, {k: len(v) for k, v in blobs.items()})
         exp_id, z = sheets.to_zip(d, blobs, findings)
         group = "2026" if r["created_at"].startswith("2026") else "other"
-        assert not (out / group / exp_id).exists(), f"실험 ID 겹침 {exp_id}"
-        zipfile.ZipFile(io.BytesIO(z)).extractall(out / group)
+        lab, ymd = exp_id.split("-EXP-")                 # 실험 ID {랩}-EXP-{YYYYMMDD}-{NNN} → <랩>/<연도>(플랫폼 load.check_set 과 같은 규칙)
+        path = f"{lab}/{ymd[:4]}/{exp_id}"
+        assert not (out / path).exists(), f"실험 ID 겹침 {exp_id}"
+        zipfile.ZipFile(io.BytesIO(z)).extractall(out / lab / ymd[:4])
         rows = sheets.build(d)[0]
         counts = sheets.data_counts(rows)
         counts["process_manual"] = sum(p["Source"] == "manual" and str(p["Value"]).strip() != "" for p in rows["Parameter"])
         levels = collections.Counter(f["level"] for f in findings)
-        sets.append({"experimentId": exp_id, "chemdxId": r["id"], "group": group, "counts": counts, "findings": levels})
+        sets.append({"@id": f"aeod:{exp_id}", "experimentId": exp_id, "path": path, "chemdxId": r["id"], "group": group,
+                     "counts": counts, "findings": levels})
         totals[group].update(counts)
         totals[group].update(sets=1, sets_with_findings=bool(findings), **{f"findings_{k}": n for k, n in levels.items()})
 
-    manifest = {"source": str(snap), "sourceManifestSha256": hashlib.sha256((snap / "manifest.json").read_bytes()).hexdigest(),
+    manifest = {"@context": CONTEXT, "@id": f"urn:sdl-solar-chemdx-library:build:{out.name}", "@type": ["dcat:Dataset", "prov:Entity"],
+                "source": str(snap), "sourceManifestSha256": hashlib.sha256((snap / "manifest.json").read_bytes()).hexdigest(),
                 "years": years or "all", "code": commit(HERE), "sdlPrefill": commit(PREFILL),
                 "registryVersion": REGISTRY_VERSION, "templateVersion": sheets.TEMPLATE_VERSION,
                 "recipe": f"{convert.LAB} {convert.RECIPE}", "totals": totals, "sets": sets}
