@@ -1,4 +1,4 @@
-"""데이터 건수 셈법 비교(A 트리플 · B 설계인자+묶음+응답 · C 레시피 1+측정·분석 · 참고 칸 단위) — ChemDX 라이브러리 빌드 실데이터.
+"""데이터 건수 셈법 비교(A 레시피 1+측정·분석 · B 설계인자+묶음+응답 · C 트리플 · 참고 칸 단위 — 10-15 이름 바꿈: 옛 C→A · 옛 A→C) — ChemDX 라이브러리 빌드 실데이터.
 정의 = docs/intent/data-count-methods.md "재논의(10-15)" 절 · 설득 문서 = docs/data-count-methods-brief.md.
 
 라이브러리 빌드 하나 → reports/count-methods-<빌드>.md(숫자만, git).
@@ -72,8 +72,8 @@ def main(lib):
     for s, p in zip(sets, raws):
         c = s["counts"]
         ys = [r for r in p["Result"] if is_y(r)]
-        n["A_cells"] += c["composition"] + c["structure"] + c["process"] + c["analysis"]
-        n["A_manual"] += c["composition"] + c["structure"] + c["process_manual"] + c["analysis"]
+        n["cells"] += c["composition"] + c["structure"] + c["process"] + c["analysis"]
+        n["cells_manual"] += c["composition"] + c["structure"] + c["process_manual"] + c["analysis"]
         n["Y"] += len(ys)
         n["Y_items"] += len({(r["StepID"], r["Name"]) for r in ys})
         n["Y_files"] += sum(r["OriginalFileName"] != "" for r in ys)
@@ -108,9 +108,9 @@ def main(lib):
         n["B_proc"] += sum(k in design for k in mine)
         n["B_resp"] += resp
     n["B"] = n["sets"] + n["B_comp"] + n["B_proc"] + n["B_resp"]
-    # C(10-15 재정의) = 레시피 1 + 측정·분석 — 측정·분석 셈 = B 응답과 같다(대상·스텝·항목마다 1, 같은 자리 반복 2).
+    # A(10-15 재정의 · 주 지표) = 레시피 1 + 측정·분석 — 측정·분석 셈 = B 응답과 같다(대상·스텝·항목마다 1, 같은 자리 반복 2).
     # ponytail: 같은 자리·같은 설정을 스텝을 나눠 적은 반복은 안 합친다 — ChemDX JV 스텝은 방향·면적이 서로 달라 해당 없음, 그런 데이터가 오면
-    n["C"] = n["sets"] + n["B_resp"]
+    n["A"] = n["sets"] + n["B_resp"]
     vary = sorted({f"{k[0].split('→')[-1].strip()}.{k[1]}" for k in design})
     bundle = sorted({f"{k[0].split('→')[-1].strip()}.{k[1]}" for k, v in slots.items() if len(v) > 1 and k[1] in BUNDLE})
 
@@ -132,11 +132,11 @@ def main(lib):
         f"빌드 `{lib.name}`(코드 {man['code']} · sdl-prefill {man['sdlPrefill']} · registry {man['registryVersion']}) · "
         f"이 스크립트 {commit(HERE)} · 플랫폼 적재기·J2 {commit(PLATFORM)}. 정의 = `docs/intent/data-count-methods.md`(재논의 10-15).", "",
         "| 셈법 | 정의 | 건수 | 세트당 | 트리플 ÷ 건수 |", "|---|---|---:|---:|---:|",
-        f"| **A** 트리플 | 플랫폼 적재기로 만든 그래프의 트리플 수 | {t['full']:,} | {per(t['full'])} | 1.0 |",
-        f"| **C** 레시피 1 + 측정·분석 | 레시피 전체 1 + 측정·분석(대상·스텝·항목마다 1, 같은 자리 2회 이상이면 2) | {n['C']:,} | {per(n['C'])} | {t['full'] / n['C']:.1f} |",
+        f"| **A** 레시피 1 + 측정·분석 | 레시피 전체 1 + 측정·분석(대상·스텝·항목마다 1, 같은 자리 2회 이상이면 2) | {n['A']:,} | {per(n['A'])} | {t['full'] / n['A']:.1f} |",
+        f"| **C** 트리플 | 플랫폼 적재기로 만든 그래프의 트리플 수 | {t['full']:,} | {per(t['full'])} | 1.0 |",
         f"| **B** 설계인자 + 묶음 + 응답 | 고정·변동 인자 묶음 1 + 설계인자 각 1 + 응답(시편·항목마다 1, 같은 시편 반복이면 2) | {n['B']:,} | {per(n['B'])} | {t['full'] / n['B']:.1f} |",
-        f"| (참고) 칸 단위(현행 `data_counts`) | 채워진 칸 = 1건(registry 기본값 포함) | {n['A_cells']:,} | {per(n['A_cells'])} | {t['full'] / n['A_cells']:.1f} |",
-        f"| (참고) 칸 단위 · 기본값 제외 | 연구자가 적은 칸만 | {n['A_manual']:,} | {per(n['A_manual'])} | {t['full'] / n['A_manual']:.1f} |",
+        f"| (참고) 칸 단위(현행 `data_counts`) | 채워진 칸 = 1건(registry 기본값 포함) | {n['cells']:,} | {per(n['cells'])} | {t['full'] / n['cells']:.1f} |",
+        f"| (참고) 칸 단위 · 기본값 제외 | 연구자가 적은 칸만 | {n['cells_manual']:,} | {per(n['cells_manual'])} | {t['full'] / n['cells_manual']:.1f} |",
         f"| (참고) ML 표본 행 | 응답을 낸 측정(스텝·반복) 하나 = 1 | {n['ml_rows']:,} | {per(n['ml_rows'])} | |", "",
         f"**B 내역** = 묶음 {n['sets']:,} + 설계인자 조성 {n['B_comp']:,}(세트당 {per(n['B_comp'])}) · 공정 {n['B_proc']:,}({per(n['B_proc'])}) "
         f"+ 응답 {n['B_resp']:,}({per(n['B_resp'])}). 범주 = 시트 위치(개체 정보 → 조성 · 파라미터 → 공정) · 구조 설계인자 없음(소자 구조 고정). "
@@ -158,7 +158,7 @@ def main(lib):
     out = HERE.parent / "reports" / f"count-methods-{lib.name}.md"
     out.write_text("\n".join(lines) + "\n")
     out.with_suffix(".json").write_text(json.dumps(   # 세트당 숫자 — plot_count_methods.py 가 읽는다
-        {"sets": rows, "A": t["full"] / rows, "B": n["B"] / rows, "C": n["C"] / rows, "cells": n["A_cells"] / rows}, indent=1) + "\n")
+        {"sets": rows, "A": n["A"] / rows, "B": n["B"] / rows, "C": t["full"] / rows, "cells": n["cells"] / rows}, indent=1) + "\n")
     print("\n".join(lines))
 
 
