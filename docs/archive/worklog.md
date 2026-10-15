@@ -100,3 +100,4 @@
   구현: `build_library.py`(`<랩>/<연도>/<ID>` · manifest `@context`·세트 `@id`·`path`) · `count_methods.py`(read_set — RENAME·J2·read() 삭제).
   검증: dev-20261015 = b 와 non-xlsx 파일 md5 같음 · xlsx 셀 내용 170/170 같음 · 적재기 library_sets 170 · check_set 소견 0 · manifest rdflib 파싱 2,401 트리플 ·
   hasPart 170 · 실험 IRI = ABox 노드 · `--triples` 경로 동작 · A 3,490 · B 6,695 · C 341,103(현 적재기 — 빈 Type = 재료로 +672). 보고 숫자는 b·옛 판 그대로.
+- **사용자 파일 커밋(2026-10-15)** — `docs/data-count-methods-brief 복사본.hwpx`(사용자 편집본, 그동안 미커밋으로 둠) 사용자 요청으로 그대로 커밋.

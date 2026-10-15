@@ -42,7 +42,7 @@
 - **보고자료 2판** `docs/261015_보고자료_데이터건수정의_2판.{md,hwpx}`(5쪽 · 새 이름 · 핵심요약 표·그래프 = A·C · 분야별 A 표 · 절 = 공통 원칙 → A → B(참고) → C) —
   1판(사용자 편집본) 문구를 바탕으로. 그래프 `docs/fig/`(`plot_count_methods.py` — A·C 막대, B 없음). 빌드 = scratchpad 래퍼(docfac-build + --image-dir + 예시 글자색).
   옛 이름 문서(그대로 둠): 1판 `docs/261015_보고자료_데이터건수정의.hwpx`(1152fda) · `docs/data-count-methods-brief.{md,hwpx}`(md 의 그래프는 새 그림으로 바뀜) ·
-  페이지 https://claude.ai/artifact/F2E9csXYfGCHKbVDRtHHwo(비공개). `docs/data-count-methods-brief 복사본.hwpx` = 사용자 파일(미커밋).
+  페이지 https://claude.ai/artifact/F2E9csXYfGCHKbVDRtHHwo(비공개). `docs/data-count-methods-brief 복사본.hwpx` = 사용자 편집본(10-15 사용자 요청으로 커밋).
 - 범주당 설계인자 1건(B = 1 + 0~3 + 응답) 합의·미적용 — 태양전지 B 39.4 → 23.5 · 보고용 셈식에만 · 판정 동결. 적용은 사용자 말 기다림.
 - **세션 점검(10-15 마감)** — sdl-prefill `set_count`(웹 건수 = A)를 `dev-20261014b` 170세트에 돌림 = 레시피 170 + 측정·분석 3,320 = **3,490**(이 레포 A 와 일치 · 결과 11,640 전부 JV = measure).
   PSC 회신 = prefill `data/registry/inbox/` 에 아직 없음. **빌드 = `dev-20261014b` 가 작업 기준이지 정본 아님**(PSC 정리 전 · 매핑표 검토 전 · prefill dirty 로 빌드) —
