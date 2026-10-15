@@ -2,7 +2,7 @@
 
 > 이 파일 = "지금"의 스냅샷만. 규칙·함정 = `CLAUDE.md` · 계획 = `docs/PLAN.md` · 이력 = `docs/archive/worklog.md` · 합의 = `docs/intent/`.
 
-## 지금 — 2026-10-14 2차 원본(KRICT·연도별) 완료
+## 지금 — 2026-10-15 데이터 건수 C 재정의(연구책임자 논의 뒤)
 
 - 1차 원본 = 사용자가 받은 `raw/1_full/downloads/run-20261014T054004Z-rx23_glu`(13,271건 · 16그룹). 구조·필드 = `docs/chemdx-api.md`.
 - 2차 원본 = `raw/2_krict/20261014/<등록연도>/<ID>.json` + `manifest.json` — `scripts/filter_krict.py`(그룹 2 · `created_at` 연도 · 바이트 그대로).
@@ -30,11 +30,14 @@
   **이전 dev 빌드는 10세트(03731~03740, 곡선 172개)에서 activeArea 를 소자 블록 0.045216 으로 잘못 적었음 — 실제 측정 면적 0.0908**. 소자 블록 값은 완성소자 Note.
   ③ 곡선 파일 OriginalFileName = ChemDX 원본 파일명(확장자 .csv). 소실 검사: cell_dimension 전부 남음 · 곡선 key = 방향_원본명(2328/2328) → 소실 없음.
 - **보류(사용자 10-14 밤)**: 소자 블록 condition 둘 스텝 · 실험실 온습도 넣을 스텝 · MACl 농도 칸 의미(랩) · T3.5 xlsx 작성 시각 — 사용자가 다시 꺼낼 때까지 묻지 않음.
-- **데이터 건수 셈법(10-15 재논의)** = `docs/intent/data-count-methods.md` "재논의" 절 · 설득 문서 `docs/data-count-methods-brief.md`
-  (+ 페이지 https://claude.ai/artifact/F2E9csXYfGCHKbVDRtHHwo, 비공개 — 공유는 사용자가). A 트리플 · B 묶음 1 + 설계인자 각 1 + 응답(시편마다 1, 같은 시편 반복 2) ·
-  C 조건 1 + 측정 항목. ChemDX 2026: A 340,431 · **B 6,695(39.4)** · C 1,850(10.9 ≈ 계획 11.0)(`scripts/count_methods.py`). 보고 수치는 1차 실데이터 수집 뒤.
-  기본값 확인 중(n≥2 · 묶음 → 공정 칸 · C 의 1 = 전체) · 픽셀 = 시편 원칙은 전 실험실 실데이터 확인 뒤.
-  **사용자 편집본 `docs/data-count-methods-brief 복사본.hwpx`(미커밋 — 사용자 파일) → docfac 보고자료 `docs/261015_보고자료_데이터건수정의.hwpx`(+ md 원고, 예시 파란 글자)** · 처음 한글 문서 `docs/data-count-methods-brief.hwpx` · 그래프 `docs/fig/`(태양전지 실데이터 ·
-  석유화학촉매 registry 추산 PCC A 911 · B 8~15 · C 8 vs 목표 19.4) = `scripts/plot_count_methods.py` · `lab_estimate.py` 는 10-15 정의(+ A 트리플).
+- **데이터 건수 셈법(10-15 결정)** = `docs/intent/data-count-methods.md` "재논의" 절. **보고 = C·A 앞세움, B 는 본문에만**(사용자 · 연구책임자 논의 뒤).
+  **C = 레시피 1 + 측정·분석**(대상·스텝·항목마다 1 · 같은 자리 2회 이상 2 · 파일·숫자 각 1 · 공정 기록은 레시피 쪽 · 가름 = registry StepType `SDLEXO_Class` MEASURE, 칭량·메모 제외) ·
+  A 트리플 · B 묶음 1 + 설계인자 각 1 + 응답(그대로). ChemDX 2026: A 340,431 · **C 3,490(20.5)** · B 6,695(39.4)(`reports/count-methods-dev-20261014b.md`).
+  registry 추산(세트당 C 1회~반복, `reports/lab-estimate-registry-v0.5.3.md`): PCC 3~5(목표 19.4) · PSC 5~19 · ECC 9~17(6.0) · ELF 9~17 · CAM 2~3 · BAS 4~13(이차전지 10.0) · OPD 추산 불가.
+  랩 확인: 경계 결과(CAM 펠릿 사진 · BAS-02 GPC·회수율) · 촉매 온도·운전 시간별 값을 스텝으로 나누는지 · OPD 결과 정의. PSC 에이징 단계 = PSC 회신 받기 때 추가 후보.
+  열린 것: 레시피 1건을 계획서 4칸 중 어디에 · 픽셀 = 시편 원칙(전 실험실 실데이터 뒤). 보고 수치는 1차 실데이터 수집 뒤.
+- **문서는 결정 전(앞 C 10.9 · B 중심)**: 보고자료 `docs/261015_보고자료_데이터건수정의.hwpx` = 사용자 편집본(1152fda, md 원고는 편집 전) ·
+  설득 문서 `docs/data-count-methods-brief.{md,hwpx}` · 페이지 https://claude.ai/artifact/F2E9csXYfGCHKbVDRtHHwo(비공개) · 그래프 `docs/fig/`(`plot_count_methods.py` — C 라벨·범위 안 고침).
+  새 C·A 중심으로 고칠지는 사용자 말 기다림. `docs/data-count-methods-brief 복사본.hwpx` = 사용자 파일(미커밋).
 - 범주당 설계인자 1건(B = 1 + 0~3 + 응답) 합의·미적용 — 태양전지 B 39.4 → 23.5 · 보고용 셈식에만 · 판정 동결. 적용은 사용자 말 기다림.
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).

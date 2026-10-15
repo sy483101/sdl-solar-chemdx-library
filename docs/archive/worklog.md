@@ -71,3 +71,10 @@
   보고용 셈식에만(변환기·registry·MPSP 그대로) · 판정은 보고 시점 데이터로 동결 — 합의, 적용은 아직. MPSP 범주 커버리지: 매핑 없는 파라미터 랩마다 5~63%,
   PVK solvent1/solvent2 매핑 불일치 → 나중에 조율. 사용자 편집본(`docs/data-count-methods-brief 복사본.hwpx`)을 docfac 보고자료로:
   `docs/261015_보고자료_데이터건수정의.{md,hwpx}` — docfac-build(+ --image-dir, 그래프 60% 가운데, 예시 문단 #2B579A 글자색은 빌드 뒤 XML 손질), 3쪽.
+- **C 재정의(2026-10-15 저녁)** — 사용자가 연구책임자와 논의해 결정: 레시피 정보 1건 + 측정·분석 정보 따로. interview 로 세부 확정 —
+  측정·분석 = (대상, 공정 순서상 위치, 항목)마다 1 · 같은 측정 2회 이상 = 2 · 에이징 등 다른 맥락 = 그 단계 뒤 측정이라 따로 · 공정 기록(칭량·로그·프로파일) = 레시피 1건.
+  이것을 **C** 로(앞 C = 조건 1 + 측정 항목을 대신), B 는 그대로, 보고는 C·A 앞세우고 B 는 본문. 가름 = registry StepType `SDLEXO_Class` = MEASURE(칭량 WEI·WEIGH, 메모 remark 제외 —
+  랩 Kind 표기는 랩마다 어긋나 안 씀) · 경계(공정 스텝의 분석) = CAM 펠릿 사진 · BAS-02 GPC·회수율 → 랩 확인. PSC registry 에 에이징 단계 없음(추가 후보).
+  `count_methods.py`(C = 1 + B 응답) · `lab_estimate.py`(C 1회~반복 · 측정·분석 · 경계 열, lab_registry.lab_sheets 로 StepType 읽음) → ChemDX 2026 **C 3,490(20.5)** ·
+  registry 추산 PCC 3~5 · PSC 5~19 · ECC 9~17 · ELF 9~17 · CAM 2~3 · BAS 4~13 · CHA 6~11. 손으로 센 값과 일치 확인.
+  보고자료 hwpx 사용자 편집본 커밋(1152fda). 문서·그래프는 결정 전 그대로(새 C·A 중심 개정은 사용자 말 기다림). 다음: 랩 확인 · 레시피 1건의 계획서 칸.
