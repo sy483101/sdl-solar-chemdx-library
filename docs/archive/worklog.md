@@ -67,3 +67,7 @@
   `count_methods.py` 세트당 JSON · `plot_count_methods.py` 신규 → `docs/fig/count-methods-{solar,catalyst}.png`(로그 눈금).
   태양전지(실데이터) A 2,003 · B 39.4 · C 10.9 vs 목표 11.0 · 석유화학촉매(registry 추산) A 911 · B 8~15 · C 8 vs 19.4(설계인자 0 가정, 응답 7 중 5 = 칭량 질량).
   `docs/data-count-methods-brief.hwpx`(kordoc 생성, 그래프 2장 포함 — 사용자 편집본) · md·페이지에도 그래프 추가.
+- **범주당 설계인자 · docfac 보고자료(2026-10-15 오후)** — 논의: 설계인자를 MPSP 범주(조성·구조·공정)마다 1건 → ChemDX B 39.4 → 23.5(설계인자 18.9 → 3),
+  보고용 셈식에만(변환기·registry·MPSP 그대로) · 판정은 보고 시점 데이터로 동결 — 합의, 적용은 아직. MPSP 범주 커버리지: 매핑 없는 파라미터 랩마다 5~63%,
+  PVK solvent1/solvent2 매핑 불일치 → 나중에 조율. 사용자 편집본(`docs/data-count-methods-brief 복사본.hwpx`)을 docfac 보고자료로:
+  `docs/261015_보고자료_데이터건수정의.{md,hwpx}` — docfac-build(+ --image-dir, 그래프 60% 가운데, 예시 문단 #2B579A 글자색은 빌드 뒤 XML 손질), 3쪽.

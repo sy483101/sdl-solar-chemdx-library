@@ -131,6 +131,15 @@
   ChemDX '반복' = 기판 2 × 픽셀 4(다른 소자) — 지금 템플릿은 둘 다 RepeatNo.
 - 크레딧: 모든 기록을 세면 나쁜 셀까지 올라와 분포 편향이 준다(Christians, Manser & Kamat, *JPCL* 2015 · 실패 실험의 가치 Raccuglia et al., *Nature* 2016).
 
+**범주당 설계인자(10-15 오후, 합의·미적용)**: 설계인자를 MPSP 범주(조성·구조·공정)마다 1건으로 묶는다 → B = 1 + (0~3) + 응답.
+보고용 건수 셈식에만 넣는다(변환기·registry·MPSP 는 그대로). ChemDX 2026: 설계인자 18.9 → 3 · **B 39.4 → 23.5**(합계 6,695 → 4,000) ·
+석유화학촉매 추산은 설계인자 0 가정이라 그대로(8~15, 실데이터에서 최대 +3).
+대응표 = materialEntity → 조성 · environment(구성·형상) → 구조 · process → 공정 · 개체 정보 칸 → 조성 · Composite 는 MaterialEntity 먼저.
+근거: registry 자리 나눔이 랩마다 달라(PSC 용매 4자리 vs ELF solventComposition 1자리) 자리 단위는 랩끼리 비교가 안 된다. 잃는 것 = 바꾼 인자 수(설계 공간 차원).
+기준이 덜 명확한 곳(나중에 조율 — 지금 registry·MPSP 고칠 여유 없음): MPSP 없는 파라미터(랩마다 5~63%) · Characterization·Property 로 매핑된 파라미터 ·
+같은 개념이 다르게 매핑(PVK solvent1 Composite vs solvent2 Process) · MPSP 는 공정 중심이라 전구체 조성(도펀트·용매)이 공정으로 감.
+**판정 동결(사용자 10-15)**: 설계인자 판정은 보고 시점 데이터로 하고 그 해 숫자는 다시 세지 않는다(빌드 매니페스트에 스냅샷).
+
 **열린 것(재논의)**: 2건 문턱(n≥2 vs n≥3) · 묶음 1건을 계획서 4칸 중 어디에 · C 의 '1'에 조성 포함 여부.
 
 ## 열린 것

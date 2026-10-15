@@ -34,6 +34,7 @@
   (+ 페이지 https://claude.ai/artifact/F2E9csXYfGCHKbVDRtHHwo, 비공개 — 공유는 사용자가). A 트리플 · B 묶음 1 + 설계인자 각 1 + 응답(시편마다 1, 같은 시편 반복 2) ·
   C 조건 1 + 측정 항목. ChemDX 2026: A 340,431 · **B 6,695(39.4)** · C 1,850(10.9 ≈ 계획 11.0)(`scripts/count_methods.py`). 보고 수치는 1차 실데이터 수집 뒤.
   기본값 확인 중(n≥2 · 묶음 → 공정 칸 · C 의 1 = 전체) · 픽셀 = 시편 원칙은 전 실험실 실데이터 확인 뒤.
-  **한글 문서 `docs/data-count-methods-brief.hwpx`(사용자가 문구 직접 수정 — 이제 이게 정본, md 는 초안 기록)** · 그래프 `docs/fig/`(태양전지 실데이터 ·
+  **사용자 편집본 `docs/data-count-methods-brief 복사본.hwpx`(미커밋 — 사용자 파일) → docfac 보고자료 `docs/261015_보고자료_데이터건수정의.hwpx`(+ md 원고, 예시 파란 글자)** · 처음 한글 문서 `docs/data-count-methods-brief.hwpx` · 그래프 `docs/fig/`(태양전지 실데이터 ·
   석유화학촉매 registry 추산 PCC A 911 · B 8~15 · C 8 vs 목표 19.4) = `scripts/plot_count_methods.py` · `lab_estimate.py` 는 10-15 정의(+ A 트리플).
+- 범주당 설계인자 1건(B = 1 + 0~3 + 응답) 합의·미적용 — 태양전지 B 39.4 → 23.5 · 보고용 셈식에만 · 판정 동결. 적용은 사용자 말 기다림.
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).
