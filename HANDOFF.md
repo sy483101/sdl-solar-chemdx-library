@@ -37,6 +37,8 @@
   registry 추산(세트당 A 1회~반복, `reports/lab-estimate-registry-v0.5.3.md`): PCC 3~5(목표 19.4) · PSC 5~19 · ECC 9~17(6.0) · ELF 9~17 · CAM 2~3 · BAS 4~13(이차전지 10.0) · OPD 추산 불가.
   랩 확인: 경계 결과(CAM 펠릿 사진 · BAS-02 GPC·회수율) · 촉매 온도·운전 시간별 값을 스텝으로 나누는지 · OPD 결과 정의. PSC 에이징 단계 = PSC 회신 받기 때 추가 후보.
   열린 것: 레시피 1건을 계획서 4칸 중 어디에 · 픽셀 = 시편 원칙(전 실험실 실데이터 뒤). 보고 수치는 1차 실데이터 수집 뒤.
+  **C 조건(10-15)** = 명시적·ABox 트리플(W3C VoID `void:triples`) · 그 해 빌드의 적재기 그래프에서(Fuseki 아님 — 값 노드 중복) · 판 고정(플랫폼 커밋 + registry) ·
+  공유 참조 1번 · 구성(값 노드 17% · rdf:type 18% · MPSP 연결 13% · 나머지 52%)과 클래스별 인스턴스(classPartition)를 함께 — `count_methods.py` 가 TBox 섞이면 멈춤.
 - **보고자료 2판** `docs/261015_보고자료_데이터건수정의_2판.{md,hwpx}`(5쪽 · 새 이름 · 핵심요약 표·그래프 = A·C · 분야별 A 표 · 절 = 공통 원칙 → A → B(참고) → C) —
   1판(사용자 편집본) 문구를 바탕으로. 그래프 `docs/fig/`(`plot_count_methods.py` — A·C 막대, B 없음). 빌드 = scratchpad 래퍼(docfac-build + --image-dir + 예시 글자색).
   옛 이름 문서(그대로 둠): 1판 `docs/261015_보고자료_데이터건수정의.hwpx`(1152fda) · `docs/data-count-methods-brief.{md,hwpx}`(md 의 그래프는 새 그림으로 바뀜) ·

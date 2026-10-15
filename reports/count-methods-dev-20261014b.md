@@ -1,6 +1,6 @@
 # 데이터 건수 셈법 · 트리플 — dev-20261014b (2026)
 
-빌드 `dev-20261014b`(코드 8a20b79 · sdl-prefill legacy-final-27-gf5044e8-dirty · registry 0.5.3) · 이 스크립트 baa0932-dirty · 플랫폼 적재기·J2 v0.10-192-g3d0d595-dirty. 정의 = `docs/intent/data-count-methods.md`(재논의 10-15).
+빌드 `dev-20261014b`(코드 8a20b79 · sdl-prefill legacy-final-27-gf5044e8-dirty · registry 0.5.3) · 이 스크립트 22f75e4-dirty · 플랫폼 적재기·J2 v0.10-192-g3d0d595-dirty. 정의 = `docs/intent/data-count-methods.md`(재논의 10-15).
 
 | 셈법 | 정의 | 건수 | 세트당 | 트리플 ÷ 건수 |
 |---|---|---:|---:|---:|
@@ -29,3 +29,15 @@
 | 메타데이터·개체·스텝·투입/산출 | 17,953 |
 
 적재 조건: prefill 5sheet-1.1 → 플랫폼 v0.6 시트 이름만 바꿈 · Entity Type = 플랫폼 J2(페로브스카이트 재료 개체만 material 로 보탬). 부분별 트리플 = 그 행을 뺀 그래프와의 차이(공유 노드 탓 합이 약간 어긋날 수 있음).
+
+**C 조건(10-15)** = 명시적·인스턴스(ABox) 트리플(VoID `void:triples`) — 이 빌드를 적재기로 만든 그래프에서 센다(추론 없음 · TBox 0 확인). 저장소(Fuseki)에서 세지 않는다(이름 없는 값 노드는 다시 적재하면 중복 · 다른 연도·온톨로지 그래프가 섞임). 판 = 위 머리의 플랫폼 커밋(적재기·aeonto·MPSP) + registry 판 — 그 해 숫자는 다시 세지 않는다.
+
+| 구성(겹치지 않게) | 트리플 | 비율 |
+|---|---:|---:|
+| 값 노드(이름 없음, QuantityValue — 종류·숫자·단위) | 57,894 | 17.0% |
+| 클래스 표시 rdf:type(이름 있는 노드) | 60,176 | 17.7% |
+| MPSP 연결 rdfs:seeAlso | 44,252 | 13.0% |
+| 나머지(개체·스텝·조건·결과의 값과 연결) | 178,004 | 52.3% |
+| 공유 참조(랩·장비·스텝 종류·레시피 — 그래프 전체에 1번) | 105 | 0.0% |
+
+클래스별 인스턴스(VoID classPartition, 실험 범위): QuantityValue 19,298 · ProcessParameter 16,588 · SetPointParameter 16,588 · Characterization 11,640 · Performance 9,312 · DataArtifact 2,328 · Step 1,518 · DeviceEntity 680 · ComponentEntity 672 · Experiment 170 · ExperimentMetadata 170 · MaterialEntity 170 · Workflow 170 · GroupStep 170
