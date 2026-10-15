@@ -41,7 +41,8 @@ def reread(path):
 
 def commit(path):
     git = lambda *a: subprocess.run(["git", "-C", str(path), *a], capture_output=True, text=True).stdout.strip()
-    return git("describe", "--always") + ("-dirty" if git("status", "--porcelain") else "")   # 새 파일(untracked)도 dirty
+    # 새 파일(untracked)도 dirty — 단 reports/ 는 빌드가 쓰는 출력이라 뺀다(두 번 빌드해도 같은 manifest — T3.5)
+    return git("describe", "--always") + ("-dirty" if git("status", "--porcelain", "--", ".", ":(exclude)reports") else "")
 
 
 def main(snap, out, years):
