@@ -88,3 +88,7 @@
   (A 질문으로 오해해 답한 것: 그래프에서 측정 노드가 스텝과 안 이어져 A 를 그래프로 뽑으면 20.5 → 11.0 — 플랫폼 요청 후보로만 남김, 반영 안 함.)
 - **HANDOFF 문구 정정(2026-10-15, sdl-prefill 세션)** — "웹과 같은 셈"(칸 단위) → 웹은 sdl-prefill `fd629ed` 부터 셈법 A(`sheets.set_count`) 표시.
   `sheets.data_counts`(칸 단위)는 sdl-prefill 에 그대로 남아 이 레포 `build_library.py`·`count_methods.py`·`lab_estimate.py` 의 참고 지표는 무변. 문서만.
+- **세션 점검(2026-10-15 마감)** — sdl-prefill `fd629ed`(웹 건수 = 셈법 A `sheets.set_count`) 확인 후 대조: `dev-20261014b` 170세트 = 레시피 170 + 측정·분석 3,320 = 3,490 —
+  `count_methods.py` A 와 일치(결과 11,640 전부 JV, step_role measure). 이 레포 A 는 스텝 역할로 거르지 않지만 ChemDX 는 결과가 JV 뿐이라 같음.
+  PSC 회신 미도착(prefill inbox). 두 dev 빌드 차이 = 변환기 3건(0a60847 → 8a20b79 — PVK 재료 개체 · JV (방향, 면적)별 스텝 +8 · 곡선 원본 파일명) → 공정 +48 · 미입력 +32.
+  b = 작업 기준, 정본 아님(PSC 정리·매핑표 검토 전, prefill dirty 빌드). 코드 변경 없음. 다음 = HANDOFF "다음 후보"(사용자 답 대기).

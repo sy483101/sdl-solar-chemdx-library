@@ -44,4 +44,9 @@
   옛 이름 문서(그대로 둠): 1판 `docs/261015_보고자료_데이터건수정의.hwpx`(1152fda) · `docs/data-count-methods-brief.{md,hwpx}`(md 의 그래프는 새 그림으로 바뀜) ·
   페이지 https://claude.ai/artifact/F2E9csXYfGCHKbVDRtHHwo(비공개). `docs/data-count-methods-brief 복사본.hwpx` = 사용자 파일(미커밋).
 - 범주당 설계인자 1건(B = 1 + 0~3 + 응답) 합의·미적용 — 태양전지 B 39.4 → 23.5 · 보고용 셈식에만 · 판정 동결. 적용은 사용자 말 기다림.
+- **세션 점검(10-15 마감)** — sdl-prefill `set_count`(웹 건수 = A)를 `dev-20261014b` 170세트에 돌림 = 레시피 170 + 측정·분석 3,320 = **3,490**(이 레포 A 와 일치 · 결과 11,640 전부 JV = measure).
+  PSC 회신 = prefill `data/registry/inbox/` 에 아직 없음. **빌드 = `dev-20261014b` 가 작업 기준이지 정본 아님**(PSC 정리 전 · 매핑표 검토 전 · prefill dirty 로 빌드) —
+  정본 = PSC 받기 절차·판 올림 → 매핑표 반영 → 깨끗한 체크아웃으로 다시 빌드 + dev 아닌 이름(이름 규칙 미정 — 그때 사용자). `dev-20261014` = 옛 빌드(면적 오류) · 지우지 않음.
+  **다음 후보(사용자 답 대기)**: ① `build_library.py` 매니페스트·indicator 에 세트별 `set_count`(A) 넣고 웹 대조(T3.4) — prefill 기록은 "이 레포 무변"이라 사용자 결정 ·
+  ② T3.5 xlsx 작성 시각 · ③ WS4 JSON-LD 비교 · ④ T2.2 매핑표 검토.
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).
