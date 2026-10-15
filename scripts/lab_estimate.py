@@ -1,11 +1,13 @@
-"""랩별 세트당 데이터 건수 추산 — registry 레시피로 '레시피대로 한 실험 1세트'를 엔진으로 만들어 셈법 A·B·C 로 센다.
+"""랩별 세트당 데이터 건수 추산 — registry 레시피로 '레시피대로 한 실험 1세트'를 엔진으로 만들어 셈법 A·C·B 로 센다.
 정의 = docs/intent/data-count-methods.md "재논의(10-15)" 절 · 목표 = 연차보고서 배포본 2026 표(PLAN).
 → reports/lab-estimate-registry-v<판>.md(+ .json — plot_count_methods.py 가 읽는다)
 
 가정(랩 확인 전 추산): 레시피 고정값·registry 기본값은 적힘 · Variable 파라미터는 연구자가 채움 · 기본값 없는 선택 파라미터는 빈칸 ·
 원료 개체마다 정보 칸 2개(CAS·화학식) · 투입량은 안 적음 · 결과는 정의된 것마다 1회.
 설계인자 = registry Variable(랩 선언)만 — 실데이터가 없어 '세트마다 값이 달라진 것'은 못 본다(ELF·CAM 의 Variable 엔 sampleId 같은 운용값도 있어 과대).
-응답 = 결과 중 랩 Kind 가 공정이 아닌 것. B 는 측정 1회(응답 각 1) ~ 같은 시편 반복(응답 각 2)의 범위.
+응답(B) = 결과 중 랩 Kind 가 공정이 아닌 것. B 는 측정 1회(응답 각 1) ~ 같은 시편 반복(응답 각 2)의 범위.
+C(10-15 재정의) = 레시피 1 + 측정·분석 — 측정·분석 = registry StepType SDLEXO_Class 가 MEASURE 인 스텝의 결과(칭량·메모 제외).
+  경계 = MEASURE 가 아닌 스텝에 붙었는데 랩 Kind 는 측정인 결과(랩 확인 — C 에 안 넣고 따로 적음). C 도 1회 ~ 반복 범위.
 A 트리플 = 이 레시피 1세트를 플랫폼 적재기에 넣은 그래프(count_methods.py --triples, 다른 프로세스 — CLAUDE.md 함정).
 
 사용: python3 -I scripts/lab_estimate.py
@@ -18,6 +20,7 @@ PLATFORM = (HERE.parent / os.environ.get("SDL_PLATFORM_DIR", "../sdl-ontology-pl
 sys.path.insert(0, str(PREFILL))                  # PYTHONPATH 의 다른 sdl_platform 보다 앞에(CLAUDE.md 함정)
 import sdl_platform  # noqa: E402
 assert pathlib.Path(sdl_platform.__file__).resolve().is_relative_to(PREFILL), sdl_platform.__file__
+from sdl_platform.engine import lab_registry  # noqa: E402
 from sdl_platform.paths import REGISTRY_VERSION  # noqa: E402
 from sdl_platform.v05 import draft as D, recipe, sheets  # noqa: E402
 
@@ -29,6 +32,8 @@ PLAN = {"석유화학촉매": (35, (105, 70, 105, 400), ["KRICT-PCC"]),
         "전기화학촉매": (30, (30, 30, 60, 60), ["KIER-ECC"]),
         "이차전지": (30, (30, 30, 180, 60), ["KAIST-ELF", "KAIST-CAM", "KAIST-BAS"]),
         "(분석 지원)": (0, (0, 0, 0, 0), ["KRICT-CHA"])}
+WEIGH = {"WEI", "WEIGH"}     # 칭량 — MEASURE 스텝이지만 공정 기록 → 레시피 1건(사용자 10-15)
+NOTE = {"remark"}            # 측정이 아닌 메모 칸
 
 
 def one_set(lab, code, out):
@@ -38,7 +43,8 @@ def one_set(lab, code, out):
     for e in d["entities"]:
         if D.is_raw(e, produced, d["steps"]):
             e["cas"], e["formula"] = "x", "x"
-    y = df = 0
+    cls = {r.get("StepTypeCode"): r.get("SDLEXO_Class") for r in lab_registry.lab_sheets(lab).get("StepType", [])}
+    y = df = m = edge = 0
     for s in d["steps"]:
         for p in s["params"]:
             if p.get("variable"):
@@ -52,12 +58,18 @@ def one_set(lab, code, out):
             else:
                 v["value"] = "1"
             y += r.get("kindLab") != "Process"
+            if s["code"] in WEIGH or r["name"] in NOTE:
+                continue
+            if cls.get(s["code"]) == "MEASURE":
+                m += 1
+            elif r.get("kindLab") not in ("", "Process"):
+                edge += 1
     rows = sheets.build(d)[0]
     (out / lab / code).mkdir(parents=True)
     (out / lab / code / "template.xlsx").write_bytes(sheets.to_xlsx(rows))
     # 레시피의 결과는 (스텝, 이름)마다 하나 → 측정 항목 수 = 응답 수
     return {"cells": sum(sheets.data_counts(rows).values()), "Y": y, "DF": df,
-            "B1": 1 + df + y, "B2": 1 + df + 2 * y, "C": 1 + y}
+            "B1": 1 + df + y, "B2": 1 + df + 2 * y, "M": m, "edge": edge, "C": 1 + m, "C2": 1 + 2 * m}
 
 
 def main():
@@ -73,25 +85,26 @@ def main():
     lines = [f"# 랩별 세트당 데이터 건수 추산 — registry v{REGISTRY_VERSION}", "",
              f"이 스크립트 {commit(HERE)} · sdl-prefill {commit(PREFILL)} · 플랫폼 적재기·J2 {commit(PLATFORM)}. "
              "정의·가정 = `docs/intent/data-count-methods.md` 재논의 절 · 스크립트 머리말. 1세트 = 레시피대로, 결과 1회.", "",
-             "| 분야 | 레시피 | A 트리플 | B 1회 ~ 반복 | C | 응답 | 설계인자(랩 선언) | 칸 단위(참고) |",
-             "|---|---|---:|---:|---:|---:|---:|---:|"]
+             "| 분야 | 레시피 | A 트리플 | **C** 1회 ~ 반복 | 측정·분석 | 경계(랩 확인) | B 1회 ~ 반복 | 응답(B) | 설계인자(랩 선언) | 칸 단위(참고) |",
+             "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
     summary, tot = [], {}
     for field, (n, plan, _) in PLAN.items():
         if not est[field]:
-            lines.append(f"| {field} | (레시피 결과 미정의 — 추산 불가) | | | | | | |")
+            lines.append(f"| {field} | (레시피 결과 미정의 — 추산 불가) | | | | | | | | |")
         for code, e in est[field]:
-            lines.append(f"| {field} | {code} | {e['A']:,} | {e['B1']} ~ {e['B2']} | {e['C']} | {e['Y']} | {e['DF']} | {e['cells']} |")
+            lines.append(f"| {field} | {code} | {e['A']:,} | {e['C']} ~ {e['C2']} | {e['M']} | {'+' * bool(e['edge'])}{e['edge'] or ''} | "
+                         f"{e['B1']} ~ {e['B2']} | {e['Y']} | {e['DF']} | {e['cells']} |")
         if n and est[field]:
-            rng = {k: (min(e[k] for _, e in est[field]) * n, max(e[k] for _, e in est[field]) * n) for k in ("A", "B1", "B2", "C")}
+            rng = {k: (min(e[k] for _, e in est[field]) * n, max(e[k] for _, e in est[field]) * n) for k in ("A", "C", "C2", "B1", "B2")}
             summary.append((field, n, sum(plan), rng))
             for k, v in rng.items():
                 tot[k] = (tot.get(k, (0, 0))[0] + v[0], tot.get(k, (0, 0))[1] + v[1])
     fmt = lambda v: f"{v[0]:,}" if v[0] == v[1] else f"{v[0]:,}~{v[1]:,}"  # noqa: E731
     lines += ["", "## 2026 목표 세트 × 1세트 추산", "",
-              "| 분야 | 계획 세트 | 계획 건(세트당) | × A | × B 1회 | × B 반복 | × C |", "|---|---:|---:|---:|---:|---:|---:|"]
+              "| 분야 | 계획 세트 | 계획 건(세트당) | × A | × C 1회 | × C 반복 | × B 1회 | × B 반복 |", "|---|---:|---:|---:|---:|---:|---:|---:|"]
     for field, n, p, rng in summary:
-        lines.append(f"| {field} | {n} | {p:,} ({p / n:.1f}) | {fmt(rng['A'])} | {fmt(rng['B1'])} | {fmt(rng['B2'])} | {fmt(rng['C'])} |")
-    lines.append(f"| 합계(추산 가능 분야) | | {sum(p for _, _, p, _ in summary):,} | {fmt(tot['A'])} | {fmt(tot['B1'])} | {fmt(tot['B2'])} | {fmt(tot['C'])} |")
+        lines.append(f"| {field} | {n} | {p:,} ({p / n:.1f}) | {fmt(rng['A'])} | {fmt(rng['C'])} | {fmt(rng['C2'])} | {fmt(rng['B1'])} | {fmt(rng['B2'])} |")
+    lines.append(f"| 합계(추산 가능 분야) | | {sum(p for _, _, p, _ in summary):,} | {fmt(tot['A'])} | {fmt(tot['C'])} | {fmt(tot['C2'])} | {fmt(tot['B1'])} | {fmt(tot['B2'])} |")
     out = HERE.parent / "reports" / f"lab-estimate-registry-v{REGISTRY_VERSION}.md"
     out.write_text("\n".join(lines) + "\n")
     out.with_suffix(".json").write_text(json.dumps(   # plot_count_methods.py 가 읽는다

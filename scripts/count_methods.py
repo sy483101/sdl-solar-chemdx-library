@@ -1,4 +1,4 @@
-"""데이터 건수 셈법 비교(A 트리플 · B 설계인자+묶음+응답 · C X 1+응답 항목 · 참고 칸 단위) — ChemDX 라이브러리 빌드 실데이터.
+"""데이터 건수 셈법 비교(A 트리플 · B 설계인자+묶음+응답 · C 레시피 1+측정·분석 · 참고 칸 단위) — ChemDX 라이브러리 빌드 실데이터.
 정의 = docs/intent/data-count-methods.md "재논의(10-15)" 절 · 설득 문서 = docs/data-count-methods-brief.md.
 
 라이브러리 빌드 하나 → reports/count-methods-<빌드>.md(숫자만, git).
@@ -74,7 +74,6 @@ def main(lib):
         ys = [r for r in p["Result"] if is_y(r)]
         n["A_cells"] += c["composition"] + c["structure"] + c["process"] + c["analysis"]
         n["A_manual"] += c["composition"] + c["structure"] + c["process_manual"] + c["analysis"]
-        n["C"] += 1 + len({(r["StepID"], r["Name"]) for r in ys})                       # 응답은 측정 항목마다 1
         n["Y"] += len(ys)
         n["Y_items"] += len({(r["StepID"], r["Name"]) for r in ys})
         n["Y_files"] += sum(r["OriginalFileName"] != "" for r in ys)
@@ -109,6 +108,9 @@ def main(lib):
         n["B_proc"] += sum(k in design for k in mine)
         n["B_resp"] += resp
     n["B"] = n["sets"] + n["B_comp"] + n["B_proc"] + n["B_resp"]
+    # C(10-15 재정의) = 레시피 1 + 측정·분석 — 측정·분석 셈 = B 응답과 같다(대상·스텝·항목마다 1, 같은 자리 반복 2).
+    # ponytail: 같은 자리·같은 설정을 스텝을 나눠 적은 반복은 안 합친다 — ChemDX JV 스텝은 방향·면적이 서로 달라 해당 없음, 그런 데이터가 오면
+    n["C"] = n["sets"] + n["B_resp"]
     vary = sorted({f"{k[0].split('→')[-1].strip()}.{k[1]}" for k in design})
     bundle = sorted({f"{k[0].split('→')[-1].strip()}.{k[1]}" for k, v in slots.items() if len(v) > 1 and k[1] in BUNDLE})
 
@@ -131,8 +133,8 @@ def main(lib):
         f"이 스크립트 {commit(HERE)} · 플랫폼 적재기·J2 {commit(PLATFORM)}. 정의 = `docs/intent/data-count-methods.md`(재논의 10-15).", "",
         "| 셈법 | 정의 | 건수 | 세트당 | 트리플 ÷ 건수 |", "|---|---|---:|---:|---:|",
         f"| **A** 트리플 | 플랫폼 적재기로 만든 그래프의 트리플 수 | {t['full']:,} | {per(t['full'])} | 1.0 |",
+        f"| **C** 레시피 1 + 측정·분석 | 레시피 전체 1 + 측정·분석(대상·스텝·항목마다 1, 같은 자리 2회 이상이면 2) | {n['C']:,} | {per(n['C'])} | {t['full'] / n['C']:.1f} |",
         f"| **B** 설계인자 + 묶음 + 응답 | 고정·변동 인자 묶음 1 + 설계인자 각 1 + 응답(시편·항목마다 1, 같은 시편 반복이면 2) | {n['B']:,} | {per(n['B'])} | {t['full'] / n['B']:.1f} |",
-        f"| **C** X 1 + 응답 항목 | X 전체 1 + 측정 항목(스텝·결과 이름)마다 1 | {n['C']:,} | {per(n['C'])} | {t['full'] / n['C']:.1f} |",
         f"| (참고) 칸 단위(현행 `data_counts`) | 채워진 칸 = 1건(registry 기본값 포함) | {n['A_cells']:,} | {per(n['A_cells'])} | {t['full'] / n['A_cells']:.1f} |",
         f"| (참고) 칸 단위 · 기본값 제외 | 연구자가 적은 칸만 | {n['A_manual']:,} | {per(n['A_manual'])} | {t['full'] / n['A_manual']:.1f} |",
         f"| (참고) ML 표본 행 | 응답을 낸 측정(스텝·반복) 하나 = 1 | {n['ml_rows']:,} | {per(n['ml_rows'])} | |", "",
