@@ -6,7 +6,7 @@
 build_library.py 와 다른 프로세스로 돈다(CLAUDE.md 함정). 세트 폴더는 적재기의 read_set 으로 그대로 읽는다(5sheet-1.1 ·
 빈 Entity Type = 재료 — 플랫폼 PRJ22). 파생 링크(materialize 의 추론)는 넣지 않는다 — C = 명시적 트리플.
 
-사용: python3 -I scripts/count_methods.py <library/<빌드>>
+사용: python3 -I scripts/count_methods.py <library/<빌드>> [묶음]   # 묶음 = manifest group(2026 기본 · other)
      python3 -I scripts/count_methods.py --triples <폴더>   # <폴더>/<랩>/<레시피>/template.xlsx → 레시피별 트리플 수(JSON) — lab_estimate.py 가 부른다
 """
 import collections, json, os, pathlib, subprocess, sys
@@ -40,9 +40,9 @@ def triples(pkgs, keep=lambda s, r: True):
     return ld
 
 
-def main(lib):
+def main(lib, group="2026"):
     man = json.loads((lib / "manifest.json").read_text())
-    sets = [s for s in man["sets"] if s["group"] == "2026"]
+    sets = [s for s in man["sets"] if s["group"] == group]
     pkgs = [L.read_set(lib / s.get("path", f"{s['group']}/{s['experimentId']}") / "template.xlsx") for s in sets]   # path 없음 = 옛 배치(~dev-20261014b)
 
     n = collections.Counter(sets=len(sets))
@@ -115,7 +115,7 @@ def main(lib):
     rows = n["sets"]
     per = lambda x: f"{x / rows:,.1f}"  # noqa: E731
     lines = [
-        f"# 데이터 건수 셈법 · 트리플 — {lib.name} (2026)", "",
+        f"# 데이터 건수 셈법 · 트리플 — {lib.name} ({group})", "",
         f"빌드 `{lib.name}`(코드 {man['code']} · sdl-prefill {man['sdlPrefill']} · registry {man['registryVersion']}) · "
         f"이 스크립트 {commit(HERE)} · 플랫폼 적재기 {commit(PLATFORM)}. 정의 = `docs/intent/data-count-methods.md`(재논의 10-15).", "",
         "| 셈법 | 정의 | 건수 | 세트당 | 트리플 ÷ 건수 |", "|---|---|---:|---:|---:|",
@@ -151,7 +151,7 @@ def main(lib):
             ("ref", "공유 참조(랩·장비·스텝 종류·레시피 — 그래프 전체에 1번)")]), "",
         "클래스별 인스턴스(VoID classPartition, 실험 범위): " + " · ".join(f"{c} {v:,}" for c, v in part.most_common()),
     ]
-    out = HERE.parent / "reports" / f"count-methods-{lib.name}.md"
+    out = HERE.parent / "reports" / f"count-methods-{lib.name}{'' if group == '2026' else '-' + group}.md"   # 2026 = 옛 이름 그대로
     out.write_text("\n".join(lines) + "\n")
     out.with_suffix(".json").write_text(json.dumps(   # 세트당 숫자 — plot_count_methods.py 가 읽는다
         {"sets": rows, "A": n["A"] / rows, "B": n["B"] / rows, "C": t["full"] / rows, "cells": n["cells"] / rows}, indent=1) + "\n")
@@ -163,4 +163,4 @@ if __name__ == "__main__":
         root = pathlib.Path(sys.argv[2])
         print(json.dumps({d.name: len(triples([L.read_set(d / "template.xlsx")]).g) for d in sorted(root.glob("*/*"))}))
     else:
-        main(pathlib.Path(sys.argv[1]).resolve())
+        main(pathlib.Path(sys.argv[1]).resolve(), *sys.argv[2:3])

@@ -6,6 +6,8 @@
 """
 import collections, hashlib, io, json, os, pathlib, subprocess, sys, zipfile
 
+import openpyxl
+
 HERE = pathlib.Path(__file__).resolve().parent
 PREFILL = (HERE.parent / os.environ.get("SDL_PREFILL_DIR", "../sdl-prefill")).resolve()
 sys.path[:0] = [str(PREFILL), str(HERE)]          # PYTHONPATH 의 다른 sdl_platform 보다 앞에(CLAUDE.md 함정)
@@ -24,6 +26,17 @@ CONTEXT = {"@version": 1.1, "@base": "file:///",
            "source": {"@id": "prov:wasDerivedFrom", "@type": "@id"},   # 2차 원본 스냅샷 폴더(file IRI)
            "years": "dcterms:temporal", "sets": "dcterms:hasPart", "experimentId": "dcterms:identifier"}
 SKIP_HEAD = 8                                        # 집계에 적을 건너뜀 이유 줄 수
+
+
+def reread(path):
+    """template.xlsx → {시트: [행]}(값은 문자열) — 웹이 올린 파일을 읽는 꼴(sdl-prefill backend v05._read_export)."""
+    wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+    out = {}
+    for ws in wb.worksheets:
+        it = ws.iter_rows(values_only=True)
+        head = [str(c) for c in next(it)]
+        out[ws.title] = [dict(zip(head, ["" if v is None else str(v) for v in r])) for r in it]
+    return out
 
 
 def commit(path):
@@ -58,6 +71,9 @@ def main(snap, out, years):
         rows = sheets.build(d)[0]
         counts = sheets.data_counts(rows)
         counts["process_manual"] = sum(p["Source"] == "manual" and str(p["Value"]).strip() != "" for p in rows["Parameter"])
+        # 산정 건수 A = 웹 미리보기와 같은 함수(sheets.set_count) · 내려받은 xlsx 를 웹처럼 다시 읽어도 같은지 확인(T3.4)
+        counts["setCount"] = sum(sheets.set_count(rows).values())
+        assert counts["setCount"] == sum(sheets.set_count(reread(out / path / "template.xlsx")).values()), exp_id
         levels = collections.Counter(f["level"] for f in findings)
         sets.append({"@id": f"aeod:{exp_id}", "experimentId": exp_id, "path": path, "chemdxId": r["id"], "group": group,
                      "counts": counts, "findings": levels})
@@ -74,10 +90,10 @@ def main(snap, out, years):
     lines = [f"# 정량지표 — {out.name}", "",
              f"원본 `{snap.name}` · 코드 `{manifest['code']}` · sdl-prefill `{manifest['sdlPrefill']}` · registry {REGISTRY_VERSION} · "
              f"template {sheets.TEMPLATE_VERSION} · 골격 {manifest['recipe']}", "",
-             "| 구분 | 세트 | 조성 | 구조 | 공정 | 분석 | 합계 | 공정 중 manual | 알림 남은 세트 | 오류 · 미입력 · 확인 | 건너뜀 |",
-             "|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|"]
+             "| 구분 | 세트 | **산정 건수 A**(세트당) | 조성 | 구조 | 공정 | 분석 | 칸 합계(참고) | 공정 중 manual | 알림 남은 세트 | 오류 · 미입력 · 확인 | 건너뜀 |",
+             "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|"]
     for g, t in sorted(totals.items()):
-        lines.append(f"| {g} | {t['sets']} | " + " | ".join(f"{t[c]:,}" for c in COLS) + f" | {sum(t[c] for c in COLS):,} | "
+        lines.append(f"| {g} | {t['sets']} | **{t['setCount']:,}**({t['setCount'] / max(t['sets'], 1):.1f}) | " + " | ".join(f"{t[c]:,}" for c in COLS) + f" | {sum(t[c] for c in COLS):,} | "
                      f"{t['process_manual']:,} | {t['sets_with_findings']} | {t['findings_error']} · {t['findings_miss']} · {t['findings_warn']} | {t['skipped']:,} |")
     why = collections.Counter((x["group"], x["reason"]) for x in skipped)
     if why:
