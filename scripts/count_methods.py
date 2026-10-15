@@ -12,6 +12,7 @@ build_library.py 와 다른 프로세스로 돈다(CLAUDE.md 함정). 플랫폼�
 import collections, json, os, pathlib, subprocess, sys
 
 import openpyxl
+from rdflib import OWL, RDF, RDFS, BNode
 
 HERE = pathlib.Path(__file__).resolve().parent
 PLATFORM = (HERE.parent / os.environ.get("SDL_PLATFORM_DIR", "../sdl-ontology-platform")).resolve()
@@ -29,6 +30,8 @@ EXTRA_J2 = {"페로브스카이트": "material"}         # 변환기가 만든 �
 INFO = ("CAS", "ChemicalFormula", "Supplier", "Product", "Lot")   # 조성 정보 칸 = prefill sheets.INFO
 # 관측 변동 중 변동 인자(환경)·측정 설정 → 고정·변동 인자 묶음. 데이터팀 1차 분류(사용자 10-15) — 랩 확인 전
 BUNDLE = {"laboratoryTemperature", "laboratoryRelativeHumidity", "scanDirection"}
+# C 조건(사용자 10-15): 명시적·ABox 트리플만(VoID void:triples) — 스키마(TBox) 트리플이 섞이면 멈춘다
+TBOX = {OWL.Class, OWL.ObjectProperty, OWL.DatatypeProperty, OWL.Ontology, RDFS.subClassOf, RDFS.domain, RDFS.range}
 
 
 def read(d, lab):
@@ -122,6 +125,13 @@ def main(lib):
          "condition": without(lambda s, r: s != "Condition"),
          "defaults": without(lambda s, r: not (s == "Condition" and r["Source"] == "default"))}
     t["rest"] = t["full"] - t["Y"] - t["condition"]
+    # C 조건: 적재기 그래프(추론 없음)에서 센다 · 구성과 클래스별 인스턴스(VoID classPartition)를 함께 적는다
+    g = full.g
+    assert not any(p in TBOX or o in TBOX for _, p, o in g), "TBox 트리플이 섞임"
+    exp = lambda u: isinstance(u, BNode) or "-EXP-" in u   # ponytail: 실험 범위 = 실험 ID 체계 {랩}-EXP-… · 값 노드(이름 없음)  # noqa: E731
+    comp = collections.Counter("ref" if not exp(s) else "bnode" if isinstance(s, BNode) else   # 겹치지 않게 앞 것 우선
+                               "type" if p == RDF.type else "seeAlso" if p == RDFS.seeAlso else "rest" for s, p, _ in g)
+    part = collections.Counter(o.split("#")[-1] for s, o in g.subject_objects(RDF.type) if exp(s))
 
     git = lambda p, *a: subprocess.run(["git", "-C", str(p), *a], capture_output=True, text=True).stdout.strip()  # noqa: E731
     commit = lambda p: git(p, "describe", "--always") + ("-dirty" if git(p, "status", "--porcelain") else "")  # noqa: E731
@@ -153,7 +163,16 @@ def main(lib):
         f"| 공정 조건(Parameter) | {t['condition']:,} — 그중 registry 기본값 {t['defaults']:,} |",
         f"| 메타데이터·개체·스텝·투입/산출 | {t['rest']:,} |", "",
         "적재 조건: prefill 5sheet-1.1 → 플랫폼 v0.6 시트 이름만 바꿈 · Entity Type = 플랫폼 J2(페로브스카이트 재료 개체만 material 로 보탬). "
-        "부분별 트리플 = 그 행을 뺀 그래프와의 차이(공유 노드 탓 합이 약간 어긋날 수 있음).",
+        "부분별 트리플 = 그 행을 뺀 그래프와의 차이(공유 노드 탓 합이 약간 어긋날 수 있음).", "",
+        "**C 조건(10-15)** = 명시적·인스턴스(ABox) 트리플(VoID `void:triples`) — 이 빌드를 적재기로 만든 그래프에서 센다(추론 없음 · TBox 0 확인). "
+        "저장소(Fuseki)에서 세지 않는다(이름 없는 값 노드는 다시 적재하면 중복 · 다른 연도·온톨로지 그래프가 섞임). "
+        "판 = 위 머리의 플랫폼 커밋(적재기·aeonto·MPSP) + registry 판 — 그 해 숫자는 다시 세지 않는다.", "",
+        "| 구성(겹치지 않게) | 트리플 | 비율 |", "|---|---:|---:|",
+        *(f"| {label} | {comp[k]:,} | {comp[k] / t['full']:.1%} |" for k, label in [
+            ("bnode", "값 노드(이름 없음, QuantityValue — 종류·숫자·단위)"), ("type", "클래스 표시 rdf:type(이름 있는 노드)"),
+            ("seeAlso", "MPSP 연결 rdfs:seeAlso"), ("rest", "나머지(개체·스텝·조건·결과의 값과 연결)"),
+            ("ref", "공유 참조(랩·장비·스텝 종류·레시피 — 그래프 전체에 1번)")]), "",
+        "클래스별 인스턴스(VoID classPartition, 실험 범위): " + " · ".join(f"{c} {v:,}" for c, v in part.most_common()),
     ]
     out = HERE.parent / "reports" / f"count-methods-{lib.name}.md"
     out.write_text("\n".join(lines) + "\n")
