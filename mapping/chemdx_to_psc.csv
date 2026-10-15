@@ -87,3 +87,11 @@ jv,analysis.JV[].pv_cell_parameters.isc · analysis.JV[].calculations.fitted_isc
 jv,analysis.JV[].efficiency · fill_factor · jsc · voc · cell_dimension · sweep_direction,drop,,,,,,pv_cell_parameters 의 사본
 jv,analysis.JV[].key · analysis.JV[].measurement_conditions.sample_id,drop,,,,,,key = 방향_원본 파일명(시각 뺌) — 2328/2328 일치라 파일 이름에 남음
 jv,analysis.JV[].measurement_conditions.note · configuration_file,drop,,,,,,측정기 기본 문구(글자 깨짐) · 설정 파일명
+etl,input[].etl[].concentration · conc_unit,param,ETLCD | ETLCT,concentration,mg/mL,,추가후보,2022~2025(② 10-15) — ETL 스텝에 칸 없음 → Process Note. 값에 '1:5 ratio (in H2O)' 같은 글도 있음(ETLCT waterToSno2VolumeRatio 후보)
+etl,input[].etl[].quantity,param,ETLCT,spinCoatingVolume,µL,ml → µL,registry,2022~2025(② 10-15)
+etl,input[].chemical_bath_deposition.bath_annealing[].temperature,param,ETLCD,temperature,℃,oC → ℃,확인,② 10-15 — CBD 욕조 온도로 봄(4건)
+etl,input[].chemical_bath_deposition.bath_annealing[].time,param,ETLCD,immersionTime,min,m → min,확인,② 10-15 — CBD 담금 시간으로 봄(4건)
+(층마다),input[].module[].* · perovskite.module[].*,param,(그 층 스텝),module.<키>,,,추가후보,② 10-15 — 바·슬롯다이 코팅(type·gap·coating_speed·feeding_amount) → Process Note. 단위셀 레코드 40건
+perovskite,input[].perovskite.vacuum_suction[],param,PVK,vacuum_suction,s,,추가후보,② 10-15 — 진공 흡입 시간(6건) → Process Note
+record,analysis_old.JV[],drop,,,,,,② 10-15 — analysis.JV 의 사본(2022~2023 126건 모두 곡선 키·수·효율 같음)
+record,public,drop,,,,,,② 10-15 — ChemDX 공개 여부(실험 데이터 아님)

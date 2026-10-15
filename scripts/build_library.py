@@ -23,6 +23,7 @@ CONTEXT = {"@version": 1.1, "@base": "file:///",
            "aeod": "http://sdl.platform/data#",            # 플랫폼 ABox 의 실험 노드와 같은 IRI(세트 = 실험 ID)
            "source": {"@id": "prov:wasDerivedFrom", "@type": "@id"},   # 2차 원본 스냅샷 폴더(file IRI)
            "years": "dcterms:temporal", "sets": "dcterms:hasPart", "experimentId": "dcterms:identifier"}
+SKIP_HEAD = 8                                        # 집계에 적을 건너뜀 이유 줄 수
 
 
 def commit(path):
@@ -39,12 +40,17 @@ def main(snap, out, years):
         per_day[r["created_at"][:10]] += 1
         seq[r["id"]] = per_day[r["created_at"][:10]]
 
-    sets, totals = [], collections.defaultdict(collections.Counter)
+    sets, skipped, totals = [], [], collections.defaultdict(collections.Counter)
     for r in recs:
-        d, blobs = convert.convert(r, seq[r["id"]])
+        group = "2026" if r["created_at"].startswith("2026") else "other"
+        try:
+            d, blobs = convert.convert(r, seq[r["id"]])
+        except convert.Skip as e:                    # 골격 밖 레코드 — 번호(seq)는 비워 둔다: 나중에 들어와도 다른 세트 ID 가 안 바뀜
+            skipped.append({"chemdxId": r["id"], "group": group, "reason": str(e)})
+            totals[group]["skipped"] += 1
+            continue
         findings = D.validate(d, {k: len(v) for k, v in blobs.items()})
         exp_id, z = sheets.to_zip(d, blobs, findings)
-        group = "2026" if r["created_at"].startswith("2026") else "other"
         lab, ymd = exp_id.split("-EXP-")                 # 실험 ID {랩}-EXP-{YYYYMMDD}-{NNN} → <랩>/<연도>(플랫폼 load.check_set 과 같은 규칙)
         path = f"{lab}/{ymd[:4]}/{exp_id}"
         assert not (out / path).exists(), f"실험 ID 겹침 {exp_id}"
@@ -62,17 +68,22 @@ def main(snap, out, years):
                 "source": str(snap), "sourceManifestSha256": hashlib.sha256((snap / "manifest.json").read_bytes()).hexdigest(),
                 "years": years or "all", "code": commit(HERE), "sdlPrefill": commit(PREFILL),
                 "registryVersion": REGISTRY_VERSION, "templateVersion": sheets.TEMPLATE_VERSION,
-                "recipe": f"{convert.LAB} {convert.RECIPE}", "totals": totals, "sets": sets}
+                "recipe": f"{convert.LAB} {convert.RECIPE}", "totals": totals, "sets": sets, "skipped": skipped}
     (out / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=1))
 
     lines = [f"# 정량지표 — {out.name}", "",
              f"원본 `{snap.name}` · 코드 `{manifest['code']}` · sdl-prefill `{manifest['sdlPrefill']}` · registry {REGISTRY_VERSION} · "
              f"template {sheets.TEMPLATE_VERSION} · 골격 {manifest['recipe']}", "",
-             "| 구분 | 세트 | 조성 | 구조 | 공정 | 분석 | 합계 | 공정 중 manual | 알림 남은 세트 | 오류 · 미입력 · 확인 |",
-             "|---|---:|---:|---:|---:|---:|---:|---:|---:|---|"]
+             "| 구분 | 세트 | 조성 | 구조 | 공정 | 분석 | 합계 | 공정 중 manual | 알림 남은 세트 | 오류 · 미입력 · 확인 | 건너뜀 |",
+             "|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|"]
     for g, t in sorted(totals.items()):
         lines.append(f"| {g} | {t['sets']} | " + " | ".join(f"{t[c]:,}" for c in COLS) + f" | {sum(t[c] for c in COLS):,} | "
-                     f"{t['process_manual']:,} | {t['sets_with_findings']} | {t['findings_error']} · {t['findings_miss']} · {t['findings_warn']} |")
+                     f"{t['process_manual']:,} | {t['sets_with_findings']} | {t['findings_error']} · {t['findings_miss']} · {t['findings_warn']} | {t['skipped']:,} |")
+    why = collections.Counter((x["group"], x["reason"]) for x in skipped)
+    if why:
+        lines += ["", "건너뛴 레코드(골격 밖 — manifest `skipped`):", ""] + [
+            f"- {g} · {n:,} · {reason}" for (g, reason), n in why.most_common(SKIP_HEAD)] + (
+            [f"- 그 밖 {len(why) - SKIP_HEAD}가지 이유 · {sum(n for _, n in why.most_common()[SKIP_HEAD:]):,}건"] if len(why) > SKIP_HEAD else [])
     report = HERE.parent / "reports" / f"indicator-{out.name}.md"
     report.parent.mkdir(exist_ok=True)
     report.write_text("\n".join(lines) + "\n")

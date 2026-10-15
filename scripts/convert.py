@@ -16,6 +16,11 @@ UNIT = {"ul": "ul", "µl": "ul", "μl": "ul", "ml": "ml", "m": "min", "min": "mi
         "oc": "c", "℃": "c", "degc": "c", "°c": "c"}
 FACTOR = {("ml", "ul"): 1000, ("ul", "ml"): 0.001, ("s", "min"): 1 / 60, ("min", "s"): 60, ("h", "min"): 60}
 DOPANT = {"li-tfsi": "dopant1", "co-tfsi": "dopant2", "tbp": "additive"}   # HTL 도핑 = 이름으로 칸을 고른다
+ETL_DROP = {"SnO2_CBD": "ETLCT", "SnO2_NP": "ETLCD"}   # ETL 재료 → PSC-RCP-03 에서 뺄 SnO2 스텝(남는 쪽이 그 공정)
+
+
+class Skip(Exception):
+    """PSC-RCP-03(n-i-p 단위셀 SnO2) 골격에 맞지 않는 레코드 — 빌드가 이유와 함께 건너뛰고 manifest 에 남긴다(10-15 사용자)."""
 
 
 def fmt(x):
@@ -46,7 +51,7 @@ def to_unit(value, src, dst):
 
 
 def put(step, name, value, unit="", nth=0):
-    """파라미터 name 의 nth 번째 칸에 manual 값. 칸이 없거나 환산 못 하면 orphanParams."""
+    """파라미터 name 의 nth 번째 칸에 manual 값. 칸이 없거나 환산 못 하거나 숫자 칸에 글자면(엔진 검증 규칙) orphanParams."""
     if value in (None, ""):
         return
     value = fmt(value) if isinstance(value, (int, float)) and not isinstance(value, bool) else str(value).strip()
@@ -54,7 +59,7 @@ def put(step, name, value, unit="", nth=0):
     if nth < len(hits):
         p = hits[nth]
         v = to_unit(value, unit, p["unit"])
-        if v is not None:
+        if v is not None and (p["unit"] in ("", "-") or D._NUM.match(v)):
             p["value"], p["use"] = v, True
             return
     step["orphanParams"][name if nth == 0 else f"{name}#{nth + 1}"] = f"{value} {unit}".strip()
@@ -105,19 +110,40 @@ def spin_anneal(step, block):
     for i, an in enumerate(block.get("annealing") or []):
         put(step, "thermalAnnealingTemperature", *lv(an, "temperature"), nth=i)
         put(step, "thermalAnnealingTime", *lv(an, "time"), nth=i)
+    for i, m in enumerate(block.get("module") or []):  # 바·슬롯다이 등 코팅(2023~) — registry 칸 없음 → orphan(추가후보)
+        for k in m:
+            put(step, f"module.{k}", *lv(m, k), nth=i)
 
 
 def convert(rec, seq):
     """→ (draft, blobs{file id: bytes})."""
-    blocks = {}
+    # 골격 밖이면 레코드째 건너뛰고 이유를 남긴다(조용히 버리지 않는다). 이유는 큰 것부터: 구조 → 모듈 → ETL → 블록 모양.
+    blocks, odd = {}, []
     for b in rec["input"]:
-        layer = next((k for k in b if k in LAYERS), None)
-        if layer is None or layer in blocks:
-            raise ValueError(f"{rec['id']}: 모르는 input 블록 {list(b)}")   # 조용히 버리지 않는다
-        blocks[layer] = b
-    dev = blocks["device_type"]
+        if not b:
+            continue                                   # 빈 블록({}) — 2021~2025 레코드에 흔함
+        layers = [k for k in b if k in LAYERS]         # 한 블록에 층 여럿(예: tco + device_type)이면 층마다
+        if not layers:
+            odd.append(f"모르는 input 블록 {list(b)}")
+        for layer in layers:
+            if layer in blocks:
+                odd.append(f"같은 층 블록 둘({layer}) — 이중층·나눠 적은 블록(랩 확인)")
+            blocks.setdefault(layer, b)
+    dev = blocks.get("device_type") or {}
+    if lv(dev, "device_type")[0] == "p-i-n":
+        raise Skip("p-i-n — PSC-RCP-01(p-i-n) 골격의 [신규] 스텝 = PSC 회신 대기")
     if lv(dev, "device_type")[0] != "n-i-p":
-        raise ValueError(f"{rec['id']}: n-i-p 가 아님 — PSC-RCP-03 골격이 맞지 않는다")
+        raise Skip(f"소자 구조 {lv(dev, 'device_type')[0]} — 랩 확인")
+    if lv(dev, "type")[0] == "module":
+        raise Skip("n-i-p 모듈 — PSC-RCP-02 골격의 [신규] 스텝 = PSC 회신 대기")
+    etl = lv(((blocks.get("etl") or {}).get("etl") or [{}])[0], "material")[0]
+    if etl not in ETL_DROP:
+        raise Skip(f"ETL {etl} — PSC-RCP-03 에 그 공정 스텝 없음(랩 확인)")
+    missing = [k for k in ("tco", "perovskite", "htl") if k not in blocks]
+    if missing or odd:
+        raise Skip(odd[0] if odd else f"필수 층 블록 없음 {missing} — 랩 확인")
+    if blocks["perovskite"]["perovskite"].get("thermal_evaporation"):
+        raise Skip("PVK 진공 증착 — PSC-RCP-03 PVK(용액 공정) 스텝과 다름(랩 확인)")
 
     d = D.from_recipe(LAB, RECIPE, {"date": rec["created_at"][:10], "seq": f"{seq:03d}"})
     for s in d["steps"]:                                  # 레시피 표준값 지움 → registry 기본값(default)
@@ -126,8 +152,7 @@ def convert(rec, seq):
             p["value"], p["use"] = "", False
     for code in ("EQE", "IMAGE", "THICK"):                # ChemDX 에 없는 측정
         drop_step(d, code)
-    etl = lv(blocks["etl"]["etl"][0], "material")[0]
-    drop_step(d, {"SnO2_CBD": "ETLCT", "SnO2_NP": "ETLCD"}[etl])
+    drop_step(d, ETL_DROP[etl])
     ents = {e["name"]: e for e in d["entities"]}
 
     note = lv(dev, "note")[0]
@@ -142,6 +167,12 @@ def convert(rec, seq):
     if etl == "SnO2_NP":
         put(s, "material", etl)
     put(s, "atmosphere", *lv(blocks["etl"], "condition"))             # 추가후보
+    for i, t in enumerate(blocks["etl"]["etl"]):
+        put(s, "concentration", lv(t, "concentration")[0], lv(t, "conc_unit")[0], nth=i)   # ETL 스텝 칸 없음 → orphan
+        put(s, "spinCoatingVolume", *lv(t, "quantity"), nth=i)
+    for i, x in enumerate((blocks["etl"].get("chemical_bath_deposition") or {}).get("bath_annealing") or []):
+        put(s, "temperature", *lv(x, "temperature"), nth=i)            # CBD 욕조 온도·담금 시간(확인 대상)
+        put(s, "immersionTime", *lv(x, "time"), nth=i)
     spin_anneal(s, blocks["etl"])
 
     if "etl_treatment" in blocks:
@@ -170,6 +201,8 @@ def convert(rec, seq):
         put(s, "additive", *lv(x, "material"), nth=i)
         put(s, "additiveMolarRatio", *lv(x, "quantity"), nth=i)       # 추가후보
         put(s, "additiveConcentration", lv(x, "concentration")[0], lv(x, "conc_unit")[0], nth=i)  # 확인 대상
+    for i, x in enumerate(pvk.get("vacuum_suction") or []):          # 진공 흡입(2025) — 칸 없음 → orphan(추가후보)
+        put(s, "vacuum_suction", x.get("value"), x.get("unit") or "", nth=i)
     for x in pvk.get("antisolvent") or []:
         put(s, "antiSolvent", *lv(x, "material"))
         put(s, "antiSolventDrippingVolume", *lv(x, "quantity"))
@@ -181,12 +214,15 @@ def convert(rec, seq):
     put(s, "laboratoryTemperature", *lv(dev, "temperature"))          # 실험실 온습도 = PVK(확인 대상)
     put(s, "laboratoryRelativeHumidity", *lv(dev, "humidity"))
 
-    b, s = blocks["perovskite_treatment"], step_of(d, "PVKSF")
-    for t in b["perovskite_treatment"]:
-        put(s, "material", *lv(t, "material"))
-        put(s, "concentration", lv(t, "concentration")[0], lv(t, "conc_unit")[0])
-        put(s, "spinCoatingVolume", *lv(t, "quantity"))
-    spin_anneal(s, b)
+    if "perovskite_treatment" in blocks:
+        b, s = blocks["perovskite_treatment"], step_of(d, "PVKSF")
+        for t in b["perovskite_treatment"]:
+            put(s, "material", *lv(t, "material"))
+            put(s, "concentration", lv(t, "concentration")[0], lv(t, "conc_unit")[0])
+            put(s, "spinCoatingVolume", *lv(t, "quantity"))
+        spin_anneal(s, b)
+    else:
+        drop_step(d, "PVKSF")
 
     b, s = blocks["htl"], step_of(d, "HTL")
     for t in b["htl"]:
@@ -232,7 +268,7 @@ def convert(rec, seq):
             put(s, "scanDirection", direction.lower())
             put(s, "activeArea", a if a not in (None, "") else area, "cm2")
             put(s, "incidentLightIntensity", *lv(pv[0], "irradiance"))
-            put(s, "antireflectionFIlmUsage", {0: "no", 1: "yes"}.get(ar))
+            put(s, "antireflectionFIlmUsage", {"0": "no", "1": "yes"}.get(str(ar)))   # 0/1 이 숫자·글자 둘 다로 옴
             for r in s["results"]:
                 src = {"powerConversionEfficiency": "efficiency", "shortCircuitCurrentDensity": "jsc",
                        "openCircuitVoltage": "voc", "fillFactor": "fill_factor"}.get(r["name"])
@@ -264,6 +300,8 @@ def _selftest():
     st = {"params": [{"name": "a → thermalAnnealingTIme", "unit": "min", "value": "", "use": False}], "orphanParams": {}}
     put(st, "thermalAnnealingTime", "1", "h"); put(st, "thermalAnnealingTime", "3", "m", nth=1); put(st, "x", "2", "kg")
     assert st["params"][0]["value"] == "60" and st["params"][0]["use"] and st["orphanParams"] == {"thermalAnnealingTime#2": "3 m", "x": "2 kg"}
+    put(st, "thermalAnnealingTime", "MeO-PEAI")                        # 숫자 칸에 글자 → 칸은 그대로, orphan
+    assert st["params"][0]["value"] == "60" and st["orphanParams"]["thermalAnnealingTime"] == "MeO-PEAI"
     assert curve_csv({"V": {"unit": "V", "value": [1, 2]}, "J": {"unit": "A/cm2", "value": [3]}, "k": "x"}) == b"V [V],J [A/cm2]\r\n1,3\r\n2,\r\n"
 
 

@@ -78,6 +78,7 @@
 | `path` · `chemdxId` · `group` | 빌드 안 세트 폴더 · ChemDX 레코드 ID · 2026 / other |
 | `counts`(composition·structure·process·analysis·process_manual) | 칸 단위 참고 지표(`sheets.data_counts`) |
 | `findings`(error·miss·warn) · `totals` | 세트별 엔진 알림 수 · 묶음별 합계 |
+| `skipped`(chemdxId·group·reason) | 변환기 골격 밖이라 건너뛴 레코드와 이유(실험 ID 번호는 비워 둠) |
 
 잠정: `@vocab` 네임스페이스(이 문서 URL)와 빌드 `@id`(`urn:sdl-solar-chemdx-library:build:<빌드>`)는 플랫폼 `set.jsonld` 설계 때 맞춰 바꿀 수 있다.
 `totals` 의 `2026` 키가 속성 이름이 되는 것은 해롭지 않아 둠.

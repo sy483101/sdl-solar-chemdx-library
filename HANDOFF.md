@@ -55,4 +55,11 @@
   ③ `count_methods.py` = 적재기 `read_set` 그대로(시트 이름 바꾸기·J2 채우기 삭제). **새 dev 빌드 `dev-20261015`** = b 와 셀 내용·파일 같음(170/170) — 배치·manifest 만 다름.
   지금 적재기(9ead95b)로 C = **341,103**(플랫폼 시험 적재와 같음 · 빈 Type = 재료 탓 +672 — 소자 680·부품 672 가 재료로) · A 3,490 · B 6,695 그대로
   (`reports/count-methods-dev-20261015.md`). **보고 숫자는 그대로**(C 340,431 = 판 고정 · 2판 보고자료 · 그래프 = b 기준). 남은 이 레포 몫 = 플랫폼 빌더 뒤 `set.jsonld` 넣기.
+- **② 그 외 연도 dev 빌드(10-15 밤, 사용자 "1부터" · 범위 = n-i-p 단위셀 SnO2)** = `library/dev-20261015b`(전 연도) — 2026 170(dev-20261015 와 셀·파일 같음) +
+  2022~2025 **542세트**(오류 0 · 미입력 4,040 · 확인 1,415 · `reports/indicator-dev-20261015b.md`). 적재기 712세트 · 소견 0 · 미표현 0 · 140만 트리플.
+  변환기(`convert.py`): 빈 블록 건너뜀 · 한 블록 여러 층 · 표면처리 없음 → 스텝 뺌 · 숫자 칸에 글자 → Process Note(엔진 규칙) · ar "0"/0 · ETL 농도·양 ·
+  CBD 욕조 온도·시간(ETLCD temperature·immersionTime — 확인) · 코팅 `module.*`·`vacuum_suction` → Process Note(추가후보). 골격 밖 = `Skip`(manifest `skipped` 이유).
+  소실 검사: 2026 대비 새로 빠지는 것 = `public`(공개 표시) · `analysis_old.JV`(사본 — 126건 모두 같음)뿐. JV 없는 13세트는 ar 자리 없음(8건 '0').
+  **건너뛴 2,621 = PSC 회신 때 물을 것**: p-i-n 1,713(RCP-01 `[신규]` ANN·BUFEV) · n-i-p TiO2 498(레시피 없음 — 대부분 24.5 cm² 모듈) · n-i-p 모듈 327(RCP-02 `[신규]` ANN · 코팅 칸) ·
+  PVK 진공 증착 27 · ETL 이중층(바 코팅) 15 · SnO2_ALD 10 · 따로 떨어진 module 블록 10 · 구조 빈칸 8 · 기타 13.
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).

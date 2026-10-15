@@ -101,3 +101,9 @@
   검증: dev-20261015 = b 와 non-xlsx 파일 md5 같음 · xlsx 셀 내용 170/170 같음 · 적재기 library_sets 170 · check_set 소견 0 · manifest rdflib 파싱 2,401 트리플 ·
   hasPart 170 · 실험 IRI = ABox 노드 · `--triples` 경로 동작 · A 3,490 · B 6,695 · C 341,103(현 적재기 — 빈 Type = 재료로 +672). 보고 숫자는 b·옛 판 그대로.
 - **사용자 파일 커밋(2026-10-15)** — `docs/data-count-methods-brief 복사본.hwpx`(사용자 편집본, 그동안 미커밋으로 둠) 사용자 요청으로 그대로 커밋.
+- **② 그 외 연도 dev 빌드(2026-10-15 밤)** — 사용자 "1부터"(남은 일 중 2021~2025 빌드) → 조사: 3,163건 중 지금 변환기 통과 355. 소자 구조·실측 면적(단위셀 ≈0.09 · 모듈 24.5 cm²)으로
+  나눔 → n-i-p 단위셀 SnO2 611 · p-i-n 1,703+10 · n-i-p 모듈 SnO2 251 · TiO2 572 · 기타. PSC registry 레시피 = RCP-01 p-i-n(`[신규]` ANN·BUFEV) · RCP-02 n-i-p 모듈(`[신규]` ANN) · RCP-03.
+  사용자: 611 만 이번에, 나머지는 이유와 함께 목록. 변환기 손질(`convert.Skip` · 빈 블록 · 층 여럿 블록 · PVKSF 없음 · 숫자 칸 글자 → orphan · ar 글자 · ETL 농도·양 · CBD 욕조 ·
+  module.* · vacuum_suction) · `build_library.py`(skipped → manifest·집계, 번호 비워 둠). `dev-20261015b` = 2026 170 + 542(골격 안 611 중 69 는 이중층·ALD·증착 등으로 건너뜀).
+  검증: 2026 셀 170/170·파일 같음(dev-20261015) · 오류 0 · 적재기 712 소견 0·미표현 0 · 소실 검사 2026 대비 새 소실 = public·analysis_old(사본) · ar 매핑 확인(글자 "0" 버그 고침).
+  매핑표 8행 · 추가후보 3행 추가. 다음: PSC 회신 때 건너뛴 묶음 질문(HANDOFF) · ② 의 A·C 집계는 아직(count_methods 는 2026 만).

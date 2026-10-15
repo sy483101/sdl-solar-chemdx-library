@@ -23,3 +23,6 @@ converter,fileinfo[].original_name,JV,(OriginalFileName),file,,,해소(10-14),�
 converter,input[].etl[].material,ETLCD,(산출 개체 이름·화학식),entity,,,후보,SnO2_CBD 는 스텝 종류(ETLCD)로만 남음 — 산출 개체에 SnO2 를 적을지
 data,input[].note (MACl 이 note 에만),PVK,,,,,확인,Metadata Note 에 글로는 남음(구조화 안 됨) — note 파싱 여부 결정
 converter,analysis.JV[].pv_cell_parameters.isc · calculations.fitted_isc · fitted_voc,JV,,,,,버림 제안,Isc = Jsc × 면적(MPSP 노드 없음) · fitted = 맞춤 중간값
+registry,input[].etl[].concentration,ETLCD | ETLCT,concentration,param,mg/mL,,후보,② 2022~2025(10-15) — ETL 용액 농도. 지금 Process Note
+registry,input[].module[].* · perovskite.module[].*,(층 스텝),coatingMethod · coatingGap · coatingSpeed · feedingAmount,param,µm · mm/s · µL,,후보,② 2023~2025(10-15) — 바·슬롯다이 코팅. 지금 Process Note 'module.<키>' · 모듈 골격(RCP-02)과 함께
+registry,input[].perovskite.vacuum_suction[],PVK,vacuumSuctionTime,param,s,,후보,② 2025(10-15) — 진공 흡입. 지금 Process Note

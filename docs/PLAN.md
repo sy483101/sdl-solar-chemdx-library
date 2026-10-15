@@ -62,6 +62,8 @@ $SOLAR_DATA_DIR/
       **측정 곡선(`analysis` 의 x·y 배열 — JV·PL·UV-Vis·XRD)은 DataArtifact 로 txt/csv 를 뽑아내고 5시트에 배열을 넣지 않는다**(사용자 결정 10-14 — 배열 지양).
       엔진 도우미(`draft.new_step`·`draft.new_entity`·`draft.validate`)를 쓴다. 첨부 파일 = draft 의 file 자리 + 바이트.
 - [~] **T3.2 draft → 세트 폴더** — `scripts/build_library.py`(10-14). dev 빌드 `library/dev-20261014` → `dev-20261014b`(위 세 변경, registry 0.5.3 — PSC 정리 전).
+      **② 그 외 연도(10-15)**: 전 연도 dev 빌드 `dev-20261015b` = 2026 170 + 2022~2025 542(n-i-p 단위셀 SnO2 = PSC-RCP-03 골격). 골격 밖 2,621 = `convert.Skip` →
+      manifest `skipped`(이유) — p-i-n 1,713 · TiO2 498 · n-i-p 모듈 327 · PVK 진공 증착 27 · 기타 56. 실험 ID 번호는 건너뛴 레코드 몫을 비워 둔다.
       (원안) `sheets.to_zip`(웹 내려받기와 같은 함수) 결과를 `library/<빌드>/<2026|other>/` 에 풀어 둔다 —
       웹 zip 과 바이트 수준으로 같은 형식이 목적. `validate` 알림은 `report.txt` + 빌드 요약.
 - [x] **T3.3 실험 ID** — `build_library.py`: 같은 등록일 안 ChemDX ID 순(D1). 서버 장부 겹침은 아직 미확인. 같은 원본 → 같은 ID(재빌드해도 안 바뀜).
