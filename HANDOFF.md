@@ -2,7 +2,7 @@
 
 > 이 파일 = "지금"의 스냅샷만. 규칙·함정 = `CLAUDE.md` · 계획 = `docs/PLAN.md` · 이력 = `docs/archive/worklog.md` · 합의 = `docs/intent/`.
 
-## 지금 — 2026-10-16 스텝 = 실데이터 조립 · 기본값 배제 · `dev-20261016d`
+## 지금 — 2026-10-16 스텝 = 실데이터 조립 · 시험판 registry v0.5.4b · `dev-20261016e`(+ `-r054b`)
 
 - 1차 원본 = 사용자가 받은 `raw/1_full/downloads/run-20261014T054004Z-rx23_glu`(13,271건 · 16그룹). 구조·필드 = `docs/chemdx-api.md`.
 - 2차 원본 = `raw/2_krict/20261014/<등록연도>/<ID>.json` + `manifest.json` — `scripts/filter_krict.py`(그룹 2 · `created_at` 연도 · 바이트 그대로).
@@ -103,9 +103,17 @@
   **논의할 것(사용자 답 대기)**: ① 바 코팅 칸을 ETL·HTL·PVKSF·CBD 에도(PVK 처럼 데이터팀) ② 반용매 없는 PVK 열처리 자리(PVK 칸 되살림 · `[신규]ANN` 등록 · ASOL 로) ③ 2step PVK 표현 ④ 빠진 StepType(버퍼층·C60 열증착 등 → 1,504건) ·
   ⑤ 전극 블록 없는 113세트에 TOPEL 을 둘지 ⑥ 새로 열린 1,117세트를 이번 dev 에 둘지.
 - **C60 고침 · 건너뛴 레코드 요구사항(10-16 밤)** — 65206dc 가 증착 칸이 빈 C60 ETL(p-i-n 259세트)을 스핀 ETL 스텝에 담던 것 → 재료가 C60 이면 열증착(68b8faa, PC60BM 제외).
-  **지금 빌드 = `library/dev-20261016d`**(코드 68b8faa · 오류 0): 세트 **1,568**(2026 170 · 그 외 1,398) · 건너뜀 1,765 · 기존 712세트 값 사라짐 0.
+  빌드 `library/dev-20261016d`(코드 68b8faa · 오류 0): 세트 **1,568**(2026 170 · 그 외 1,398) · 건너뜀 1,765 · 기존 712세트 값 사라짐 0.
   건너뛴 1,765 를 열려면(누적 — scratchpad skip_needs.py): ① C60 열증착 ETL 스텝 482 → ② + 버퍼층(BCP) 스텝 1,394 → ③ + surface_treatment 1,531 → ④ + PVK 진공 증착 1,671 →
   ⑤ + HTL 에탄올 세척 1,700 → ⑥ + SnO2 ALD 1,737 → ⑦ + ETL 도핑 칸 1,744 → ⑧ 원본 확인 21. ①② 는 TOPEL 열증착 파라미터 이름 그대로(VocabAlias Mapped — 새 용어 없음, 단위 uTorr→Torr·A/s→Å/s 만).
   불명확(랩 질문): BCP 902·C60 902 블록에 증착 값 없음(열증착으로 봐도 되나) · surface_treatment 값 '70C'102·'100C'24·'air_exposure'11(무엇을·얼마나) · PVK 진공 증착은 두께 칸에 물질 이름(FAI·CsI·PbI2) ·
   C60/SnO2·C60/BCP 한 블록에 두 층 · 층 이름 없는 CBD 블록 12(tco 뒤 — HTL?) · 소자 구조 없음 8(석영 위 막).
+- **시험판 registry v0.5.4b(10-16 밤 · 사용자 "불명확한 것 빼고 step·parameter·vocab 을 직접 넣어 0.5.4b 로 적용")** —
+  표 `mapping/registry_v0.5.4b.csv`(StepType BUFEV·HTLSF·ALD · 파라미터 13 = 기존 이름 재사용 · 새 용어 `dopant1Concentration` Hold) → `scripts/registry_trial.py` →
+  `$SOLAR_DATA_DIR/registry/v0.5.4b/`(prefill 검증 게이트 통과 · 정본 아님) · 빌드 = `SDL_REGISTRY_DIR=…/v0.5.4b`(prefill 5c80c1a 고리). 근거: PSC-RCP-01 `[신규]BUFEV` = C60·LiF 증착 · **BCP 는 랩이 ETLSF 스핀** →
+  공정 값 없는 버퍼층(BCP 691)은 불명확으로 계속 건너뜀. 변환기: C60→BUFEV · SnO2_ALD→ALD · 증착 값 있는 BCP→BUFEV · htl_treatment→HTLSF · etl_doping 'Ce 200mg/mL'→도펀트 칸 · µTorr→Torr · A/s→Å/s.
+  **지금 빌드 = `library/dev-20261016e`**(0.5.4 · 1,575세트 — d 에 ETL 도핑 7 더함) · **`library/dev-20261016e-r054b`**(0.5.4b 시험 · **2,277세트** · 건너뜀 1,056 · 오류 0) — 둘 다 코드 그 커밋 ·
+  기존 1,568세트 값 사라짐 0(두 빌드 모두) · 2026 A 3,490 그대로. 새 702세트 = 주로 p-i-n(BUFEV C60 626 · BCP 237 · ALD 35 · HTLSF 29). 플랫폼에 0.5.4b 매핑 덮으면 미표현 0 · MPSP 98.4%.
+  남은 건너뜀 1,056: 버퍼층 공정 값 없음 697 · PVK 진공 증착 140 · surface_treatment 137 · 한 블록 두 층(C60+PCBM 31 · C60/SnO2 15) · 따로 열증착 블록 13 · 소자 구조 없음 8 · 그 밖.
+  새 세트 비고: p-i-n HTL 열처리(HTL 에 칸 없음 — RCP-01 은 `[신규]ANN`) · C60 블록의 바 코팅·열처리 값. **정본 반영은 사용자 결정** — 표를 prefill 받기 절차로(또는 PSC 최종 회신과 함께).
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).

@@ -134,3 +134,8 @@
 - **C60 고침 · 건너뛴 레코드 요구사항(2026-10-16 밤)** — 사용자: 건너뛴 것을 매핑하려면 필요한 정보(Step·vocab·parameter) · 스텝마다 이해되나. 레코드마다 필요한 것 전부(첫 이유만 아니라) 집계 중
   변환된 p-i-n 의 ETL 재료가 C60 259세트인 것을 발견 — 증착 칸이 비어 스핀 ETL 로 들어갔음(65206dc 의 잘못) → 재료 C60 = 열증착(68b8faa) · dev-20261016d(1,568 · 건너뜀 1,765 · 기존 값 사라짐 0).
   요구사항 누적 표 · 블록 필드(채움·단위·예) · MPSP 노드(atomicLayerDeposition_n · heatTreatment_n · rinsing_n 있음) · TOPEL 이름 재사용 가능 확인 = HANDOFF.
+- **시험판 registry v0.5.4b(2026-10-16 밤)** — 사용자: 불명확한 것 빼고 필요한 step·parameter·vocab 을 직접 넣어 0.5.4b 를 이 레포에 만들어 적용. 규칙(registry 정본 = prefill)과 맞추려
+  표(mapping/registry_v0.5.4b.csv)만 git · 파일은 스크립트가 데이터 폴더에 · 엔진 고리는 prefill 일반 커밋(5c80c1a SDL_REGISTRY_DIR · make test 119).
+  조사 중 바뀐 판단: PSC-RCP-01 에서 랩이 BCP 를 ETLSF 스핀으로 씀 → "BCP = 증착" 가정 버림, 공정 값 없는 버퍼층은 건너뜀. C60 = BUFEV(랩 [신규]BUFEV 와 같은 쓰임).
+  검증: registry_trial 이 prefill 검증 함수(_parse_v2_file·_validate) 통과 · 엔진이 0.5.4b 로 새 StepType 칸·자원 연다 · 빌드 2개(0.5.4 1,575 · 0.5.4b 2,277) 오류 0 ·
+  기존 1,568세트 값 사라짐 0 · 새 칸 값 확인(압력 8e-07 Torr 등) · 플랫폼 덮어보기 미표현 0 · MPSP 98.4%. 전극 블록엔 증착 값 없음 확인(버려지는 값 없음).

@@ -51,7 +51,8 @@
 - **패키지 이름 `sdl_platform` 이 셋**: sdl-prefill · sdl-ontology-platform · onto-nl2sparql 이 모두 같은 이름을 쓴다. 이 맥의 PYTHONPATH 에는
   onto-nl2sparql 것이 잡혀 있다(sdl-prefill HANDOFF 10-06) → 이 레포 프로세스는 `SDL_PREFILL_DIR` 을 `sys.path` **맨 앞**에 두고 시작 시
   `sdl_platform.__file__` 이 sdl-prefill 쪽인지 확인한다. 플랫폼 코드(예: JSON-LD 검토에서 `v05.load`)가 필요하면 **별도 프로세스**(그쪽 venv·경로)로.
-- sdl-prefill 의 registry 경로는 `paths.REGISTRY_DIR` 에 고정(환경변수 없음) — 다른 판·추가 후보를 시험하려면 고리가 필요하다(PLAN WS2).
+- sdl-prefill 의 registry 경로 = `paths.REGISTRY_DIR` · 시험판은 환경변수 `SDL_REGISTRY_DIR=<폴더 v<판>>`(prefill 5c80c1a). 시험판 만들기 = `scripts/registry_trial.py`
+  (prefill 판 + `mapping/registry_v<판>.csv` → `$SOLAR_DATA_DIR/registry/v<판>/`, 정본 아님 — 정본 반영은 prefill 받기 절차).
 - sdl-prefill 의 실험 ID 장부(`idbook`)는 **서버**(borona·NCP)에 있다 — 이 레포는 오프라인 변환이라 장부에 기록되지 않는다. ID 겹침 = 열린 결정 D1.
 - 개발 Mac 의 Python = 3.9(sdl-prefill `requirements.txt` 판). 엔진을 import 하므로 같은 환경을 쓴다.
 - 연구원망(KREONet)은 밖으로 나가는 SSH(22)를 막는다 — GitHub 는 HTTPS 로.

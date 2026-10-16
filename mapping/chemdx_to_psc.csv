@@ -103,3 +103,11 @@ record,public,drop,,,,,,② 10-15 — ChemDX 공개 여부(실험 데이터 아�
 (블록),input[] note 만 있는 블록,meta,,note,,,registry,10-16 — 실험 비고에 덧붙임
 htl_doping,input[] 따로 떨어진 htl_doping 블록,param,HTL,dopant1Name 등,,,registry,10-16 — 같은 블록 안과 똑같이 HTL 칸으로(HTL 보다 앞이면 건너뜀)
 anode,input[].anode_metal 없음,step,TOPEL,,,,확인,10-16 — 전극 블록이 없으면 TOPEL 스텝을 만들지 않음(전엔 레시피의 빈 TOPEL 이 남았음 — 113세트). 완성소자 = 마지막 적층체
+etl,input[].etl[].material = C60,step,BUFEV,material,-,C60 → BUFEV(공정 칸이 비어도 — C60 = 열증착 재료),시험(0.5.4b),PSC-RCP-01 [신규]BUFEV = C60·LiF 증착. registry 0.5.4 엔 없어 건너뜀 · 0.5.4b(mapping/registry_v0.5.4b.csv)에서 열림
+etl,input[].etl[].material = *ALD*,step,ALD,material,-,SnO2_ALD → ALD,시험(0.5.4b),MPSP atomicLayerDeposition_n · ALD 고유 조건(사이클·온도)은 ChemDX 에 없음
+(열증착),input[].thermal_evaporation[].vacuum_evaporation_thickness,param,BUFEV | ALD,thickness,nm,,시험(0.5.4b),TOPEL 과 같은 이름(VocabAlias = environment layer Thickness)
+(열증착),input[].thermal_evaporation[].evaporation_rate,param,BUFEV,depositionRate,Å/s,A/s → Å/s,시험(0.5.4b),
+(열증착),input[].thermal_evaporation[].vacuum_pressure,param,BUFEV,depositionChamberPressure,Torr,uTorr × 1e-6,시험(0.5.4b),
+blocking_buffer_layer,input[].blocking_buffer_layer[].material (증착 값 있을 때),step,BUFEV,material,-,,시험(0.5.4b),증착 값 없는 버퍼층(BCP 691 · PEIE 6 · TiO2) = 건너뜀 — PSC 는 BCP 를 ETLSF 스핀(RCP-01) → 랩 확인
+htl_treatment,input[].htl_treatment[].material · quantity,param,HTLSF,solvent · spinCoatingVolume,- · µL,ml × 1000,시험(0.5.4b),SAM 위 에탄올 세척 — ETLSF·PVKSF 꼴
+etl,input[].etl_doping[].volume ('Ce 200mg/mL'),param,ETL,dopant1Name · dopant1Concentration,- · mg/mL,이름·농도를 나눔,시험(0.5.4b),부피 칸에 이름+농도(ChemDX 입력 그대로) · dopant1Concentration = VocabAlias Hold
