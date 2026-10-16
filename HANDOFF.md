@@ -2,7 +2,7 @@
 
 > 이 파일 = "지금"의 스냅샷만. 규칙·함정 = `CLAUDE.md` · 계획 = `docs/PLAN.md` · 이력 = `docs/archive/worklog.md` · 합의 = `docs/intent/`.
 
-## 지금 — 2026-10-16 registry v0.5.4 반영 · 기본값 배제 · `dev-20261016b`
+## 지금 — 2026-10-16 스텝 = 실데이터 조립 · 기본값 배제 · `dev-20261016c`
 
 - 1차 원본 = 사용자가 받은 `raw/1_full/downloads/run-20261014T054004Z-rx23_glu`(13,271건 · 16그룹). 구조·필드 = `docs/chemdx-api.md`.
 - 2차 원본 = `raw/2_krict/20261014/<등록연도>/<ID>.json` + `manifest.json` — `scripts/filter_krict.py`(그룹 2 · `created_at` 연도 · 바이트 그대로).
@@ -83,10 +83,23 @@
 - **플랫폼 매핑 정합성 검토(10-16 밤 · 사용자 14개 답)** — 적재기는 행 단위 100% 표현인데 안 읽는 열 3개(`Parameter.Source` · `Confidential` · `Value.RepeatNo`)로 뜻이 틀어짐.
   ① **registry 기본값 배제**(사용자: ChemDX 는 registry 와 따로 만든 실험) — 기본값 44,244행(Parameter 60%)이 실측처럼 실렸음(예 00475 원본 Li-TFSI 뿐인데 CoTFSI·tBP · 첨가제 없는데 MACl ·
   스핀 기록 없는데 2단 스핀) → 변환기가 draft default 를 비움(723e1ac). **보고 C 340,431 의 25%(85,144)가 이 기본값이었음**(dev-20261015 2026 · 지금 적재기) — 보고 숫자는 동결 그대로.
-  **지금 빌드 = `library/dev-20261016b`**(코드 723e1ac · prefill df30908 깨끗 · registry 0.5.4 · template **5sheet-1.3** · 오류 0) — A 3,490 · 10,517 그대로 · 공정 칸 = manual 만(2026 9,020) ·
+  빌드 `library/dev-20261016b`(코드 723e1ac · prefill df30908 깨끗 · registry 0.5.4 · template **5sheet-1.3** · 오류 0) — A 3,490 · 10,517 그대로 · 공정 칸 = manual 만(2026 9,020) ·
   적재기 트리플 2026 360,330 → 268,756. C 집계는 여전히 플랫폼 J3(CBD) 대기.
   ② 비공개 = 템플릿엔 Y 표시(실측 1,060행) · 적재기 무시 → 플랫폼 요청 8 · ③ RepeatNo·측정↔스텝 = 템플릿엔 있음 · 플랫폼 요청 3·4 우선순위 올림 · ④ 장비 = 레시피 것 그대로 · ⑤ Entity = 재료 그대로(분류는 추후).
   ⑦ **VocabAlias 정리(prefill df30908)**: ChemDX Hold 대부분이 SDL-MPSP v0.3.3 에 이미 있음 → Mapped 6 · NotApplicable 1(`coatingMethod`) · `nplc` 경로 오류 고침 · **진짜 신설 = CBD Atmosphere 하나**(요청 10).
   SDL-MPSP 발행·플랫폼 registry 0.5.4 들여오기·J1/J3 재판정은 **플랫폼 몫 — 손대지 않음**(다른 세션이 작업 중: 안 올린 커밋 1 · 미커밋 frontend · 발행 절차가 0.5.4 들여오기에 걸림). 요청 = `json-ld.md` 8~11.
   **사용자 답 대기**: 플랫폼 작업을 이 세션에서 할지 · Process Note → ASOL 스텝(반용매·PVK 열처리·3단 스핀 ≈2,300칸이 파라미터가 됨 — 엔진 `new_step` 있음) · 조성 constituent 행(prefill 7-1 — 엔진이 아직 못 씀).
+- **스텝 = 실데이터 조립(10-16 밤 · 사용자 "레시피는 대표 레시피일 뿐 · 실데이터 기준으로 스텝 추가/빼기 · 레시피 코드 비우기 · C 집계는 여기서 안 해도 됨")** —
+  변환기(65206dc): 층 블록마다 registry StepType(tco→BOTEL · etl→CBD/ETL · etl_treatment→ETLSF · perovskite→PVK(+반용매 있으면 **ASOL**) · perovskite_treatment→PVKSF ·
+  htl(+htl_doping)→HTL · anode_metal→TOPEL · JV) · 순서 = n-i-p/p-i-n 적층 순서(ChemDX 블록 순서는 표면처리가 맨 뒤에 오기도) · 레시피 = JV 결과 정의만 · **RecipeCode 비움** ·
+  개체 이름 = 실제 적층(`clean_ITO전극/SnO2_NP/…`, 전엔 ITO 도 `FTO전극`) · 층 이름 없는 공정 블록 = 바로 앞 층(registry 메모 'PVK' 대신 — ETL 뒤 366 · HTL 뒤 363 · PVK 뒤 156) ·
+  note 블록 = 실험 비고 · CBD material = SnO2_CBD · 전극 블록 없으면 TOPEL 없음(113세트). 건너뜀 = registry 에 그 층·공정 StepType 없을 때만.
+  **지금 빌드 = `library/dev-20261016c`**(코드 65206dc · prefill df30908 · registry 0.5.4 · template 1.3 · 오류 0): 세트 712 → **1,829**(2026 170 그대로 · 그 외 542 → 1,659 —
+  n-i-p 모듈 319 · p-i-n 272 · TiO2 계열 등) · A 2026 **3,490** 그대로 · 그 외 24,124 · 건너뜀 2,621 → 1,504(버퍼층 1,051 · C60 열증착 224 · 표면처리층 111 · HTL 표면처리 29 ·
+  PVK 진공 증착 27 · 그 밖). 기존 712세트 값 사라짐 **0**(scratchpad value_diff — 생김 = CBD material 474). 2026 비고 = PVK 첨가제 mg/ml 160 · 스핀 방식 20 뿐.
+  **새 세트는 비고가 많음**: 바 코팅이 ETL·HTL·PVKSF 에 칸 없음(~4,000) · 반용매 없는 PVK 열처리 칸 없음(923 — v0.5.4 랩이 PVK 열처리를 ASOL 로 옮김) · 2단계 PVK(2step 622)는 PVK 스텝 하나.
+  JSON-LD = 플랫폼 `--jsonld` 를 부를 것(이 레포는 그래프 변환 안 함) — 플랫폼 그대로면 ASOL·CBD 층 미판정 · MPSP 87% → 요청 9(registry 매핑 칸 들여오기)면 미표현 0 · 98.6%.
+  **C 는 이 레포에서 세지 않음(사용자 10-16)** — `count_methods.py` 는 둠(보고 2판 C 340,431 동결).
+  **논의할 것(사용자 답 대기)**: ① 바 코팅 칸을 ETL·HTL·PVKSF·CBD 에도(PVK 처럼 데이터팀) ② 반용매 없는 PVK 열처리 자리(PVK 칸 되살림 · `[신규]ANN` 등록 · ASOL 로) ③ 2step PVK 표현 ④ 빠진 StepType(버퍼층·C60 열증착 등 → 1,504건) ·
+  ⑤ 전극 블록 없는 113세트에 TOPEL 을 둘지 ⑥ 새로 열린 1,117세트를 이번 dev 에 둘지.
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).

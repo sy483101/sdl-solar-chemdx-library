@@ -55,9 +55,11 @@
 **3·4 우선순위 올림**: 템플릿엔 `Value.RepeatNo`(셀 번호)·`StepID`(JV 스텝)가 다 있는데 적재기가 RepeatNo 를 안 읽고 측정 ↔ 스텝을 안 이어 같은 셀의 PCE·Voc·Jsc·FF·곡선이 측정 노드 5개로 흩어지고 면적·광세기·스캔 방향·NPLC 와 끊김.
 8. 템플릿 판 1.2·1.3 받기 + **안 읽는 열 처리** — `Confidential`(Y = 값은 기록, 비공개 — 지금 공개 그래프에 그대로: ChemDX 실측 1,060행) ·
    `Parameter.Source`(default = registry 기본값 — 지금 실측처럼 실림. ChemDX 는 변환기에서 기본값 행을 뺐다(10-16), 웹 입력분은 남은 문제) · 1.3 스텝 없는 Value 행(`entityFile`).
-9. registry 0.5.1 → **0.5.4 들여오기**(`scripts/sync_upstream.py registry <prefill>`) + J1·J3 재판정 — 코드가 바뀌어(`ETLCD`→`CBD` · `ETLCT`→`ETL` · `ASOL`) 키가 달라짐.
-   J3: `CBD` = 옛 `CBD → ETLCD` 결정(FORM · `process_chemical_chemicalBathDeposition_n`) 이어받기 — 없어서 STEP_LAYER 미표현 → `count_methods.py` 멈춤 ·
-   `ETL` = 지금 빈 이름 행(FORM · 기법 없음)에 걸림 → 옛 `ETL → ETLCT` 결정(`spinCoating_n`). J1: 새 이름 18개 미판정 — prefill VocabAlias 에 SDL-MPSP v0.3.3 매핑 있음(10-16 정리 df30908, 플랫폼 J1 은 VocabAlias 를 안 읽으니 참고로).
+9. registry 0.5.1 → **0.5.4 들여오기** — **LLM 재판정 말고 registry 매핑 칸을 확정 판정으로**(사용자 10-16 "여기서 일괄로, 플랫폼은 받아가기"):
+   PSC VocabAlias `Status`·`MPSP_Term`(J1) · StepType `SDLEXO_Class`·`MPSP_Technique`(J3)를 approved 로 읽는 들여오기(+ `scripts/sync_upstream.py registry <prefill>`).
+   시험(이 레포 scratchpad — 적재기 판정 자리에 메모리로만 덮음, `dev-20261016c` 1,829세트): 미표현 2(STEP_LAYER `ASOL`·`CBD`) → 0 ·
+   MPSP 매핑률 87.3% → 98.6%(비해당 빼면 99.9%) · 남은 미매핑 = `cbdAtmosphere`(요청 10) · 비해당 2. 플랫폼 기존 판정과 다른 곳 1(ETL 기법 — registry 쪽이 맞음).
+   코드가 바뀐 것(`ETLCD`→`CBD` · `ETLCT`→`ETL` · `ASOL` 새로 씀 — 10-16 실데이터 조립)도 registry 칸으로 해결. **세트 JSON-LD 품질이 이것에 달림**(이 레포는 C 를 세지 않는다 — 사용자 10-16).
 10. **SDL-MPSP v0.3.4 신설 1건** — `process > chemical > chemicalBathDeposition_n > Atmosphere`(String · PRC-4178 `spinCoating_n_Atmosphere` 꼴 · anchor CBD 행) ← KRICT-PSC `cbdAtmosphere`(air 82행).
     나머지 ChemDX 용어는 v0.3.3 에 있음(설정 시간 CHA-0578 · 진공 흡입 PRC-N01T · 바 코팅 Gap·Speed·Feed · 적분 시간 CHA-0576).
 11. 단위 — `PLC`(NPLC = 전원 주기 수: 시간 단위가 아니라 QUDT 에 없음, 60 Hz 면 1 PLC = 16.7 ms — local-mint 또는 비단위로) ·
