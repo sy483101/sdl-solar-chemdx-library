@@ -89,7 +89,7 @@ def main(lib, group="2026"):
         n["B_resp"] += resp
     n["B"] = n["sets"] + n["B_comp"] + n["B_proc"] + n["B_resp"]
     # A(10-15 재정의 · 주 지표) = 레시피 1 + 측정·분석 — 측정·분석 셈 = B 응답과 같다(대상·스텝·항목마다 1, 같은 자리 반복 2).
-    # ponytail: 같은 자리·같은 설정을 스텝을 나눠 적은 반복은 안 합친다 — ChemDX JV 스텝은 방향·면적이 서로 달라 해당 없음, 그런 데이터가 오면
+    # ponytail: 같은 자리·같은 설정을 스텝을 나눠 적은 반복은 안 합친다 — ChemDX JV 스텝은 방향·면적·측정 조건이 서로 달라 해당 없음, 그런 데이터가 오면
     n["A"] = n["sets"] + n["B_resp"]
     vary = sorted({f"{k[0].split('→')[-1].strip()}.{k[1]}" for k in design})
     bundle = sorted({f"{k[0].split('→')[-1].strip()}.{k[1]}" for k, v in slots.items() if len(v) > 1 and k[1] in BUNDLE})

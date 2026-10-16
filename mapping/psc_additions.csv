@@ -1,28 +1,31 @@
 # T2.3 추가후보 — ChemDX(2026) 값 중 라이브러리층(5시트)에 제자리가 없는 것. 2026-10-14 소실 검사(docs/chemdx-api.md) + 매핑표 추가후보.
-# 원본층(1차·2차)에는 다 있다. 처리 = PSC 회신(10-15) 받기 절차 때 registry 에 이름 추가 + MPSP 매핑(플랫폼 J1 판정) — sdl-prefill 에서(이 레포에서 registry 를 고치지 않는다).
+# 원본층(1차·2차)에는 다 있다. 처리 = PSC 회신(10-15) 받기 절차 때 registry 에 이름 추가 + MPSP 매핑(플랫폼 J1 판정) — sdl-prefill 에서(이 레포에서 registry 를 고치지 않는다). 10-16 registry v0.5.4(PSC 예비 회신 + ChemDX 매핑 추가)로 넣은 것 = status '반영(v0.5.4)'.
 # category: registry(이름 없음 — MPSP 노드는 있음) · mpsp(MPSP 갈래도 없음 — sdl-prefill docs/review/mpsp-upstream-feedback.md 6절) · converter(이 레포 변환기에서 고칠 것) · structure(5시트 구조 한계) · data(자료 품질)
 category,chemdx_path,step,proposed_name,kind,unit,mpsp_path,status,note
-registry,input[].perovskite.molarity,PVK,precursorMolarity,param,M,process > physical > spinCoating_n > feedstock_n > Concentration,후보,QUDT MOL-PER-L. 지금 Process Note
-registry,input[].perovskite.additive[].quantity,PVK,additiveMolarRatio,param,mol%,process > physical > spinCoating_n > precursor_n > additive_n > Amount,후보,QUDT PERCENT_MOL — additiveWeight(g)와 같은 노드. 지금 Process Note
+registry,input[].perovskite.molarity,PVK,precursorMolarity,param,M,process > physical > spinCoating_n > feedstock_n > Concentration,반영(v0.5.4),QUDT MOL-PER-L. 10-16 변환기 반영
+registry,input[].perovskite.additive[].quantity,PVK,additiveMolarRatio,param,mol%,process > physical > spinCoating_n > precursor_n > additive_n > Amount,반영(v0.5.4),QUDT PERCENT_MOL — additiveWeight(g)와 같은 노드. 10-16 변환기 반영
 data,input[].perovskite.additive[].concentration,PVK,,,mg/mL,,보류,모든 짝이 mg/ml = 0.6 × mol% · molarity 와 무관 → 실제 농도 아님(고정 환산). 랩 확인 전 매핑 안 함
-registry,input[].htl[].concentration,HTL,holeTransportMaterialConcentration,param,mg/mL,process > physical > spinCoating_n > feedstock_n > Concentration,후보,registry 는 holeTransportMaterialWeight(g)뿐. 지금 Process Note
-registry,input[].spin_coating[].type · input[].perovskite.spin_coating[].type,ETLSF · PVK · PVKSF · HTL,spinCoatingMode,param,-,process > physical > spinCoating_n > Type,후보,drop&run · dynamic(분주 방식). 지금 Process Note
-registry,input[].condition (etl · perovskite · htl · perovskite_treatment 블록),스핀코팅 스텝,spinCoatingAtmosphere,param,-,process > physical > spinCoating_n > Atmosphere,후보,air · glove-box. 이름은 기법별로 나눔(J1 은 랩·이름 기준 한 매핑) — 기존 ETLCT spinCoatinglabAtmosphere 와 정리
-registry,input[].condition (anode_metal 블록),TOPEL,evaporationAtmosphere,param,-,process > physical > thermalEvaporation_n > Atmosphere,후보,vacuum evaporation · glove-box · air
-mpsp,input[].condition (etl 블록 · SnO2_CBD),ETLCD,cbdAtmosphere,param,-,(없음 — chemicalBathDeposition_n 에 Atmosphere 없음),SDL-MPSP 요청,mpsp-upstream-feedback 6-3
+registry,input[].htl[].concentration,HTL,holeTransportMaterialConcentration,param,mg/mL,process > physical > spinCoating_n > feedstock_n > Concentration,반영(v0.5.4),10-16 변환기 반영
+registry,input[].spin_coating[].type · input[].perovskite.spin_coating[].type,ETLSF · PVK · PVKSF · HTL,spinCoatingMode,param,-,process > physical > spinCoating_n > Type,반영(v0.5.4),drop&run · dynamic. PVK 칸 1개 — 2·3단째 다른 값은 Process Note
+registry,input[].condition (etl · perovskite · htl · perovskite_treatment 블록),스핀코팅 스텝,spinCoatingAtmosphere,param,-,process > physical > spinCoating_n > Atmosphere,반영(v0.5.4),air · glove-box. ETL 은 새 이름 없이 랩 이름 spinCoatinglabAtmosphere(같은 MPSP 노드 — registry 메모)
+registry,input[].condition (anode_metal 블록),TOPEL,evaporationAtmosphere,param,-,process > physical > thermalEvaporation_n > Atmosphere,반영(v0.5.4),vacuum evaporation · glove-box · air. 10-16 전엔 빠짐
+mpsp,input[].condition (etl 블록 · SnO2_CBD),CBD,cbdAtmosphere,param,-,(없음 — chemicalBathDeposition_n 에 Atmosphere 없음),반영(v0.5.4) · MPSP Hold,mpsp-upstream-feedback 6-3 — registry 이름은 있고 MPSP 연결은 Hold
 registry,input[].condition (device_type 블록),?,(확인),param,-,spinCoating_n > Atmosphere 등,확인,소자 블록의 air = 소자 전체 제작 분위기 — 어느 스텝에 둘지 결정 필요. 지금 빠짐
-registry,analysis.JV[].calculations.rseries,JV,seriesResistance,result,ohm,performance > electrical > photovoltaic > currentVoltage > forward/reverseScan > Series resistance,후보,스캔 방향 = 같은 스텝 scanDirection(적재기 V-12). 지금 빠짐 — 결과로 들어가면 분석 건수도 늘어남
-registry,analysis.JV[].calculations.rshunt,JV,shuntResistance,result,kohm,performance > electrical > photovoltaic > currentVoltage > forward/reverseScan > Shunt resistance,후보,지금 빠짐
-registry,analysis.JV[].pv_cell_parameters.pmax,JV,maximumPower,result,W,performance > electrical > photovoltaic > currentVoltage > forward/reverseScan > Maximum power,후보,지금 빠짐
-registry,analysis.JV[].pv_cell_parameters.vopt,JV,voltageAtMaximumPowerPoint,result,mV,performance > electrical > photovoltaic > currentVoltage > forward/reverseScan > Voltage at maximum power point,후보,지금 빠짐
-registry,analysis.JV[].pv_cell_parameters.iopt,JV,currentDensityAtMaximumPowerPoint,result,mA/cm2,performance > electrical > photovoltaic > currentVoltage > forward/reverseScan > Current density at maximum power point,확인,ChemDX 는 전류(mA) — MPSP 는 전류밀도. 면적으로 나눌지(유도값) 결정. 지금 빠짐
-registry,analysis.JV[].measurement_conditions.voltage_settling_time,JV,voltageSettlingTime,param,s,characterization > measurement > jvMeasurement > acquisitionCondition > Voltage setting time,후보,지금 빠짐
-registry,analysis.JV[].measurement_conditions.nplc,JV,nplc,param,PLC,characterization > measurement > jvMeasurement > acquisitionCondition > Integration time,확인,PLC 단위(전원 주기) — 초로 바꾸려면 전원 주파수 필요. 지금 빠짐
+registry,analysis.JV[].calculations.rseries,JV,seriesResistance,result,ohm,performance > electrical > photovoltaic > currentVoltage > forward/reverseScan > Series resistance,보류(사용자 10-16),v0.5.4 VocabAlias 에 이름만(RCP-03 JV 결과 아님). 넣으면 A 늘어남. 지금 빠짐
+registry,analysis.JV[].calculations.rshunt,JV,shuntResistance,result,kohm,performance > electrical > photovoltaic > currentVoltage > forward/reverseScan > Shunt resistance,보류(사용자 10-16),위와 같음
+registry,analysis.JV[].pv_cell_parameters.pmax,JV,maximumPower,result,W,performance > electrical > photovoltaic > currentVoltage > forward/reverseScan > Maximum power,보류(사용자 10-16),위와 같음
+registry,analysis.JV[].pv_cell_parameters.vopt,JV,voltageAtMaximumPowerPoint,result,mV,performance > electrical > photovoltaic > currentVoltage > forward/reverseScan > Voltage at maximum power point,보류(사용자 10-16),위와 같음
+registry,analysis.JV[].pv_cell_parameters.iopt,JV,currentDensityAtMaximumPowerPoint,result,mA/cm2,performance > electrical > photovoltaic > currentVoltage > forward/reverseScan > Current density at maximum power point,보류(사용자 10-16),ChemDX 는 전류(mA) — MPSP 는 전류밀도. 넣을 때 면적으로 나눌지(유도값) 결정
+registry,analysis.JV[].measurement_conditions.voltage_settling_time,JV,voltageSettlingTime,param,s,characterization > measurement > jvMeasurement > acquisitionCondition > Voltage setting time,반영(v0.5.4) · MPSP Hold,10-16 변환기 반영 — 곡선마다 다르면 JV 스텝을 나눔
+registry,analysis.JV[].measurement_conditions.nplc,JV,nplc,param,PLC,characterization > measurement > jvMeasurement > acquisitionCondition > Integration time,반영(v0.5.4),PLC 단위(전원 주기) — 플랫폼 단위표에 없음(10-16). 곡선마다 다르면 JV 스텝을 나눔
+registry,input[].condition (tco 블록),BOTEL,(없음),param,-,,후보,10-16 검토 때 찾음(그전엔 빠짐) — 지금 Process Note 'atmosphere'
+registry,input[].condition (etl_treatment 블록),ETLSF,(없음),param,-,,후보,10-16 검토 때 찾음(그전엔 빠짐) — 지금 Process Note 'atmosphere'
+registry,input[].perovskite.antisolvent[] · annealing[] · spin_coating[2],ASOL,antiSolvent* · thermalAnnealing* · spinCoatingSpeedStep=3,param,,,확인,v0.5.4 ASOL StepType 에 칸 있음 · RCP-03 에 ASOL 스텝 없음 → PVK Process Note. PSC 최종본 뒤 ASOL 스텝 넣을지(10-16)
 structure,analysis.JV[].pv_cell_parameters.cell_dimension,JV,activeArea,param,cm2,,해소(10-14),Parameter 행엔 RepeatNo 없음 → 변환기가 JV 를 (방향·면적)별 스텝으로(2026 +8 스텝). 면적 = 곡선 값(Jsc 계산 면적) · 소자 블록 값은 완성소자 Note
 converter,fileinfo[].original_name,JV,(OriginalFileName),file,,,해소(10-14),원본 파일명(측정 시각 포함)에 확장자만 .csv(내용 = 배열에서 만든 csv)
-converter,input[].etl[].material,ETLCD,(산출 개체 이름·화학식),entity,,,후보,SnO2_CBD 는 스텝 종류(ETLCD)로만 남음 — 산출 개체에 SnO2 를 적을지
+converter,input[].etl[].material,CBD,(산출 개체 이름·화학식),entity,,,후보,SnO2_CBD 는 스텝 종류(CBD)로만 남음 — v0.5.4 CBD material 칸에 적을지
 data,input[].note (MACl 이 note 에만),PVK,,,,,확인,Metadata Note 에 글로는 남음(구조화 안 됨) — note 파싱 여부 결정
 converter,analysis.JV[].pv_cell_parameters.isc · calculations.fitted_isc · fitted_voc,JV,,,,,버림 제안,Isc = Jsc × 면적(MPSP 노드 없음) · fitted = 맞춤 중간값
-registry,input[].etl[].concentration,ETLCD | ETLCT,concentration,param,mg/mL,,후보,② 2022~2025(10-15) — ETL 용액 농도. 지금 Process Note
-registry,input[].module[].* · perovskite.module[].*,(층 스텝),coatingMethod · coatingGap · coatingSpeed · feedingAmount,param,µm · mm/s · µL,,후보,② 2023~2025(10-15) — 바·슬롯다이 코팅. 지금 Process Note 'module.<키>' · 모듈 골격(RCP-02)과 함께
-registry,input[].perovskite.vacuum_suction[],PVK,vacuumSuctionTime,param,s,,후보,② 2025(10-15) — 진공 흡입. 지금 Process Note
+registry,input[].etl[].concentration,CBD | ETL,concentration,param,mg/mL,,반영(v0.5.4),② 2022~2025(10-15) — ETL 용액 농도. 숫자 아닌 값('1:5 ratio')은 Process Note
+registry,input[].module[].* · perovskite.module[].*,(층 스텝),coatingMethod · coatingGap · coatingSpeed · feedingAmount,param,µm · mm/s · µL,,반영(v0.5.4) · MPSP Hold,② 2023~2025(10-15) — 바·슬롯다이 코팅. PVK 에만 칸 — 다른 층은 Process Note. 층 밖 module 블록 10건은 여전히 건너뜀
+registry,input[].perovskite.vacuum_suction[],PVK,vacuumSuctionTime,param,s,,반영(v0.5.4) · MPSP Hold,② 2025(10-15) — 진공 흡입. 10-16 변환기 반영

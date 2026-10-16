@@ -1,5 +1,5 @@
 # ChemDX(KRICT) → KRICT-PSC registry 매핑표 — T2.2 초안 2026-10-14. 범위 = 2026 레코드에서 채워진 경로(mapping/fields.csv). 다른 연도 경로는 ② 때 추가.
-# registry = KRICT-PSC v0.5.3 의 '→' 정리 후 이름(sdl-prefill docs/review/trial-2026-10-08.md C 절): BOTEL(SUBST 합침) · ETLCD · ETLCT · ETLSF · PVK(ASOL 합침) · PVKSF · HTL · TOPEL · JV
+# registry = KRICT-PSC v0.5.4(PSC 예비 회신 · 10-16 — 코드 합치기 안 함): SUBST(뺌 — ChemDX 에 유리 기판 없음) · BOTEL · CBD · ETL · ETLSF · PVK · PVKSF · HTL · TOPEL · JV. ASOL 은 RCP-03 에 없어 반용매·PVK 열처리는 Process Note(PSC 최종본 뒤 재검토). 이전 = v0.5.3 '→' 정리 후 이름(ETLCD·ETLCT)
 # layer = 그 경로가 들어 있는 input 블록(블록 안 키로 판별) · target = meta | entity | step | param | result | file | drop · status = registry(있음) | 추가후보(T2.3) | 확인(사용자)
 layer,chemdx_path,target,step,name,unit,conv,status,note
 record,id,meta,,note,,'ChemDX KRICT-SC-xxxxx',확인,D1 — 출처 추적. draft meta 에 전용 칸이 없어 note 로
@@ -15,52 +15,55 @@ device,input[].note,meta,,note,,,registry,자유 기술
 device,input[].temperature,param,PVK,laboratoryTemperature,degC,℃·oC → degC,registry,실험 당일 실험실 온도 — ETLSF·HTL 에도 같은 칸 있음(어디에 넣을지 확인)
 device,input[].humidity,param,PVK,laboratoryRelativeHumidity,%,,registry,위와 같음
 device,input[].cell_dimension,entity,JV,완성소자 개체 Note,cm2,,확인,설계값 — 곡선 값과 다를 수 있다(0.045216 인데 곡선 0.0908 인 10건). activeArea 는 곡선 값(10-14)
-device,input[].ar,param,JV,antireflectionFIlmUsage,-,0 → no · 1 → yes,registry,
+device,input[].ar,param,JV,antireflectionFilmUsage,-,0 → no · 1 → yes,registry,v0.5.4 오타 고침(FIlm)
 device,input[].condition,param,(없음),atmosphere,-,,추가후보,air·glove-box 등 공정 분위기
 tco,input[].tco,param,BOTEL,material,-,값 그대로(FTO · FTO_Asahi),registry,상용 FTO 기판(하부전극 일체형)
-etl,input[].etl[].material,step,ETLCD | ETLCT,,,SnO2_CBD → ETLCD · SnO2_NP → ETLCT(material=SnO2_NP),registry,값이 스텝 종류를 정한다(2026: CBD 166 · NP 4). ETLCD 는 material 칸 삭제 → 산출 개체 이름
-etl,input[].annealing[].temperature,param,ETLCD | ETLCT,thermalAnnealingTemperature,℃,oC → ℃,registry,etl 블록 안 annealing(10건형)
-etl,input[].annealing[].time,param,ETLCD | ETLCT,thermalAnnealingTime,min,m → min,registry,ETLCD 쪽 registry 이름은 오타 thermalAnnealingTIme
-etl,input[].condition,param,(없음),atmosphere,-,,추가후보,
+tco,input[].condition,param,BOTEL,atmosphere,-,,추가후보,BOTEL 에 분위기 칸 없음 → Process Note(10-16 전엔 빠짐)
+etl,input[].etl[].material,step,CBD | ETL,,,SnO2_CBD → CBD · SnO2_NP → ETL(material=SnO2_NP),registry,값이 스텝 종류를 정한다(2026: CBD 166 · NP 4). v0.5.4 CBD 에도 material 칸이 생겼으나 비움(psc_additions 산출 개체 후보)
+etl,input[].annealing[].temperature,param,CBD | ETL,thermalAnnealingTemperature,℃,oC → ℃,registry,etl 블록 안 annealing(10건형)
+etl,input[].annealing[].time,param,CBD | ETL,thermalAnnealingTime,min,m → min,registry,CBD 오타 thermalAnnealingTIme 은 v0.5.4 에서 고쳐짐
+etl,input[].condition,param,CBD | ETL,cbdAtmosphere · spinCoatinglabAtmosphere,-,,registry,v0.5.4 — CBD = cbdAtmosphere(MPSP Hold) · ETL = 랩 이름 spinCoatinglabAtmosphere(같은 MPSP 노드 — 새 이름 안 만듦)
 etl_treatment,input[].etl_treatment[].material,param,ETLSF,material,-,,registry,KCl
 etl_treatment,input[].etl_treatment[].concentration,param,ETLSF,concentration,mg/mL,conc_unit 칸이 단위(mg/ml),registry,
 etl_treatment,input[].etl_treatment[].conc_unit,drop,,,,,,concentration 의 단위로 흡수
 etl_treatment,input[].etl_treatment[].quantity,param,ETLSF,spinCoatingVolume,µL,ml × 1000,registry,0.3 ml → 300 µL
 etl_treatment,input[].spin_coating[].rpm,param,ETLSF,spinCoatingSpeed,rpm,,registry,
 etl_treatment,input[].spin_coating[].time,param,ETLSF,spinCoatingTime,s,,registry,
-etl_treatment,input[].spin_coating[].type,param,(없음),spinCoatingMode,-,,추가후보,drop&run · dynamic
+etl_treatment,input[].spin_coating[].type,param,ETLSF,spinCoatingMode,-,,registry,drop&run · dynamic(v0.5.4)
 etl_treatment,input[].annealing[].temperature,param,ETLSF,thermalAnnealingTemperature,℃,oC → ℃,registry,
 etl_treatment,input[].annealing[].time,param,ETLSF,thermalAnnealingTime,min,m → min,registry,
+etl_treatment,input[].condition,param,ETLSF,atmosphere,-,,추가후보,ETLSF 에 분위기 칸 없음 → Process Note(10-16 전엔 빠짐)
 perovskite,input[].perovskite.method,drop,,,,,,1step — PVK 가 곧 1-step 스핀코팅
 perovskite,input[].perovskite.a_site[].material · ratio,entity,PVK,페로브스카이트 개체 formula,,FA0.99MA0.01PbI2.97Br0.03 꼴로 조합,확인,registry 는 전구체 질량(perovskiteMaterial1Weight 등)이라 형식이 다름 — PVK 산출을 적층체 + 페로브스카이트 재료로 나눠 재료 formula 로(10-14)
 perovskite,input[].perovskite.b_site[].material · ratio,entity,PVK,페로브스카이트 개체 formula,,위와 같음,확인,
 perovskite,input[].perovskite.x_site[].material · ratio,entity,PVK,페로브스카이트 개체 formula,,위와 같음,확인,
-perovskite,input[].perovskite.molarity,param,PVK,precursorMolarity,M,,추가후보,용액 몰농도
+perovskite,input[].perovskite.molarity,param,PVK,precursorMolarity,M,,registry,용액 몰농도(v0.5.4)
 perovskite,input[].perovskite.solvent[].material,param,PVK,solvent1 · solvent2,-,목록 순서대로,registry,DMF·DMSO
 perovskite,input[].perovskite.solvent[].volume,param,PVK,solvent1Volume · solvent2Volume,mL,,registry,
 perovskite,input[].perovskite.additive[].material,param,PVK,additive,-,,registry,MACl
-perovskite,input[].perovskite.additive[].quantity,param,PVK,additiveMolarRatio,mol%,,추가후보,registry 는 additiveWeight(g) — 단위 다름
+perovskite,input[].perovskite.additive[].quantity,param,PVK,additiveMolarRatio,mol%,,registry,v0.5.4 — additiveWeight(g)와 같은 MPSP 노드
 perovskite,input[].perovskite.additive[].concentration · conc_unit,param,PVK,additiveConcentration,mg/mL,,확인,quantity(mol%)와 함께 적혀 있음 — 둘의 관계 확인 필요
-perovskite,input[].perovskite.antisolvent[].material,param,PVK,antiSolvent,-,,registry,DEE 등
-perovskite,input[].perovskite.antisolvent[].quantity,param,PVK,antiSolventDrippingVolume,µL,ul → µL,registry,
-perovskite,input[].perovskite.antisolvent[].dripping_time,param,PVK,antiSolventDrippingTiming,s,,registry,
-perovskite,input[].perovskite.annealing[].temperature,param,PVK,thermalAnnealingTemperature,℃,oC → ℃,registry,ASOL 합침분
-perovskite,input[].perovskite.annealing[].time,param,PVK,thermalAnnealingTime,min,m → min,registry,
-perovskite,input[].perovskite.spin_coating[].rpm,param,PVK,spinCoatingSpeed (+ spinCoatingSpeed_Step),rpm,목록 순서 = 단계 번호,registry,10건형만
+perovskite,input[].perovskite.antisolvent[].material,param,ASOL,antiSolvent,-,,확인,DEE 등. RCP-03 에 ASOL 스텝 없음 → PVK Process Note(10-16 — PSC 최종본 뒤 ASOL 스텝 넣을지)
+perovskite,input[].perovskite.antisolvent[].quantity,param,ASOL,antiSolventDrippingVolume,µL,ul → µL,확인,위와 같음
+perovskite,input[].perovskite.antisolvent[].dripping_time,param,ASOL,antiSolventDrippingTiming,s,,확인,위와 같음
+perovskite,input[].perovskite.annealing[].temperature,param,ASOL,thermalAnnealingTemperature,℃,oC → ℃,확인,v0.5.4 PVK 에 열처리 칸 없음(ASOL 칸) → PVK Process Note
+perovskite,input[].perovskite.annealing[].time,param,ASOL,thermalAnnealingTime,min,m → min,확인,위와 같음
+perovskite,input[].perovskite.spin_coating[].rpm,param,PVK,spinCoatingSpeed (+ spinCoatingSpeedStep),rpm,목록 순서 = 단계 번호,registry,PVK 칸 2벌(비공개 Y) — 3단째는 Process Note(ASOL spinCoatingSpeedStep=3 칸)
 perovskite,input[].perovskite.spin_coating[].time,param,PVK,spinCoatingTime,s,,registry,
-perovskite,input[].perovskite.spin_coating[].type,param,(없음),spinCoatingMode,-,,추가후보,
-perovskite,input[].condition,param,(없음),atmosphere,-,,추가후보,10건형 perovskite 블록
+perovskite,input[].perovskite.spin_coating[].type,param,PVK,spinCoatingMode,-,,registry,v0.5.4 칸 1개 — 2·3단째 다른 값은 Process Note
+perovskite,input[].condition,param,PVK,spinCoatingAtmosphere,-,,registry,10건형 perovskite 블록(v0.5.4)
 perovskite_treatment,input[].perovskite_treatment[].material,param,PVKSF,material,-,,registry,OABr 등
 perovskite_treatment,input[].perovskite_treatment[].concentration,param,PVKSF,concentration,mg/mL,conc_unit 칸이 단위,registry,
 perovskite_treatment,input[].perovskite_treatment[].conc_unit,drop,,,,,,concentration 의 단위로 흡수
 perovskite_treatment,input[].perovskite_treatment[].quantity,param,PVKSF,spinCoatingVolume,µL,ml × 1000,registry,
 perovskite_treatment,input[].spin_coating[].rpm,param,PVKSF,spinCoatingSpeed,rpm,,registry,
 perovskite_treatment,input[].spin_coating[].time,param,PVKSF,spinCoatingTime,s,,registry,
-perovskite_treatment,input[].spin_coating[].type,param,(없음),spinCoatingMode,-,,추가후보,
+perovskite_treatment,input[].spin_coating[].type,param,PVKSF,spinCoatingMode,-,,registry,v0.5.4
 perovskite_treatment,input[].annealing[].temperature,param,PVKSF,thermalAnnealingTemperature,℃,oC → ℃,registry,
 perovskite_treatment,input[].annealing[].time,param,PVKSF,thermalAnnealingTime,min,m → min,registry,
+perovskite_treatment,input[].condition,param,PVKSF,spinCoatingAtmosphere,-,,registry,v0.5.4(10-16 전엔 빠짐)
 htl,input[].htl[].material,param,HTL,holeTransportMaterial,-,,registry,Spiro-OMeTAD
-htl,input[].htl[].concentration · conc_unit,param,HTL,holeTransportMaterialConcentration,mg/mL,,추가후보,registry 는 holeTransportMaterialWeight(g) — 환산하면 농도 × 용매 부피(90.9 × 1.1 = 0.1 g = 기본값)
+htl,input[].htl[].concentration · conc_unit,param,HTL,holeTransportMaterialConcentration,mg/mL,,registry,v0.5.4 — holeTransportMaterialWeight(g) = 농도 × 용매 부피(90.9 × 1.1 = 0.1 g = 기본값)
 htl,input[].htl[].quantity,param,HTL,spinCoatingVolume,µL,ml × 1000,registry,0.07 ml → 70 µL(= 기본값)
 htl,input[].htl_doping[].material,param,HTL,dopant1Name · dopant2Name · additive,-,이름으로: Li-TFSI → dopant1 · Co-TFSI → dopant2 · tBP → additive,registry,
 htl,input[].htl_doping[].volume,param,HTL,dopant1Volume · dopant2Volume · additiveVolume,µL,ul → µL,registry,
@@ -68,10 +71,11 @@ htl,input[].solvent[].material,param,HTL,solvent,-,값 그대로(CB),registry,ht
 htl,input[].solvent[].volume,param,HTL,solventVolume,mL,,registry,
 htl,input[].spin_coating[].rpm,param,HTL,spinCoatingSpeed,rpm,,registry,
 htl,input[].spin_coating[].time,param,HTL,spinCoatingTime,s,,registry,
-htl,input[].spin_coating[].type,param,(없음),spinCoatingMode,-,,추가후보,
+htl,input[].spin_coating[].type,param,HTL,spinCoatingMode,-,,registry,v0.5.4
+htl,input[].condition,param,HTL,spinCoatingAtmosphere,-,,registry,v0.5.4(10-16 전엔 빠짐)
 anode,input[].anode_metal,param,TOPEL,material,-,,registry,Au(160건 — 10건형에는 없음)
-anode,input[].condition,drop,,,,,,vacuum evaporation — TOPEL 이 곧 진공 열증착
-jv,analysis.JV[].measurement_conditions.sweep_direction,step,JV,scanDirection,-,Forward → forward · Reverse → reverse,확인,JV 스텝을 (방향·면적)별로 나눔 — 스텝 안 반복 = 셀(파라미터 행엔 RepeatNo 없음)
+anode,input[].condition,param,TOPEL,evaporationAtmosphere,-,,registry,vacuum evaporation 등(v0.5.4 — 10-16 전엔 빠짐)
+jv,analysis.JV[].measurement_conditions.sweep_direction,step,JV,scanDirection,-,Forward → forward · Reverse → reverse,확인,JV 스텝을 (방향·면적·측정 조건)별로 나눔 — 스텝 안 반복 = 셀(파라미터 행엔 RepeatNo 없음)
 jv,analysis.JV[].pv_cell_parameters.efficiency,result,JV,powerConversionEfficiency,%,,registry,Composite(forward/reverseScan) — 반복마다 값 하나
 jv,analysis.JV[].pv_cell_parameters.jsc,result,JV,shortCircuitCurrentDensity,mA/cm2,,registry,
 jv,analysis.JV[].pv_cell_parameters.voc,result,JV,openCircuitVoltage,V,,registry,
@@ -79,19 +83,19 @@ jv,analysis.JV[].pv_cell_parameters.fill_factor,result,JV,fillFactor,%,,registry
 jv,analysis.JV[].V · J · I,file,JV,resultFile,csv,배열 → DataArtifact csv(V·J·I 열) · OriginalFileName = fileinfo original_name(확장자 .csv),registry,반복마다 파일 하나 — 배열은 5시트에 넣지 않음(10-14 결정)
 jv,analysis.JV[].pv_cell_parameters.cell_dimension,param,JV,activeArea,cm2,,registry,곡선 값 = Jsc 계산에 쓴 면적(Isc/면적 = Jsc 확인) · 없으면 소자 블록 값
 jv,analysis.JV[].pv_cell_parameters.irradiance,param,JV,incidentLightIntensity,mW/cm2,,registry,전부 100
-jv,analysis.JV[].calculations.rseries,result,JV,seriesResistance,ohm,,추가후보,
-jv,analysis.JV[].calculations.rshunt,result,JV,shuntResistance,kohm,,추가후보,
-jv,analysis.JV[].pv_cell_parameters.pmax · vopt · iopt,result,JV,maximumPowerPoint 류,,,추가후보,낮음 — 곡선에서 다시 구할 수 있음
-jv,analysis.JV[].measurement_conditions.nplc · voltage_settling_time,param,JV,(측정 조건),,,추가후보,낮음
+jv,analysis.JV[].calculations.rseries,result,JV,seriesResistance,ohm,,보류,v0.5.4 VocabAlias 에만 이름(RCP-03 JV 결과 아님) — 넣으면 A 늘어남 · 사용자 결정 대기(10-16)
+jv,analysis.JV[].calculations.rshunt,result,JV,shuntResistance,kohm,,보류,위와 같음
+jv,analysis.JV[].pv_cell_parameters.pmax · vopt · iopt,result,JV,maximumPower · voltageAtMaximumPowerPoint · currentDensityAtMaximumPowerPoint,,,보류,위와 같음 · iopt 는 전류(mA) — 밀도로 하려면 면적으로 나눔
+jv,analysis.JV[].measurement_conditions.nplc · voltage_settling_time,param,JV,nplc · voltageSettlingTime,PLC · s,,registry,v0.5.4 — 곡선마다 다르면 JV 스텝을 나눔(10-16 · 2022~2025 6묶음)
 jv,analysis.JV[].pv_cell_parameters.isc · analysis.JV[].calculations.fitted_isc · analysis.JV[].calculations.fitted_voc,drop,,,,,,Jsc × 면적 · 맞춤 중간값
 jv,analysis.JV[].efficiency · fill_factor · jsc · voc · cell_dimension · sweep_direction,drop,,,,,,pv_cell_parameters 의 사본
 jv,analysis.JV[].key · analysis.JV[].measurement_conditions.sample_id,drop,,,,,,key = 방향_원본 파일명(시각 뺌) — 2328/2328 일치라 파일 이름에 남음
 jv,analysis.JV[].measurement_conditions.note · configuration_file,drop,,,,,,측정기 기본 문구(글자 깨짐) · 설정 파일명
-etl,input[].etl[].concentration · conc_unit,param,ETLCD | ETLCT,concentration,mg/mL,,추가후보,2022~2025(② 10-15) — ETL 스텝에 칸 없음 → Process Note. 값에 '1:5 ratio (in H2O)' 같은 글도 있음(ETLCT waterToSno2VolumeRatio 후보)
-etl,input[].etl[].quantity,param,ETLCT,spinCoatingVolume,µL,ml → µL,registry,2022~2025(② 10-15)
-etl,input[].chemical_bath_deposition.bath_annealing[].temperature,param,ETLCD,temperature,℃,oC → ℃,확인,② 10-15 — CBD 욕조 온도로 봄(4건)
-etl,input[].chemical_bath_deposition.bath_annealing[].time,param,ETLCD,immersionTime,min,m → min,확인,② 10-15 — CBD 담금 시간으로 봄(4건)
-(층마다),input[].module[].* · perovskite.module[].*,param,(그 층 스텝),module.<키>,,,추가후보,② 10-15 — 바·슬롯다이 코팅(type·gap·coating_speed·feeding_amount) → Process Note. 단위셀 레코드 40건
-perovskite,input[].perovskite.vacuum_suction[],param,PVK,vacuum_suction,s,,추가후보,② 10-15 — 진공 흡입 시간(6건) → Process Note
+etl,input[].etl[].concentration · conc_unit,param,CBD | ETL,concentration,mg/mL,,registry,2022~2025(② 10-15 · v0.5.4 칸). 값에 '1:5 ratio (in H2O)' 같은 글도 있음(ETL waterToSno2VolumeRatio 후보) → Process Note
+etl,input[].etl[].quantity,param,ETL,spinCoatingVolume,µL,ml → µL,registry,2022~2025(② 10-15) · CBD 에는 칸 없음 → Process Note
+etl,input[].chemical_bath_deposition.bath_annealing[].temperature,param,CBD,immersionTemperature,℃,oC → ℃,확인,② 10-15 — CBD 욕조 온도로 봄(4건) · v0.5.4 이름(옛 temperature) · 비공개 Y
+etl,input[].chemical_bath_deposition.bath_annealing[].time,param,CBD,immersionTime,min,m → min,확인,② 10-15 — CBD 담금 시간으로 봄(4건) · 비공개 Y
+(층마다),input[].module[].* · perovskite.module[].*,param,(그 층 스텝),coatingMethod · coatingGap · coatingSpeed · feedingAmount,µm · mm/s · µL,,registry,v0.5.4 — PVK 에만 칸 · 다른 층은 Process Note. 층 밖 module 블록(10건)은 건너뜀 — registry 메모 'PVK 에 붙임'은 미적용
+perovskite,input[].perovskite.vacuum_suction[],param,PVK,vacuumSuctionTime,s,,registry,② 10-15 — 진공 흡입 시간(6건 · v0.5.4)
 record,analysis_old.JV[],drop,,,,,,② 10-15 — analysis.JV 의 사본(2022~2023 126건 모두 곡선 키·수·효율 같음)
 record,public,drop,,,,,,② 10-15 — ChemDX 공개 여부(실험 데이터 아님)
