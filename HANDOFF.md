@@ -2,13 +2,13 @@
 
 > 이 파일 = "지금"의 스냅샷만. 규칙·함정 = `CLAUDE.md` · 계획 = `docs/PLAN.md` · 이력 = `docs/archive/worklog.md` · 합의 = `docs/intent/`.
 
-## 지금 — 2026-10-16 스텝 = 실데이터 조립 · 시험판 registry v0.5.4b · `dev-20261016e`(+ `-r054b`)
+## 지금 — 2026-10-16 registry v0.5.6(BUFEV·HTLSF·ALD 정본) · `dev-20261016f`
 
 - 1차 원본 = 사용자가 받은 `raw/1_full/downloads/run-20261014T054004Z-rx23_glu`(13,271건 · 16그룹). 구조·필드 = `docs/chemdx-api.md`.
 - 2차 원본 = `raw/2_krict/20261014/<등록연도>/<ID>.json` + `manifest.json` — `scripts/filter_krict.py`(그룹 2 · `created_at` 연도 · 바이트 그대로).
   KRICT 3,333 = 2021 103 · 2022 578 · 2023 674 · 2024 407 · 2025 1,401 · **2026 170**(작성자 2명 · 마지막 등록 07-24). D2·D3 결정.
 - 첨부 파일 바이트(SEM 이미지·원본 측정 txt)는 받지 않았다 — 레코드에는 목록(`fileinfo`)만. 곡선(JV·PL·XRD·UV-Vis)은 레코드 안 숫자 배열.
-- 기준: sdl-prefill `94a4935`(registry v0.5.4 = PSC 예비 회신 · template `5sheet-1.2`). **PSC 최종본 대기** — 오면 받기 절차 → 판 올림 → 이 레포 매핑 확인·다시 빌드(사용자 10-16).
+- 기준: sdl-prefill `3676327`(registry **v0.5.6** = v0.5.5 PSC 연구원 수정본 + 이 레포 v0.5.4b 표 정본화 · template `5sheet-1.3`). **PSC 최종본 대기** — 오면 받기 절차 → 판 올림 → 이 레포 매핑 확인·다시 빌드(사용자 10-16).
 - 확인(10-14): 2026년분 ≈170건 맞음(재수집 불필요) · **마감 10-26**(D6) · 측정 곡선은 JSON 배열 → DataArtifact 용 txt/csv 로 뽑는다(배열 지양).
 - T2.1 완료: `mapping/fields.csv`(경로 242, 2026 에서 채워진 것 119) — 관찰은 `docs/chemdx-api.md` 끝. D7 잠정(레코드 = 세트) · D1 = KRICT-PSC 체계(`PSC-EXP-…`).
 - D1 결정: `PSC-EXP-{created_at 날짜}-{NNN}`(같은 날 ChemDX ID 순).
@@ -112,10 +112,15 @@
   표 `mapping/registry_v0.5.4b.csv`(StepType BUFEV·HTLSF·ALD · 파라미터 13 = 기존 이름 재사용 · 새 용어 `dopant1Concentration` Hold) → `scripts/registry_trial.py` →
   `$SOLAR_DATA_DIR/registry/v0.5.4b/`(prefill 검증 게이트 통과 · 정본 아님) · 빌드 = `SDL_REGISTRY_DIR=…/v0.5.4b`(prefill 5c80c1a 고리). 근거: PSC-RCP-01 `[신규]BUFEV` = C60·LiF 증착 · **BCP 는 랩이 ETLSF 스핀** →
   공정 값 없는 버퍼층(BCP 691)은 불명확으로 계속 건너뜀. 변환기: C60→BUFEV · SnO2_ALD→ALD · 증착 값 있는 BCP→BUFEV · htl_treatment→HTLSF · etl_doping 'Ce 200mg/mL'→도펀트 칸 · µTorr→Torr · A/s→Å/s.
-  **지금 빌드 = `library/dev-20261016e`**(0.5.4 · 1,575세트 — d 에 ETL 도핑 7 더함) · **`library/dev-20261016e-r054b`**(0.5.4b 시험 · **2,277세트** · 건너뜀 1,056 · 오류 0) — 둘 다 코드 그 커밋 ·
+  빌드 `library/dev-20261016e`(0.5.4 · 1,575세트 — d 에 ETL 도핑 7 더함) · **`library/dev-20261016e-r054b`**(0.5.4b 시험 · **2,277세트** · 건너뜀 1,056 · 오류 0) — 둘 다 코드 그 커밋 ·
   기존 1,568세트 값 사라짐 0(두 빌드 모두) · 2026 A 3,490 그대로. 새 702세트 = 주로 p-i-n(BUFEV C60 626 · BCP 237 · ALD 35 · HTLSF 29). 플랫폼에 0.5.4b 매핑 덮으면 미표현 0 · MPSP 98.4%.
   남은 건너뜀 1,056: 버퍼층 공정 값 없음 697 · PVK 진공 증착 140 · surface_treatment 137 · 한 블록 두 층(C60+PCBM 31 · C60/SnO2 15) · 따로 열증착 블록 13 · 소자 구조 없음 8 · 그 밖.
   새 세트 비고: p-i-n HTL 열처리(HTL 에 칸 없음 — RCP-01 은 `[신규]ANN`) · C60 블록의 바 코팅·열처리 값. **정본 반영은 사용자 결정** — 표를 prefill 받기 절차로(또는 PSC 최종 회신과 함께).
   **나중에 랩에 물을 것(사용자 10-16 — 지금은 그대로 건너뜀)**: 버퍼층 공정 값 없음 701건(BCP 691 · 재료만 — 같은 레코드 C60 도 614건 값 없음 · 2021~2023 · 작성자 39·56·49·43·36번)
   = 증착인지 스핀인지. 단서: 값 있는 BCP 362 는 전부 열증착 · 작성자 56 은 값 없는 111 · 증착 100 · PSC RCP-01 은 BCP 스핀(ETLSF). 답 오면 BUFEV 또는 ETLSF 로.
+- **registry v0.5.6 로 빌드 확인(10-16 밤 · 사용자 "prefill 에서 0.5.6 을 만들었으니 그걸 기준으로")** — prefill v0.5.5(2e8c841, PSC 연구원 수정본: RCP-01·02 삭제 ·
+  RCP-03 다시 씀 — ASOL 분리·측정 12·JV 정·역 스텝 둘) + v0.5.6(3676327, 이 레포 `mapping/registry_v0.5.4b.csv` 17행을 정본으로). 변환기 수정 없음(레시피는 JV 결과 정의만 참고).
+  **지금 빌드 = `library/dev-20261016f`**(코드 bd676a8 · prefill 3676327 깨끗 · registry 0.5.6 · template 1.3 · 오류 0): 2,277세트(2026 170) · 건너뜀 1,056 · 2026 A 3,490 —
+  `dev-20261016e-r054b` 와 셀 비교 = RegistryVersion(0.5.4b → 0.5.6) 한 칸만 다름(값·스텝·비공개 표시 무변). 플랫폼 덮어보기(v0.5.6 PSC 매핑) 미표현 0 · MPSP 98.4%.
+  시험판 고리·스크립트(`SDL_REGISTRY_DIR` · `registry_trial.py`)는 다음 추가 후보 때 다시 씀.
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).

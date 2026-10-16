@@ -1,3 +1,4 @@
+# → **prefill registry v0.5.6 에 정본으로 반영됨(3676327, 10-16 — 17행 그대로)**. 아래는 기록용.
 # 시험판 registry v0.5.4b = prefill v0.5.4 + 이 표(사용자 10-16 — 건너뛴 ChemDX 레코드 중 불명확한 것 빼고 담기). 정본 아님: 만들기 = scripts/registry_trial.py → $SOLAR_DATA_DIR/registry/v0.5.4b/.
 # 정본 반영은 이 표를 sdl-prefill 받기 절차(또는 PSC 최종 회신)로 — 이 레포는 prefill registry 파일을 고치지 않는다(CLAUDE.md).
 # 근거: PSC-RCP-01(p-i-n)의 [신규]BUFEV = C60·LiF 열증착(material·thickness·depositionRate) · BCP 는 ETLSF 스핀(그래서 공정 값 없는 BCP 716 은 뺌 — 불명확).

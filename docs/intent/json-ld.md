@@ -55,7 +55,7 @@
 **3·4 우선순위 올림**: 템플릿엔 `Value.RepeatNo`(셀 번호)·`StepID`(JV 스텝)가 다 있는데 적재기가 RepeatNo 를 안 읽고 측정 ↔ 스텝을 안 이어 같은 셀의 PCE·Voc·Jsc·FF·곡선이 측정 노드 5개로 흩어지고 면적·광세기·스캔 방향·NPLC 와 끊김.
 8. 템플릿 판 1.2·1.3 받기 + **안 읽는 열 처리** — `Confidential`(Y = 값은 기록, 비공개 — 지금 공개 그래프에 그대로: ChemDX 실측 1,060행) ·
    `Parameter.Source`(default = registry 기본값 — 지금 실측처럼 실림. ChemDX 는 변환기에서 기본값 행을 뺐다(10-16), 웹 입력분은 남은 문제) · 1.3 스텝 없는 Value 행(`entityFile`).
-9. registry 0.5.1 → **0.5.4 들여오기** — **LLM 재판정 말고 registry 매핑 칸을 확정 판정으로**(사용자 10-16 "여기서 일괄로, 플랫폼은 받아가기"):
+9. registry 0.5.1 → **0.5.6 들여오기**(10-16 — v0.5.5 PSC 수정본 + BUFEV·HTLSF·ALD) — **LLM 재판정 말고 registry 매핑 칸을 확정 판정으로**(사용자 10-16 "여기서 일괄로, 플랫폼은 받아가기"):
    PSC VocabAlias `Status`·`MPSP_Term`(J1) · StepType `SDLEXO_Class`·`MPSP_Technique`(J3)를 approved 로 읽는 들여오기(+ `scripts/sync_upstream.py registry <prefill>`).
    시험(이 레포 scratchpad — 적재기 판정 자리에 메모리로만 덮음, `dev-20261016c` 1,829세트): 미표현 2(STEP_LAYER `ASOL`·`CBD`) → 0 ·
    MPSP 매핑률 87.3% → 98.6%(비해당 빼면 99.9%) · 남은 미매핑 = `cbdAtmosphere`(요청 10) · 비해당 2. 플랫폼 기존 판정과 다른 곳 1(ETL 기법 — registry 쪽이 맞음).
