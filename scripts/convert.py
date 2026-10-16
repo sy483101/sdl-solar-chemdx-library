@@ -1,7 +1,8 @@
 """ChemDX(KRICT) 레코드 하나 → sdl-prefill draft + 첨부(곡선 csv) — 매핑 = mapping/chemdx_to_psc.csv.
 
 웹에서 연구자가 하는 순서 그대로: PSC 표준 레시피(PSC-RCP-03)를 불러와 → ChemDX 에 없는 스텝을 빼고 → 레코드 값을 적는다.
-- 레시피에 박힌 표준값은 이 실험의 값이 아니므로 지운다(registry 기본값 = Source default 로 돌아감). ChemDX 값만 manual.
+- 레시피 표준값·registry 기본값은 이 실험의 값이 아니므로 지운다 — ChemDX 는 registry 와 따로 만든 실험이라 기록 없는 칸 = 빈칸
+  (기본값 행이 있으면 적재기가 실측처럼 싣는다 — 사용자 10-16). ChemDX 값만 manual.
 - registry 에 없는 이름·환산 못 한 단위는 버리지 않고 스텝 orphanParams 로(엔진이 Process Note + report.txt 경고로 남긴다).
 - 이름은 registry 의 '옛 → 새' 메모·대소문자를 너그럽게 맞추고, 적을 때는 registry 이름을 그대로 쓴다.
 엔진(sdl_platform)은 부르는 쪽이 sys.path 에 올린다(build_library.py).
@@ -148,10 +149,10 @@ def convert(rec, seq):
         raise Skip("PVK 진공 증착 — PSC-RCP-03 PVK(용액 공정) 스텝과 다름(랩 확인)")
 
     d = D.from_recipe(LAB, RECIPE, {"date": rec["created_at"][:10], "seq": f"{seq:03d}"})
-    for s in d["steps"]:                                  # 레시피 표준값 지움 → registry 기본값(default)
+    for s in d["steps"]:                                  # 레시피 표준값·registry 기본값 지움 → 기록 없는 칸은 행 없음
         s["orphanParams"] = {}
         for p in s["params"]:
-            p["value"], p["use"] = "", False
+            p["value"], p["use"], p["default"] = "", False, ""
     for code in ("SUBST", "EQE", "IMAGE", "THICK"):       # ChemDX 에 없는 스텝(유리 기판 · 측정)
         drop_step(d, code)
     drop_step(d, ETL_DROP[etl])
