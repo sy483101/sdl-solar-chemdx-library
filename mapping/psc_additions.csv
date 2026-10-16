@@ -20,7 +20,7 @@ registry,analysis.JV[].measurement_conditions.voltage_settling_time,JV,voltageSe
 registry,analysis.JV[].measurement_conditions.nplc,JV,nplc,param,PLC,characterization > measurement > jvMeasurement > acquisitionCondition > Integration time,반영(v0.5.4),PLC = 전원 주기 수(60 Hz 면 1 PLC = 16.7 ms) — 플랫폼 단위표에 없음(요청 11). prefill VocabAlias 경로 고침(10-16)
 registry,input[].condition (tco 블록),BOTEL,(없음),param,-,,후보,10-16 검토 때 찾음(그전엔 빠짐) — 지금 Process Note 'atmosphere'
 registry,input[].condition (etl_treatment 블록),ETLSF,(없음),param,-,,후보,10-16 검토 때 찾음(그전엔 빠짐) — 지금 Process Note 'atmosphere'
-registry,input[].perovskite.antisolvent[] · annealing[] · spin_coating[2],ASOL,antiSolvent* · thermalAnnealing* · spinCoatingSpeedStep=3,param,,,확인,v0.5.4 ASOL StepType 에 칸 있음 · RCP-03 에 ASOL 스텝 없음 → PVK Process Note. PSC 최종본 뒤 ASOL 스텝 넣을지(10-16)
+registry,input[].perovskite.antisolvent[] · annealing[] · spin_coating[2],ASOL,antiSolvent* · thermalAnnealing* · spinCoatingSpeedStep=3,param,,,반영(ASOL 스텝),10-16 실데이터 조립 — 반용매가 있으면 PVK 뒤 ASOL(반용매·셋째 스핀·열처리). 반용매 없는 열처리는 여전히 Process Note(PVK 칸 없음)
 structure,analysis.JV[].pv_cell_parameters.cell_dimension,JV,activeArea,param,cm2,,해소(10-14),Parameter 행엔 RepeatNo 없음 → 변환기가 JV 를 (방향·면적)별 스텝으로(2026 +8 스텝). 면적 = 곡선 값(Jsc 계산 면적) · 소자 블록 값은 완성소자 Note
 converter,fileinfo[].original_name,JV,(OriginalFileName),file,,,해소(10-14),원본 파일명(측정 시각 포함)에 확장자만 .csv(내용 = 배열에서 만든 csv)
 converter,input[].etl[].material,CBD,(산출 개체 이름·화학식),entity,,,후보,SnO2_CBD 는 스텝 종류(CBD)로만 남음 — v0.5.4 CBD material 칸에 적을지

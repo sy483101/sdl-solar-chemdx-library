@@ -59,7 +59,7 @@ def main(snap, out, years):
         group = "2026" if r["created_at"].startswith("2026") else "other"
         try:
             d, blobs = convert.convert(r, seq[r["id"]])
-        except convert.Skip as e:                    # 골격 밖 레코드 — 번호(seq)는 비워 둔다: 나중에 들어와도 다른 세트 ID 가 안 바뀜
+        except convert.Skip as e:                    # 담을 수 없는 레코드 — 번호(seq)는 비워 둔다: 나중에 들어와도 다른 세트 ID 가 안 바뀜
             skipped.append({"chemdxId": r["id"], "group": group, "reason": str(e)})
             totals[group]["skipped"] += 1
             continue
@@ -85,12 +85,12 @@ def main(snap, out, years):
                 "source": str(snap), "sourceManifestSha256": hashlib.sha256((snap / "manifest.json").read_bytes()).hexdigest(),
                 "years": years or "all", "code": commit(HERE), "sdlPrefill": commit(PREFILL),
                 "registryVersion": REGISTRY_VERSION, "templateVersion": sheets.TEMPLATE_VERSION,
-                "recipe": f"{convert.LAB} {convert.RECIPE}", "totals": totals, "sets": sets, "skipped": skipped}
+                "recipe": f"{convert.LAB} {convert.RECIPE} (참고 — JV 결과 정의만, 스텝은 실데이터로 조립)", "totals": totals, "sets": sets, "skipped": skipped}
     (out / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=1))
 
     lines = [f"# 정량지표 — {out.name}", "",
              f"원본 `{snap.name}` · 코드 `{manifest['code']}` · sdl-prefill `{manifest['sdlPrefill']}` · registry {REGISTRY_VERSION} · "
-             f"template {sheets.TEMPLATE_VERSION} · 골격 {manifest['recipe']}", "",
+             f"template {sheets.TEMPLATE_VERSION} · 참고 레시피 {manifest['recipe'].split(' (')[0]}", "",
              "| 구분 | 세트 | **산정 건수 A**(세트당) | 조성 | 구조 | 공정 | 분석 | 칸 합계(참고) | 공정 중 manual | 알림 남은 세트 | 오류 · 미입력 · 확인 | 건너뜀 |",
              "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|"]
     for g, t in sorted(totals.items()):
@@ -98,7 +98,7 @@ def main(snap, out, years):
                      f"{t['process_manual']:,} | {t['sets_with_findings']} | {t['findings_error']} · {t['findings_miss']} · {t['findings_warn']} | {t['skipped']:,} |")
     why = collections.Counter((x["group"], x["reason"]) for x in skipped)
     if why:
-        lines += ["", "건너뛴 레코드(골격 밖 — manifest `skipped`):", ""] + [
+        lines += ["", "건너뛴 레코드(registry 에 담을 StepType 없음 등 — manifest `skipped`):", ""] + [
             f"- {g} · {n:,} · {reason}" for (g, reason), n in why.most_common(SKIP_HEAD)] + (
             [f"- 그 밖 {len(why) - SKIP_HEAD}가지 이유 · {sum(n for _, n in why.most_common()[SKIP_HEAD:]):,}건"] if len(why) > SKIP_HEAD else [])
     report = HERE.parent / "reports" / f"indicator-{out.name}.md"

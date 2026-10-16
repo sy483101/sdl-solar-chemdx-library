@@ -1,5 +1,5 @@
 # ChemDX(KRICT) → KRICT-PSC registry 매핑표 — T2.2 초안 2026-10-14. 범위 = 2026 레코드에서 채워진 경로(mapping/fields.csv). 다른 연도 경로는 ② 때 추가.
-# registry = KRICT-PSC v0.5.4(PSC 예비 회신 · 10-16 — 코드 합치기 안 함): SUBST(뺌 — ChemDX 에 유리 기판 없음) · BOTEL · CBD · ETL · ETLSF · PVK · PVKSF · HTL · TOPEL · JV. ASOL 은 RCP-03 에 없어 반용매·PVK 열처리는 Process Note(PSC 최종본 뒤 재검토). 이전 = v0.5.3 '→' 정리 후 이름(ETLCD·ETLCT)
+# registry = KRICT-PSC v0.5.4(PSC 예비 회신 · 10-16). **스텝 = 실데이터로 조립(사용자 10-16 — 레시피는 대표 레시피일 뿐)**: 층 블록마다 StepType 하나 — tco→BOTEL · etl→CBD(SnO2_CBD·chemical_bath_deposition)/ETL(그 밖 코팅) · etl_treatment→ETLSF · perovskite→PVK(+antisolvent 있으면 ASOL) · perovskite_treatment→PVKSF · htl(+htl_doping)→HTL · anode_metal→TOPEL · JV. 순서 = 소자 구조(n-i-p·p-i-n)의 적층 순서. 레시피 PSC-RCP-03 은 JV 결과 정의만 참고 · RecipeCode 비움. StepType 없는 층(버퍼층·열증착층·표면처리층·HTL 표면처리·ETL 도핑) · ETL 열증착/ALD · PVK 진공 증착 = 레코드째 건너뜀(manifest skipped). registry 기본값은 쓰지 않음(10-16)
 # layer = 그 경로가 들어 있는 input 블록(블록 안 키로 판별) · target = meta | entity | step | param | result | file | drop · status = registry(있음) | 추가후보(T2.3) | 확인(사용자)
 layer,chemdx_path,target,step,name,unit,conv,status,note
 record,id,meta,,note,,'ChemDX KRICT-SC-xxxxx',확인,D1 — 출처 추적. draft meta 에 전용 칸이 없어 note 로
@@ -19,7 +19,7 @@ device,input[].ar,param,JV,antireflectionFilmUsage,-,0 → no · 1 → yes,regis
 device,input[].condition,param,(없음),atmosphere,-,,추가후보,air·glove-box 등 공정 분위기
 tco,input[].tco,param,BOTEL,material,-,값 그대로(FTO · FTO_Asahi),registry,상용 FTO 기판(하부전극 일체형)
 tco,input[].condition,param,BOTEL,atmosphere,-,,추가후보,BOTEL 에 분위기 칸 없음 → Process Note(10-16 전엔 빠짐)
-etl,input[].etl[].material,step,CBD | ETL,,,SnO2_CBD → CBD · SnO2_NP → ETL(material=SnO2_NP),registry,값이 스텝 종류를 정한다(2026: CBD 166 · NP 4). v0.5.4 CBD 에도 material 칸이 생겼으나 비움(psc_additions 산출 개체 후보)
+etl,input[].etl[].material,step,CBD | ETL,material,-,SnO2_CBD(또는 chemical_bath_deposition 블록) → CBD · 그 밖(SnO2_NP·TiO2·PC60BM…) → ETL · 열증착·ALD → 건너뜀,registry,값이 스텝 종류를 정한다 · 값은 두 스텝 모두 material 칸에(10-16)
 etl,input[].annealing[].temperature,param,CBD | ETL,thermalAnnealingTemperature,℃,oC → ℃,registry,etl 블록 안 annealing(10건형)
 etl,input[].annealing[].time,param,CBD | ETL,thermalAnnealingTime,min,m → min,registry,CBD 오타 thermalAnnealingTIme 은 v0.5.4 에서 고쳐짐
 etl,input[].condition,param,CBD | ETL,cbdAtmosphere · spinCoatinglabAtmosphere,-,,registry,v0.5.4 — CBD = cbdAtmosphere(MPSP Hold) · ETL = 랩 이름 spinCoatinglabAtmosphere(같은 MPSP 노드 — 새 이름 안 만듦)
@@ -43,12 +43,12 @@ perovskite,input[].perovskite.solvent[].volume,param,PVK,solvent1Volume · solve
 perovskite,input[].perovskite.additive[].material,param,PVK,additive,-,,registry,MACl
 perovskite,input[].perovskite.additive[].quantity,param,PVK,additiveMolarRatio,mol%,,registry,v0.5.4 — additiveWeight(g)와 같은 MPSP 노드
 perovskite,input[].perovskite.additive[].concentration · conc_unit,param,PVK,additiveConcentration,mg/mL,,확인,quantity(mol%)와 함께 적혀 있음 — 둘의 관계 확인 필요
-perovskite,input[].perovskite.antisolvent[].material,param,ASOL,antiSolvent,-,,확인,DEE 등. RCP-03 에 ASOL 스텝 없음 → PVK Process Note(10-16 — PSC 최종본 뒤 ASOL 스텝 넣을지)
-perovskite,input[].perovskite.antisolvent[].quantity,param,ASOL,antiSolventDrippingVolume,µL,ul → µL,확인,위와 같음
-perovskite,input[].perovskite.antisolvent[].dripping_time,param,ASOL,antiSolventDrippingTiming,s,,확인,위와 같음
-perovskite,input[].perovskite.annealing[].temperature,param,ASOL,thermalAnnealingTemperature,℃,oC → ℃,확인,v0.5.4 PVK 에 열처리 칸 없음(ASOL 칸) → PVK Process Note
-perovskite,input[].perovskite.annealing[].time,param,ASOL,thermalAnnealingTime,min,m → min,확인,위와 같음
-perovskite,input[].perovskite.spin_coating[].rpm,param,PVK,spinCoatingSpeed (+ spinCoatingSpeedStep),rpm,목록 순서 = 단계 번호,registry,PVK 칸 2벌(비공개 Y) — 3단째는 Process Note(ASOL spinCoatingSpeedStep=3 칸)
+perovskite,input[].perovskite.antisolvent[].material,param,ASOL,antiSolvent,-,,registry,반용매가 있으면 PVK 뒤에 ASOL 스텝(10-16 실데이터 조립)
+perovskite,input[].perovskite.antisolvent[].quantity,param,ASOL,antiSolventDrippingVolume,µL,ul → µL,registry,반용매가 있으면 PVK 뒤에 ASOL 스텝(10-16 실데이터 조립)
+perovskite,input[].perovskite.antisolvent[].dripping_time,param,ASOL,antiSolventDrippingTiming,s,,registry,반용매가 있으면 PVK 뒤에 ASOL 스텝(10-16 실데이터 조립)
+perovskite,input[].perovskite.annealing[].temperature,param,ASOL,thermalAnnealingTemperature,℃,oC → ℃,registry,ASOL 스텝(반용매 있을 때). 반용매 없으면 칸 없음 → PVK Process Note(v0.5.4 PVK 에 열처리 칸 없음)
+perovskite,input[].perovskite.annealing[].time,param,ASOL,thermalAnnealingTime,min,m → min,registry,ASOL 스텝(반용매 있을 때). 반용매 없으면 칸 없음 → PVK Process Note(v0.5.4 PVK 에 열처리 칸 없음)
+perovskite,input[].perovskite.spin_coating[].rpm,param,PVK,spinCoatingSpeed (+ spinCoatingSpeedStep),rpm,목록 순서 = 단계 번호,registry,PVK 칸 2벌(1·2단) · 반용매 있으면 셋째 단계부터 ASOL(spinCoatingSpeedStep=3) · 없으면 PVK Process Note
 perovskite,input[].perovskite.spin_coating[].time,param,PVK,spinCoatingTime,s,,registry,
 perovskite,input[].perovskite.spin_coating[].type,param,PVK,spinCoatingMode,-,,registry,v0.5.4 칸 1개 — 2·3단째 다른 값은 Process Note
 perovskite,input[].condition,param,PVK,spinCoatingAtmosphere,-,,registry,10건형 perovskite 블록(v0.5.4)
@@ -99,3 +99,7 @@ etl,input[].chemical_bath_deposition.bath_annealing[].time,param,CBD,immersionTi
 perovskite,input[].perovskite.vacuum_suction[],param,PVK,vacuumSuctionTime,s,,registry,② 10-15 — 진공 흡입 시간(6건 · v0.5.4)
 record,analysis_old.JV[],drop,,,,,,② 10-15 — analysis.JV 의 사본(2022~2023 126건 모두 곡선 키·수·효율 같음)
 record,public,drop,,,,,,② 10-15 — ChemDX 공개 여부(실험 데이터 아님)
+(블록),input[] 층 이름 없는 공정 블록(spin_coating·annealing·module·condition),param,(바로 앞 층 스텝),,,,registry,10-16 — 레코드에서 바로 앞 층 블록의 공정으로(ETL 뒤 module 366 · HTL 뒤 225 · PVK 뒤 150 등). registry v0.5.4 메모 'PVK 에 붙임' 대신 실데이터 위치
+(블록),input[] note 만 있는 블록,meta,,note,,,registry,10-16 — 실험 비고에 덧붙임
+htl_doping,input[] 따로 떨어진 htl_doping 블록,param,HTL,dopant1Name 등,,,registry,10-16 — 같은 블록 안과 똑같이 HTL 칸으로(HTL 보다 앞이면 건너뜀)
+anode,input[].anode_metal 없음,step,TOPEL,,,,확인,10-16 — 전극 블록이 없으면 TOPEL 스텝을 만들지 않음(전엔 레시피의 빈 TOPEL 이 남았음 — 113세트). 완성소자 = 마지막 적층체
