@@ -51,6 +51,14 @@
 6. Entity 규약(WP2-3) — 빈 Type = 재료로 소자·부품이 재료가 되는 문제.
 7. 선택: QuantityValue 를 값 노드에 합치는 안(노드 1·트리플 3~4 줄고 값 이중 기록 사라짐 — SDLEXO 패턴 변경이라 플랫폼 결정).
 
+**플랫폼(registry v0.5.4 · template 5sheet-1.2 대응 — 10-16, `dev-20261016` 적재 시험에서)** — 1·2·5 는 플랫폼 끝(`set_jsonld` · `--jsonld`) · 3·4·7 = PRJ997-28~30 · 6 = WP2-3
+8. 적재기 `TEMPLATE_VERSION` 5sheet-1.2 받기 — Parameter·Value 시트 `Confidential`(Y/빈칸) 열. 지금 712세트 전부 소견.
+9. J3(스텝 → 층)에 PSC `CBD`(v0.5.4 — 랩이 코드 합치기 안 함, 옛 `ETLCD`) — 없어서 STEP_LAYER 미표현 1 → `count_methods.py` 가 멈춤(C 못 셈).
+10. J1 — v0.5.4 새·바뀐 이름 22개 미판정(`precursorMolarity`·`additiveMolarRatio`·`spinCoatingMode`·`spinCoatingAtmosphere`·`cbdAtmosphere`·`evaporationAtmosphere`·
+    `holeTransportMaterialConcentration`·`nplc`·`voltageSettlingTime`·`vacuumSuctionTime`·모듈 코팅 4·`spinCoatingSpeedStep`·`immersionTemperature`·`antireflectionFilmUsage`·
+    `filterMaterial`·`waterToSno2VolumeRatio`·`depositionCycles`·`washingMaterial` 등). prefill registry VocabAlias 에는 매핑(일부 Hold) — 플랫폼 registry 0.5.1 → 0.5.4.
+11. 단위표에 `PLC`(NPLC — 전원 주기, 초로 바꾸려면 전원 주파수 필요) · `Å/s`(증착 속도 — registry 기본값 칸).
+
 **prefill**
 1. part·constituent 행 생성(draft · build · 화면) — 환류 7-1·7-2.
 2. Parameter `RepeatNo` — 환류 7-4.

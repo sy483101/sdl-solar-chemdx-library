@@ -2,13 +2,13 @@
 
 > 이 파일 = "지금"의 스냅샷만. 규칙·함정 = `CLAUDE.md` · 계획 = `docs/PLAN.md` · 이력 = `docs/archive/worklog.md` · 합의 = `docs/intent/`.
 
-## 지금 — 2026-10-15 JSON-LD 정본 착수(데이터 건수 셈법은 prefill 반영 끝)
+## 지금 — 2026-10-16 registry v0.5.4(PSC 예비 회신) 반영 · `dev-20261016`
 
 - 1차 원본 = 사용자가 받은 `raw/1_full/downloads/run-20261014T054004Z-rx23_glu`(13,271건 · 16그룹). 구조·필드 = `docs/chemdx-api.md`.
 - 2차 원본 = `raw/2_krict/20261014/<등록연도>/<ID>.json` + `manifest.json` — `scripts/filter_krict.py`(그룹 2 · `created_at` 연도 · 바이트 그대로).
   KRICT 3,333 = 2021 103 · 2022 578 · 2023 674 · 2024 407 · 2025 1,401 · **2026 170**(작성자 2명 · 마지막 등록 07-24). D2·D3 결정.
 - 첨부 파일 바이트(SEM 이미지·원본 측정 txt)는 받지 않았다 — 레코드에는 목록(`fileinfo`)만. 곡선(JV·PL·XRD·UV-Vis)은 레코드 안 숫자 배열.
-- 기준: sdl-prefill `a2bc356`(registry v0.5.3 · template `5sheet-1.1`). PSC registry 회신 대기 중.
+- 기준: sdl-prefill `94a4935`(registry v0.5.4 = PSC 예비 회신 · template `5sheet-1.2`). **PSC 최종본 대기** — 오면 받기 절차 → 판 올림 → 이 레포 매핑 확인·다시 빌드(사용자 10-16).
 - 확인(10-14): 2026년분 ≈170건 맞음(재수집 불필요) · **마감 10-26**(D6) · 측정 곡선은 JSON 배열 → DataArtifact 용 txt/csv 로 뽑는다(배열 지양).
 - T2.1 완료: `mapping/fields.csv`(경로 242, 2026 에서 채워진 것 119) — 관찰은 `docs/chemdx-api.md` 끝. D7 잠정(레코드 = 세트) · D1 = KRICT-PSC 체계(`PSC-EXP-…`).
 - D1 결정: `PSC-EXP-{created_at 날짜}-{NNN}`(같은 날 ChemDX ID 순).
@@ -16,8 +16,7 @@
 - **파이프라인 완성(dev)**: `scripts/convert.py`(레코드 → draft) · `scripts/build_library.py`(→ 엔진 zip → `library/<빌드>/2026/<실험ID>/` + manifest + 집계).
   dev 빌드 `library/dev-20261014` = 170세트 · 조성 170 · 공정 16,540(manual 7,156) · 분석 11,640(곡선 2,328 × 값4+파일1) · 오류 0 ·
   미입력 1,312(JV 결과 Kind — PSC Composite 보류) · 확인 660(registry 에 없는 값 → Process Note). 숫자 = `reports/indicator-dev-20261014.md`.
-- **PSC registry 정리 = 보류(사용자 10-14)** — 내일(10-15) PSC 회신 받으면 sdl-prefill 받기 절차 → 판 올림 → 이 레포는 다시 빌드만
-  (convert.py 가 '→' 메모·새 이름 모두 읽음 — ASOL 합침되면 반용매·열처리가 PVK 파라미터로 들어간다).
+- **PSC 회신 = 예비본 → registry v0.5.4(10-16)** — 랩이 코드 합치기 안 함(ASOL 은 RCP-03 밖 별도 StepType). 반영 = 맨 아래 10-16 절.
 - 결정(10-14): 칸 단위 참고 지표(`sheets.data_counts`)에 registry 기본값 포함. **웹 화면은 10-15부터 셈법 A**(sdl-prefill `fd629ed` — `sheets.set_count`: `산정 데이터 XX건 (레시피 1 · 측정/분석 XX)`, 미등재 결과도 산정) — `data_counts` 는 그대로라 이 레포 집계 무변. 스캔 방향 = 곡선마다 확실(3곳 일치) → JV 방향별 스텝 유지.
 - **소실 검사(10-14)** — 라이브러리층에 제자리가 없는 값 22건 = `mapping/psc_additions.csv`(원본층엔 다 있음). 대부분 registry 이름만 없음(MPSP 노드 있음) →
   **PSC 회신(10-15) 받기 절차 때 sdl-prefill 에서 함께 넣기**. MPSP 갈래도 없는 것 3건 = sdl-prefill `docs/review/mpsp-upstream-feedback.md` 6절(cb5c821).
@@ -64,8 +63,21 @@
   PVK 진공 증착 27 · ETL 이중층(바 코팅) 15 · SnO2_ALD 10 · 따로 떨어진 module 블록 10 · 구조 빈칸 8 · 기타 13.
   **결정(10-15 사용자)**: 미등록 골격으로 미리 빌드하지 않음 — PSC 회신 기다림. 시험(엔진·적재기): RCP-01·02 는 열리지만 `[신규]ANN`·`[신규]BUFEV` 외에
   옛 이름 `SUBST`·`ETL`(v0.5.3 정리로 BOTEL·ETLCT 에 합쳐짐)도 registry 에 없어 칸 0개 · 엔진 오류(세트당 10·4) — 회신 받기 때 RCP-01·02 의 스텝 이름도 함께 정리.
-- **지금 빌드 = `library/dev-20261015c`**(코드 c9c457c · 전 연도 712세트 · 2026 은 b·20261015 와 같음). 집계 주 숫자 = **산정 건수 A**(manifest `counts.setCount`) —
+- **이전 빌드 = `library/dev-20261015c`**(코드 c9c457c · 전 연도 712세트 · 2026 은 b·20261015 와 같음). 집계 주 숫자 = **산정 건수 A**(manifest `counts.setCount`) —
   2026 **3,490**(20.5) · 2022~2025 **10,487**(19.3). T3.4 완료(빌드가 세트마다 xlsx 왕복 A assert — 웹 open-file 은 측정값을 비워 원안 대조 불가) ·
   T3.5 완료(셀 내용 비교로 갈음 — `scripts/compare_builds.py`, 같은 커밋 두 번 빌드 12,287 파일 다름 0). `count_methods.py <빌드> [2026|other]` —
   other: A 10,487 · B 27,359(50.5) · C 1,062,356(1,960) (`reports/count-methods-dev-20261015c-other.md`). 두 묶음 C 합 − 한 그래프 = 105(공유 참조) 일치.
+- **registry v0.5.4 반영(10-16 · 사용자 "제안대로 · registry 바뀌면 다시 반영")** — 정합성 검토 → 변환기·매핑표(e8ac7bb):
+  스텝 `ETLCD`·`ETLCT` → `CBD`·`ETL` · RCP-03 새 `SUBST`(유리 기판) 뺌 · 이름 바뀜 4 · 추가후보 → 칸(몰농도·mol%·HTL 농도·스핀 방식·층별 분위기·모듈 코팅·JV nplc·안정화 시간) ·
+  JV = (방향, 면적, 측정 조건)별 스텝. 검토 중 찾은 소실(그전엔 버려짐) = 전극 증착 분위기 358세트 · JV nplc·안정화 시간(전부) · tco·ETLSF 분위기(지금 Process Note).
+  **지금 빌드 = `library/dev-20261016`**(코드 e8ac7bb · prefill 94a4935 깨끗 · registry 0.5.4 · template 5sheet-1.2 · 712세트 · 오류 0 · 시험 빌드와 셀 같음) —
+  A 2026 **3,490** 그대로 · 2022~2025 **10,517**(+30 = NPLC 다른 곡선 6묶음 → JV 스텝 나눔) · 확인(Process Note) 660 → 170 · 1,415 → 635
+  (2026 남은 것 = PVK 반용매·열처리·3단 스핀·첨가제 mg/ml). 건너뜀 2,621 그대로(`[신규]ANN`·`BUFEV` 미등록 · TiO2 레시피 없음).
+  정한 것(추천안): SUBST 뺌 · ASOL = PSC 최종본까지 Process Note · `Confidential=Y` = registry 대로(PVK 2단 스핀·CBD 침지 — ChemDX 값에도) ·
+  JV Rs·Rsh·Pmax·Vmpp·Jmpp = 안 넣음(보류) · ETL 분위기 = 랩 이름 `spinCoatinglabAtmosphere`.
+  **플랫폼이 아직 1.2·새 이름을 모름** — 적재 시험: 712세트 `TEMPLATE_VERSION` 소견 · `CBD` J3 없음 → STEP_LAYER 미표현 1 → **`count_methods.py` 멈춤(C 못 셈)** ·
+  J1 미판정 22 · 단위 PLC·Å/s · 트리플 140만 → 147만. 요청 = `docs/intent/json-ld.md` "넘길 요청" 8~11. 보고 숫자 그대로(C 340,431 · 2판).
+  플랫폼 소식: `set_jsonld`·`--jsonld` 완성(요청 1·2·5) · ChemDX 의심값 4건 = 원본 그대로(03572·03573 "300 ml" · 03732 FF −496% · 03737 −25%) — 고칠 곳 ChemDX/PSC.
+  **다음 후보(사용자)**: ① 빌드에 `set.jsonld` 넣기(플랫폼 1.2 대응 뒤가 깔끔) ② 층 밖 module 블록 10건 — registry 메모 "PVK 에 붙임(변환기 몫)" 미적용 ·
+  ③ CBD `material` 칸(v0.5.4 새)에 SnO2_CBD 를 적을지 ④ PSC 최종본 반영 → 정본 빌드(이름 규칙 미정).
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).

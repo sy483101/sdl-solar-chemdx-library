@@ -113,3 +113,10 @@
   ② `compare_builds.py`(셀 내용·바이트·manifest @id 제외) — T3.5 = 셀 내용 비교로 갈음(추천안). 첫 시도에서 두 번째 빌드만 코드 `-dirty`(첫 빌드가 쓴 reports/ 파일) →
   dirty 판정에서 reports/ 제외(c9c457c) → 같은 커밋 두 번 빌드 12,287 파일 다름 0. ③ `count_methods.py` 묶음 인자 → dev-20261015c: 2026 A 3,490 · B 6,695 · C 341,103(그대로) ·
   other A 10,487(19.3) · B 27,359 · C 1,062,356. 빌드 A 와 count_methods A 가 두 묶음 모두 같음 · C 두 묶음 합 − 한 그래프(1,403,354) = 105 = 공유 참조.
+- **registry v0.5.4 정합성 검토·반영(2026-10-16)** — 사용자: prefill 이 registry 0.5.4 로 여럿 해결 → ChemDX 데이터 정합성 검토. 기준 = prefill 94a4935(v0.5.4 PSC 예비 회신 · 5sheet-1.2 Confidential 열).
+  깨지는 것: 랩이 코드 합치기 안 함 → `ETLCD`·`ETLCT` 없음(옛 변환기는 첫 레코드에서 StopIteration) · RCP-03 1번 `SUBST` · CBD `temperature` → `immersionTemperature` 등 이름 4.
+  변환기(e8ac7bb): CBD·ETL · SUBST 뺌(`drop_step` 이 안 쓰는 개체 모두 지움 — 유리기판) · ChemDX 매핑 추가분 칸 연결 · 모듈 코팅 4 · µm 단위 · JV 그룹 키에 광세기·안정화 시간·NPLC.
+  검토 중 소실 발견: anode·pvk_treatment·htl·tco·etl_treatment `condition` · JV nplc·voltage_settling_time 이 10-14 소실 검사에선 "추가후보"였지만 변환기는 버리고 있었음 → 지금 다 남음.
+  시험 빌드(scratchpad) → 사용자 "제안대로" → `dev-20261016`: 오류 0 · A 2026 3,490 · other 10,517(+30) · 확인 660 → 170 · 1,415 → 635 · 시험본과 12,287 파일 중 manifest 만 다름.
+  플랫폼 적재기(별도 프로세스): TEMPLATE_VERSION 712 · STEP_LAYER(CBD) 1 · J1 미판정 22 · 단위 PLC·Å/s → 요청 8~11(`json-ld.md`). C 집계는 플랫폼 대응 뒤.
+  매핑표 2개 v0.5.4 로(ETLCD·ETLCT 표기 · 추가후보 → registry · ASOL 칸 = 확인 · JV 결과 5 = 보류). 다음 = HANDOFF 10-16 절 "다음 후보".
