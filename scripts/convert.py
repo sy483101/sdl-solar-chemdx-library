@@ -10,22 +10,27 @@ registry 에 그 층·공정의 StepType 이 없으면 레코드째 건너뛴다
 - 이름은 registry 의 '옛 → 새' 메모·대소문자를 너그럽게 맞추고, 적을 때는 registry 이름을 그대로 쓴다.
 엔진(sdl_platform)은 부르는 쪽이 sys.path 에 올린다(build_library.py).
 """
-import copy, csv, io, itertools, os
+import copy, csv, functools, io, itertools, os, re
 
+from sdl_platform import paths
+from sdl_platform.engine import lab_registry
 from sdl_platform.v05 import draft as D
 
 LAB, RECIPE = "KRICT-PSC", "PSC-RCP-03"   # 참고 레시피 = JV 결과 정의만(스텝은 실데이터로 조립 — 사용자 10-16)
-LAYERS = ("tco", "etl", "etl_treatment", "perovskite", "perovskite_treatment", "htl", "htl_doping", "anode_metal", "device_type")
+LAYERS = ("tco", "blocking_buffer_layer", "etl", "etl_treatment", "perovskite", "perovskite_treatment", "htl", "htl_doping",
+          "htl_treatment", "anode_metal", "device_type")
 ONCE = ("tco", "perovskite", "anode_metal")   # 두 번 나오면 랩 확인(ETL·표면처리·HTL 은 여러 층 허용)
-STACK = {"n-i-p": ("tco", "etl", "etl_treatment", "perovskite", "perovskite_treatment", "htl", "htl_doping", "anode_metal"),
-         "p-i-n": ("tco", "htl", "htl_doping", "perovskite", "perovskite_treatment", "etl", "etl_treatment", "anode_metal")}
+STACK = {"n-i-p": ("tco", "blocking_buffer_layer", "etl", "etl_treatment", "perovskite", "perovskite_treatment", "htl", "htl_doping",
+                   "htl_treatment", "anode_metal"),
+         "p-i-n": ("tco", "htl", "htl_doping", "htl_treatment", "perovskite", "perovskite_treatment", "etl", "etl_treatment",
+                   "blocking_buffer_layer", "anode_metal")}
 # 스텝 순서 = 소자 구조의 적층 순서(ChemDX 블록 순서는 표면처리 블록이 맨 뒤에 오기도 한다) · 같은 층 여럿은 레코드 순서
-NOSTEP = {"blocking_buffer_layer": "버퍼층", "thermal_evaporation": "열증착층", "surface_treatment": "표면처리층",
-          "htl_treatment": "HTL 표면처리", "etl_doping": "ETL 도핑"}   # registry 에 그 층의 StepType 이 없는 블록
+NOSTEP = {"thermal_evaporation": "열증착층", "surface_treatment": "표면처리층"}   # 무엇의 공정인지 불명확한 블록(랩 확인)
 PROC = ("spin_coating", "annealing", "module", "condition")   # 층 이름 없이 따로 떨어진 공정 블록 = 바로 앞 층의 공정
 UNIT = {"ul": "ul", "µl": "ul", "μl": "ul", "ml": "ml", "m": "min", "min": "min", "s": "s", "h": "h",
-        "oc": "c", "℃": "c", "degc": "c", "°c": "c", "um": "um", "µm": "um", "μm": "um"}
-FACTOR = {("ml", "ul"): 1000, ("ul", "ml"): 0.001, ("s", "min"): 1 / 60, ("min", "s"): 60, ("h", "min"): 60}
+        "oc": "c", "℃": "c", "degc": "c", "°c": "c", "um": "um", "µm": "um", "μm": "um",
+        "å/s": "å/s", "a/s": "å/s", "utorr": "utorr", "µtorr": "utorr"}   # 증착 속도 'A/s' = Å/s(Å 두 글자 모두 소문자 å)
+FACTOR = {("ml", "ul"): 1000, ("ul", "ml"): 0.001, ("s", "min"): 1 / 60, ("min", "s"): 60, ("h", "min"): 60, ("utorr", "torr"): 1e-6}
 DOPANT = {"li-tfsi": "dopant1", "co-tfsi": "dopant2", "tbp": "additive"}   # HTL 도핑 = 이름으로 칸을 고른다
 MODULE = {"type": "coatingMethod", "gap": "coatingGap", "coating_speed": "coatingSpeed", "feeding_amount": "feedingAmount"}   # 바·슬롯다이 코팅(v0.5.4 — PVK 만 칸 있음)
 
@@ -121,15 +126,33 @@ def mats(items):
 
 
 def etl_code(b):
-    """ETL 블록 → StepType(CBD·ETL) — 열증착·ALD 는 registry 에 그 공정 StepType 이 없다."""
-    m = str(lv((b.get("etl") or [{}])[0], "material")[0] or "")
-    if b.get("thermal_evaporation") or m.split("/")[0] == "C60":   # C60 = 열증착 재료(공정 칸이 비어도) · PC60BM 은 용액
-        raise Skip(f"ETL {m} 열증착 — registry 에 그 공정 StepType 없음")
+    """ETL 블록 → StepType: ALD · BUFEV(C60 열증착 — PSC-RCP-01 [신규]BUFEV 와 같은 쓰임) · CBD · ETL(그 밖 코팅)."""
+    ms = [str(lv(t, "material")[0] or "") for t in b.get("etl") or [{}]]
+    m, special = ms[0], [x for x in ms if "/" in x or "ALD" in x or x == "C60"]
+    if special and (len(set(ms)) > 1 or "/" in m):
+        raise Skip(f"ETL {'+'.join(ms)} — 한 블록에 여러 층(어느 층 값인지 랩 확인)")
     if "ALD" in m:
-        raise Skip(f"ETL {m} — registry 에 그 공정 StepType 없음")
-    if b.get("etl_doping"):
-        raise Skip("ETL 도핑(etl_doping) — registry 에 칸 없음(랩 확인)")
+        return "ALD"
+    if m == "C60":                                     # C60 = 열증착 재료(공정 칸이 비어도) · PC60BM 은 용액
+        return "BUFEV"
+    if b.get("thermal_evaporation"):
+        raise Skip(f"ETL {m} 열증착 — 그 재료의 증착 StepType 없음(랩 확인)")
     return "CBD" if m == "SnO2_CBD" or b.get("chemical_bath_deposition") else "ETL"
+
+
+def evap(step, block):
+    """열증착 블록 → 두께·속도·압력(µTorr → Torr)·분위기 칸(없는 칸은 orphan)."""
+    te = block.get("thermal_evaporation") or []
+    for i, x in enumerate(te if isinstance(te, list) else [te]):
+        put(step, "thickness", *lv(x, "vacuum_evaporation_thickness"), nth=i)
+        put(step, "depositionRate", *lv(x, "evaporation_rate"), nth=i)
+        put(step, "depositionChamberPressure", *lv(x, "vacuum_pressure"), nth=i)
+    put(step, "evaporationAtmosphere", *lv(block, "condition"))
+
+
+@functools.lru_cache(maxsize=1)
+def steptypes():
+    return frozenset(r.get("StepTypeCode", "") for r in lab_registry.lab_sheets(LAB).get("StepType", []))
 
 
 def attach(seq, b):
@@ -178,6 +201,9 @@ def layers_of(rec):
             odd.append(f"같은 층 블록 둘({k}) — 랩 확인")
     if "perovskite" not in (k for k, _ in seq):
         odd.append("PVK 블록 없음 — 랩 확인")
+    for k, b in seq:
+        if k == "blocking_buffer_layer" and not b.get("thermal_evaporation"):   # PSC 는 BCP 를 스핀(ETLSF) — 공정 값 없으면 모름
+            odd.append(f"버퍼층 {mats(b.get(k))} 공정 값 없음 — 스핀(ETLSF)·증착(BUFEV) 중 무엇인지 랩 확인")
     if odd:
         raise Skip(odd[0])
     order = STACK[lv(dev, "device_type")[0]]
@@ -211,6 +237,8 @@ def convert(rec, seq_no):
     def step(code, out_name):
         """스텝 하나 — 투입 = 지금 적층체 · 산출 = 새 적층체(이름 = 앞 이름 + 이 층)."""
         nonlocal cur
+        if code not in steptypes():
+            raise Skip(f"{code} — registry {paths.REGISTRY_VERSION} 에 그 StepType 없음")
         s = D.new_step(LAB, code, f"s{len(d['steps']) + 1}")
         s["orphanParams"] = {}
         out = entity(out_name)
@@ -232,13 +260,36 @@ def convert(rec, seq_no):
             code, m = etl_code(b), lv((b.get("etl") or [{}])[0], "material")[0]
             s = step(code, f"{cur['name']}/{mats(b.get('etl')) or 'ETL'}")
             put(s, "material", m)
-            put(s, "cbdAtmosphere" if code == "CBD" else "spinCoatinglabAtmosphere", *lv(b, "condition"))   # ETL = 기존 칸
-            for i, t in enumerate(b.get("etl") or []):
-                put(s, "concentration", lv(t, "concentration")[0], lv(t, "conc_unit")[0], nth=i)
+            if code in ("BUFEV", "ALD"):
+                evap(s, b)                             # ALD 는 두께만 칸(ChemDX 가 증착 칸에 적음) — 나머지 orphan
+            else:
+                put(s, "cbdAtmosphere" if code == "CBD" else "spinCoatinglabAtmosphere", *lv(b, "condition"))   # ETL = 기존 칸
+                for i, t in enumerate(b.get("etl") or []):
+                    put(s, "concentration", lv(t, "concentration")[0], lv(t, "conc_unit")[0], nth=i)
+                    put(s, "spinCoatingVolume", *lv(t, "quantity"), nth=i)
+                for i, x in enumerate((b.get("chemical_bath_deposition") or {}).get("bath_annealing") or []):
+                    put(s, "immersionTemperature", *lv(x, "temperature"), nth=i)   # CBD 욕조 온도·담금 시간(확인 대상)
+                    put(s, "immersionTime", *lv(x, "time"), nth=i)
+                for i, x in enumerate(b.get("etl_doping") or []):   # 'Ce 200mg/mL' — 이름·농도가 부피 칸에(ChemDX 입력 그대로)
+                    raw = str(lv(x, "volume")[0] or "")
+                    hit = re.match(r"^\s*(\S+)\s+([0-9.]+)\s*(mg/ml)\s*$", raw, re.I)
+                    if hit:
+                        put(s, "dopant1Name", hit[1], nth=i)
+                        put(s, "dopant1Concentration", hit[2], hit[3], nth=i)
+                    else:
+                        put(s, "dopant", raw, nth=i)
+            spin_anneal(s, b)
+        elif k == "blocking_buffer_layer":           # 공정 값 있는 버퍼층(BCP 열증착)만 — 없는 것은 layers_of 가 건너뜀
+            s = step("BUFEV", f"{cur['name']}/{mats(b.get(k)) or '버퍼층'}")
+            for i, t in enumerate(b.get(k) or []):
+                put(s, "material", *lv(t, "material"), nth=i)
+            evap(s, b)
+            spin_anneal(s, b)
+        elif k == "htl_treatment":                   # SAM 등 HTL 위 용매 세척(에탄올) — 층이 아니라 처리
+            s = step("HTLSF", f"{cur['name']}·{mats(b.get(k)) or ''} 처리")
+            for i, t in enumerate(b.get(k) or []):
+                put(s, "solvent", *lv(t, "material"), nth=i)
                 put(s, "spinCoatingVolume", *lv(t, "quantity"), nth=i)
-            for i, x in enumerate((b.get("chemical_bath_deposition") or {}).get("bath_annealing") or []):
-                put(s, "immersionTemperature", *lv(x, "temperature"), nth=i)   # CBD 욕조 온도·담금 시간(확인 대상)
-                put(s, "immersionTime", *lv(x, "time"), nth=i)
             spin_anneal(s, b)
         elif k in ("etl_treatment", "perovskite_treatment"):
             s = step("ETLSF" if k == "etl_treatment" else "PVKSF", f"{cur['name']}/{mats(b.get(k)) or k}")
@@ -388,8 +439,10 @@ def _selftest():
     assert got("HTL", "thermalAnnealingTemperature") == ["70"] and d["meta"]["note"].endswith("memo")   # 떨어진 공정 블록 = 앞 층
     assert not any(s["orphanParams"] for s in d["steps"]) and not any(p["default"] for s in d["steps"] for p in s["params"])
     assert [e["name"] for e in d["entities"]][:3] == ["bare_ITO전극", "clean_ITO전극", "clean_ITO전극/SnO2_CBD"] and d["entities"][-1]["name"] == "완성소자"
-    for bad, why in (({"etl": [{"material": V("C60")}], "thermal_evaporation": {"rate": V(1)}}, "열증착"), ({"etl": [{"material": V("C60")}]}, "열증착"),
-                     ({"blocking_buffer_layer": [{}]}, "버퍼층")):
+    assert [etl_code({"etl": [{"material": V(x)}]}) for x in ("C60", "SnO2_ALD", "PC60BM", "SnO2_CBD")] == ["BUFEV", "ALD", "ETL", "CBD"]
+    assert to_unit("0.1", "A/s", "\u212b/s") == "0.1" and to_unit("5", "uTorr", "Torr") == "5e-06"
+    for bad, why in (({"etl": [{"material": V("C60/SnO2")}]}, "여러 층"), ({"etl": [{"material": V("PCBM")}], "thermal_evaporation": [{}]}, "증착"),
+                     ({"blocking_buffer_layer": [{"material": V("BCP")}]}, "공정 값 없음")):
         try:
             convert(dict(rec, input=rec["input"][:2] + [bad] + rec["input"][2:]), 1)
             raise AssertionError(why)

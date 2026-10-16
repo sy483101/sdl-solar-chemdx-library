@@ -1,0 +1,22 @@
+# 시험판 registry v0.5.4b = prefill v0.5.4 + 이 표(사용자 10-16 — 건너뛴 ChemDX 레코드 중 불명확한 것 빼고 담기). 정본 아님: 만들기 = scripts/registry_trial.py → $SOLAR_DATA_DIR/registry/v0.5.4b/.
+# 정본 반영은 이 표를 sdl-prefill 받기 절차(또는 PSC 최종 회신)로 — 이 레포는 prefill registry 파일을 고치지 않는다(CLAUDE.md).
+# 근거: PSC-RCP-01(p-i-n)의 [신규]BUFEV = C60·LiF 열증착(material·thickness·depositionRate) · BCP 는 ETLSF 스핀(그래서 공정 값 없는 BCP 716 은 뺌 — 불명확).
+# 파라미터 이름은 기존 것을 다시 씀(VocabAlias 가 이름으로 MPSP 를 잇는다 — TOPEL 열증착·ETLSF·열처리 이름 = 이미 Mapped). 새 용어 = dopant1Concentration 하나(Hold).
+sheet,StepTypeCode,Name,Unit,Description,SDLEXO_Class,MPSP_Technique,Equipment/FixtureCode,Capability,Status,보류사유
+StepType,BUFEV,Buffer Layer Evaporation,,진공 열증착으로 C60 등 버퍼·전자수송 박막을 올리는 공정(PSC-RCP-01 [신규]BUFEV 자리 — C60·LiF),FORM,process > physical > thermalEvaporation_n,PSC-EQ-EVAP-01; PSC-FX-SUB-01,CAP-DEPOSIT-VACUUM: 진공 증착,,
+StepType,HTLSF,HTL surface treatment,,정공수송층(SAM 등) 위 용매 세척·표면처리(ChemDX htl_treatment — 에탄올) — ETLSF·PVKSF 와 같은 꼴,TRANSFORM,process > physical > spinCoating_n,PSC-EQ-SPIN-01; PSC-FX-SUB-01,CAP-SURFACE-TREAT: 표면 처리,,
+StepType,ALD,Atomic Layer Deposition,,원자층 증착(ALD)으로 SnO2 등 박막 형성(ChemDX SnO2_ALD — 랩 ALD 장비 미등록),FORM,process > chemical > atomicLayerDeposition_n,,CAP-DEPOSIT-VACUUM: 진공 증착,,
+StepTypeParams,BUFEV,material,-,증착 재료(C60 등),,,,,,
+StepTypeParams,BUFEV,thickness,nm,증착 두께,,,,,,
+StepTypeParams,BUFEV,depositionRate,Å/s,증착 속도,,,,,,
+StepTypeParams,BUFEV,depositionChamberPressure,Torr,증착 챔버 압력,,,,,,
+StepTypeParams,BUFEV,evaporationAtmosphere,-,증착 분위기(vacuum evaporation · glove-box 등),,,,,,
+StepTypeParams,HTLSF,solvent,-,세척·처리 용매(Ethanol 등),,,,,,
+StepTypeParams,HTLSF,spinCoatingVolume,µL,분주 용매량,,,,,,
+StepTypeParams,ALD,material,-,증착 재료(SnO2 등),,,,,,
+StepTypeParams,ALD,thickness,nm,증착 두께,,,,,,
+StepTypeParams,ALD,thermalAnnealingTemperature,degC,후열처리 온도,,,,,,
+StepTypeParams,ALD,thermalAnnealingTime,min,후열처리 시간,,,,,,
+StepTypeParams,ETL,dopant1Name,-,도펀트 종류(ChemDX etl_doping — Ce 등),,,,,,
+StepTypeParams,ETL,dopant1Concentration,mg/mL,도펀트 용액 농도,,,,,,
+VocabAlias,,dopant1Concentration,,도펀트 용액 농도,,,,,Hold,SDL-MPSP v0.3.3 spinCoating_n precursor additive_n 에 농도 잎 없음(Amount 뿐) — 판정 대기
