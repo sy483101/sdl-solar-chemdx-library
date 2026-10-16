@@ -2,7 +2,7 @@
 
 > 이 파일 = "지금"의 스냅샷만. 규칙·함정 = `CLAUDE.md` · 계획 = `docs/PLAN.md` · 이력 = `docs/archive/worklog.md` · 합의 = `docs/intent/`.
 
-## 지금 — 2026-10-16 스텝 = 실데이터 조립 · 기본값 배제 · `dev-20261016c`
+## 지금 — 2026-10-16 스텝 = 실데이터 조립 · 기본값 배제 · `dev-20261016d`
 
 - 1차 원본 = 사용자가 받은 `raw/1_full/downloads/run-20261014T054004Z-rx23_glu`(13,271건 · 16그룹). 구조·필드 = `docs/chemdx-api.md`.
 - 2차 원본 = `raw/2_krict/20261014/<등록연도>/<ID>.json` + `manifest.json` — `scripts/filter_krict.py`(그룹 2 · `created_at` 연도 · 바이트 그대로).
@@ -94,7 +94,7 @@
   htl(+htl_doping)→HTL · anode_metal→TOPEL · JV) · 순서 = n-i-p/p-i-n 적층 순서(ChemDX 블록 순서는 표면처리가 맨 뒤에 오기도) · 레시피 = JV 결과 정의만 · **RecipeCode 비움** ·
   개체 이름 = 실제 적층(`clean_ITO전극/SnO2_NP/…`, 전엔 ITO 도 `FTO전극`) · 층 이름 없는 공정 블록 = 바로 앞 층(registry 메모 'PVK' 대신 — ETL 뒤 366 · HTL 뒤 363 · PVK 뒤 156) ·
   note 블록 = 실험 비고 · CBD material = SnO2_CBD · 전극 블록 없으면 TOPEL 없음(113세트). 건너뜀 = registry 에 그 층·공정 StepType 없을 때만.
-  **지금 빌드 = `library/dev-20261016c`**(코드 65206dc · prefill df30908 · registry 0.5.4 · template 1.3 · 오류 0): 세트 712 → **1,829**(2026 170 그대로 · 그 외 542 → 1,659 —
+  빌드 `library/dev-20261016c`(코드 65206dc · prefill df30908 · registry 0.5.4 · template 1.3 · 오류 0): 세트 712 → **1,829**(2026 170 그대로 · 그 외 542 → 1,659 —
   n-i-p 모듈 319 · p-i-n 272 · TiO2 계열 등) · A 2026 **3,490** 그대로 · 그 외 24,124 · 건너뜀 2,621 → 1,504(버퍼층 1,051 · C60 열증착 224 · 표면처리층 111 · HTL 표면처리 29 ·
   PVK 진공 증착 27 · 그 밖). 기존 712세트 값 사라짐 **0**(scratchpad value_diff — 생김 = CBD material 474). 2026 비고 = PVK 첨가제 mg/ml 160 · 스핀 방식 20 뿐.
   **새 세트는 비고가 많음**: 바 코팅이 ETL·HTL·PVKSF 에 칸 없음(~4,000) · 반용매 없는 PVK 열처리 칸 없음(923 — v0.5.4 랩이 PVK 열처리를 ASOL 로 옮김) · 2단계 PVK(2step 622)는 PVK 스텝 하나.
@@ -102,4 +102,10 @@
   **C 는 이 레포에서 세지 않음(사용자 10-16)** — `count_methods.py` 는 둠(보고 2판 C 340,431 동결).
   **논의할 것(사용자 답 대기)**: ① 바 코팅 칸을 ETL·HTL·PVKSF·CBD 에도(PVK 처럼 데이터팀) ② 반용매 없는 PVK 열처리 자리(PVK 칸 되살림 · `[신규]ANN` 등록 · ASOL 로) ③ 2step PVK 표현 ④ 빠진 StepType(버퍼층·C60 열증착 등 → 1,504건) ·
   ⑤ 전극 블록 없는 113세트에 TOPEL 을 둘지 ⑥ 새로 열린 1,117세트를 이번 dev 에 둘지.
+- **C60 고침 · 건너뛴 레코드 요구사항(10-16 밤)** — 65206dc 가 증착 칸이 빈 C60 ETL(p-i-n 259세트)을 스핀 ETL 스텝에 담던 것 → 재료가 C60 이면 열증착(68b8faa, PC60BM 제외).
+  **지금 빌드 = `library/dev-20261016d`**(코드 68b8faa · 오류 0): 세트 **1,568**(2026 170 · 그 외 1,398) · 건너뜀 1,765 · 기존 712세트 값 사라짐 0.
+  건너뛴 1,765 를 열려면(누적 — scratchpad skip_needs.py): ① C60 열증착 ETL 스텝 482 → ② + 버퍼층(BCP) 스텝 1,394 → ③ + surface_treatment 1,531 → ④ + PVK 진공 증착 1,671 →
+  ⑤ + HTL 에탄올 세척 1,700 → ⑥ + SnO2 ALD 1,737 → ⑦ + ETL 도핑 칸 1,744 → ⑧ 원본 확인 21. ①② 는 TOPEL 열증착 파라미터 이름 그대로(VocabAlias Mapped — 새 용어 없음, 단위 uTorr→Torr·A/s→Å/s 만).
+  불명확(랩 질문): BCP 902·C60 902 블록에 증착 값 없음(열증착으로 봐도 되나) · surface_treatment 값 '70C'102·'100C'24·'air_exposure'11(무엇을·얼마나) · PVK 진공 증착은 두께 칸에 물질 이름(FAI·CsI·PbI2) ·
+  C60/SnO2·C60/BCP 한 블록에 두 층 · 층 이름 없는 CBD 블록 12(tco 뒤 — HTL?) · 소자 구조 없음 8(석영 위 막).
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).
