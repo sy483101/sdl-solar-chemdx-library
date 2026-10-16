@@ -120,3 +120,8 @@
   시험 빌드(scratchpad) → 사용자 "제안대로" → `dev-20261016`: 오류 0 · A 2026 3,490 · other 10,517(+30) · 확인 660 → 170 · 1,415 → 635 · 시험본과 12,287 파일 중 manifest 만 다름.
   플랫폼 적재기(별도 프로세스): TEMPLATE_VERSION 712 · STEP_LAYER(CBD) 1 · J1 미판정 22 · 단위 PLC·Å/s → 요청 8~11(`json-ld.md`). C 집계는 플랫폼 대응 뒤.
   매핑표 2개 v0.5.4 로(ETLCD·ETLCT 표기 · 추가후보 → registry · ASOL 칸 = 확인 · JV 결과 5 = 보류). 다음 = HANDOFF 10-16 절 "다음 후보".
+- **플랫폼 매핑 정합성 검토 · 기본값 배제(2026-10-16 밤)** — 사용자: ChemDX 가 플랫폼에 매핑되며 소실·이상 매핑 검토 → 적재기(load.py) 열별 처리 정독 + dev-20261016 실적재 감사(scratchpad audit.py):
+  행 단위 표현 100%(147,143) · 미표현 1(STEP_LAYER CBD) · 안 읽는 열 = Parameter.Source(기본값 44,244행이 실측처럼) · Confidential(5,704) · Value.RepeatNo(50,750) ·
+  장비 = 레시피 PSC 것 · Entity 5,884 = 재료 · J1 미판정 18 · 단위 PLC·Å/s · Process Note 805 스텝 = 주석 글. 원본 대조로 기본값 오류 확인(00475 등).
+  사용자 14개 답 → ① 기본값 배제(723e1ac — draft default 비움, 엔진 무수정) · ④⑤ 그대로 · ⑦ SDL-MPSP 분류: v0.3.3 xlsx 대조로 Hold 대부분 기존 잎 → prefill VocabAlias 정리(df30908, make test 119)
+  · 신설 1(CBD Atmosphere) 은 플랫폼 요청 10 · 플랫폼 요청 8~11 다시 씀. 기본값 몫 = 2026 C 의 25%(85,144 / 341,103). `dev-20261016b`: A 그대로 · 시험본과 셀 같음 · template 1.3.

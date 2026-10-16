@@ -51,13 +51,17 @@
 6. Entity 규약(WP2-3) — 빈 Type = 재료로 소자·부품이 재료가 되는 문제.
 7. 선택: QuantityValue 를 값 노드에 합치는 안(노드 1·트리플 3~4 줄고 값 이중 기록 사라짐 — SDLEXO 패턴 변경이라 플랫폼 결정).
 
-**플랫폼(registry v0.5.4 · template 5sheet-1.2 대응 — 10-16, `dev-20261016` 적재 시험에서)** — 1·2·5 는 플랫폼 끝(`set_jsonld` · `--jsonld`) · 3·4·7 = PRJ997-28~30 · 6 = WP2-3
-8. 적재기 `TEMPLATE_VERSION` 5sheet-1.2 받기 — Parameter·Value 시트 `Confidential`(Y/빈칸) 열. 지금 712세트 전부 소견.
-9. J3(스텝 → 층)에 PSC `CBD`(v0.5.4 — 랩이 코드 합치기 안 함, 옛 `ETLCD`) — 없어서 STEP_LAYER 미표현 1 → `count_methods.py` 가 멈춤(C 못 셈).
-10. J1 — v0.5.4 새·바뀐 이름 22개 미판정(`precursorMolarity`·`additiveMolarRatio`·`spinCoatingMode`·`spinCoatingAtmosphere`·`cbdAtmosphere`·`evaporationAtmosphere`·
-    `holeTransportMaterialConcentration`·`nplc`·`voltageSettlingTime`·`vacuumSuctionTime`·모듈 코팅 4·`spinCoatingSpeedStep`·`immersionTemperature`·`antireflectionFilmUsage`·
-    `filterMaterial`·`waterToSno2VolumeRatio`·`depositionCycles`·`washingMaterial` 등). prefill registry VocabAlias 에는 매핑(일부 Hold) — 플랫폼 registry 0.5.1 → 0.5.4.
-11. 단위표에 `PLC`(NPLC — 전원 주기, 초로 바꾸려면 전원 주파수 필요) · `Å/s`(증착 속도 — registry 기본값 칸).
+**플랫폼(registry v0.5.4 · template 5sheet-1.2·1.3 대응 — 10-16, `dev-20261016` 적재 시험 · 정합성 검토에서)** — 1·2·5 는 플랫폼 끝(`set_jsonld` · `--jsonld`) · 3·4·7 = PRJ997-28~30 · 6 = WP2-3.
+**3·4 우선순위 올림**: 템플릿엔 `Value.RepeatNo`(셀 번호)·`StepID`(JV 스텝)가 다 있는데 적재기가 RepeatNo 를 안 읽고 측정 ↔ 스텝을 안 이어 같은 셀의 PCE·Voc·Jsc·FF·곡선이 측정 노드 5개로 흩어지고 면적·광세기·스캔 방향·NPLC 와 끊김.
+8. 템플릿 판 1.2·1.3 받기 + **안 읽는 열 처리** — `Confidential`(Y = 값은 기록, 비공개 — 지금 공개 그래프에 그대로: ChemDX 실측 1,060행) ·
+   `Parameter.Source`(default = registry 기본값 — 지금 실측처럼 실림. ChemDX 는 변환기에서 기본값 행을 뺐다(10-16), 웹 입력분은 남은 문제) · 1.3 스텝 없는 Value 행(`entityFile`).
+9. registry 0.5.1 → **0.5.4 들여오기**(`scripts/sync_upstream.py registry <prefill>`) + J1·J3 재판정 — 코드가 바뀌어(`ETLCD`→`CBD` · `ETLCT`→`ETL` · `ASOL`) 키가 달라짐.
+   J3: `CBD` = 옛 `CBD → ETLCD` 결정(FORM · `process_chemical_chemicalBathDeposition_n`) 이어받기 — 없어서 STEP_LAYER 미표현 → `count_methods.py` 멈춤 ·
+   `ETL` = 지금 빈 이름 행(FORM · 기법 없음)에 걸림 → 옛 `ETL → ETLCT` 결정(`spinCoating_n`). J1: 새 이름 18개 미판정 — prefill VocabAlias 에 SDL-MPSP v0.3.3 매핑 있음(10-16 정리 df30908, 플랫폼 J1 은 VocabAlias 를 안 읽으니 참고로).
+10. **SDL-MPSP v0.3.4 신설 1건** — `process > chemical > chemicalBathDeposition_n > Atmosphere`(String · PRC-4178 `spinCoating_n_Atmosphere` 꼴 · anchor CBD 행) ← KRICT-PSC `cbdAtmosphere`(air 82행).
+    나머지 ChemDX 용어는 v0.3.3 에 있음(설정 시간 CHA-0578 · 진공 흡입 PRC-N01T · 바 코팅 Gap·Speed·Feed · 적분 시간 CHA-0576).
+11. 단위 — `PLC`(NPLC = 전원 주기 수: 시간 단위가 아니라 QUDT 에 없음, 60 Hz 면 1 PLC = 16.7 ms — local-mint 또는 비단위로) ·
+    `Å/s` 는 단위표에 있는데 registry 가 다른 글자(U+212B ANGSTROM SIGN, 단위표는 U+00C5) → 찾기 전 NFC 정규화.
 
 **prefill**
 1. part·constituent 행 생성(draft · build · 화면) — 환류 7-1·7-2.

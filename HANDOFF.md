@@ -2,7 +2,7 @@
 
 > 이 파일 = "지금"의 스냅샷만. 규칙·함정 = `CLAUDE.md` · 계획 = `docs/PLAN.md` · 이력 = `docs/archive/worklog.md` · 합의 = `docs/intent/`.
 
-## 지금 — 2026-10-16 registry v0.5.4(PSC 예비 회신) 반영 · `dev-20261016`
+## 지금 — 2026-10-16 registry v0.5.4 반영 · 기본값 배제 · `dev-20261016b`
 
 - 1차 원본 = 사용자가 받은 `raw/1_full/downloads/run-20261014T054004Z-rx23_glu`(13,271건 · 16그룹). 구조·필드 = `docs/chemdx-api.md`.
 - 2차 원본 = `raw/2_krict/20261014/<등록연도>/<ID>.json` + `manifest.json` — `scripts/filter_krict.py`(그룹 2 · `created_at` 연도 · 바이트 그대로).
@@ -70,7 +70,7 @@
 - **registry v0.5.4 반영(10-16 · 사용자 "제안대로 · registry 바뀌면 다시 반영")** — 정합성 검토 → 변환기·매핑표(e8ac7bb):
   스텝 `ETLCD`·`ETLCT` → `CBD`·`ETL` · RCP-03 새 `SUBST`(유리 기판) 뺌 · 이름 바뀜 4 · 추가후보 → 칸(몰농도·mol%·HTL 농도·스핀 방식·층별 분위기·모듈 코팅·JV nplc·안정화 시간) ·
   JV = (방향, 면적, 측정 조건)별 스텝. 검토 중 찾은 소실(그전엔 버려짐) = 전극 증착 분위기 358세트 · JV nplc·안정화 시간(전부) · tco·ETLSF 분위기(지금 Process Note).
-  **지금 빌드 = `library/dev-20261016`**(코드 e8ac7bb · prefill 94a4935 깨끗 · registry 0.5.4 · template 5sheet-1.2 · 712세트 · 오류 0 · 시험 빌드와 셀 같음) —
+  빌드 `library/dev-20261016`(코드 e8ac7bb · prefill 94a4935 깨끗 · registry 0.5.4 · template 5sheet-1.2 · 712세트 · 오류 0 · 시험 빌드와 셀 같음) —
   A 2026 **3,490** 그대로 · 2022~2025 **10,517**(+30 = NPLC 다른 곡선 6묶음 → JV 스텝 나눔) · 확인(Process Note) 660 → 170 · 1,415 → 635
   (2026 남은 것 = PVK 반용매·열처리·3단 스핀·첨가제 mg/ml). 건너뜀 2,621 그대로(`[신규]ANN`·`BUFEV` 미등록 · TiO2 레시피 없음).
   정한 것(추천안): SUBST 뺌 · ASOL = PSC 최종본까지 Process Note · `Confidential=Y` = registry 대로(PVK 2단 스핀·CBD 침지 — ChemDX 값에도) ·
@@ -80,4 +80,13 @@
   플랫폼 소식: `set_jsonld`·`--jsonld` 완성(요청 1·2·5) · ChemDX 의심값 4건 = 원본 그대로(03572·03573 "300 ml" · 03732 FF −496% · 03737 −25%) — 고칠 곳 ChemDX/PSC.
   **다음 후보(사용자)**: ① 빌드에 `set.jsonld` 넣기(플랫폼 1.2 대응 뒤가 깔끔) ② 층 밖 module 블록 10건 — registry 메모 "PVK 에 붙임(변환기 몫)" 미적용 ·
   ③ CBD `material` 칸(v0.5.4 새)에 SnO2_CBD 를 적을지 ④ PSC 최종본 반영 → 정본 빌드(이름 규칙 미정).
+- **플랫폼 매핑 정합성 검토(10-16 밤 · 사용자 14개 답)** — 적재기는 행 단위 100% 표현인데 안 읽는 열 3개(`Parameter.Source` · `Confidential` · `Value.RepeatNo`)로 뜻이 틀어짐.
+  ① **registry 기본값 배제**(사용자: ChemDX 는 registry 와 따로 만든 실험) — 기본값 44,244행(Parameter 60%)이 실측처럼 실렸음(예 00475 원본 Li-TFSI 뿐인데 CoTFSI·tBP · 첨가제 없는데 MACl ·
+  스핀 기록 없는데 2단 스핀) → 변환기가 draft default 를 비움(723e1ac). **보고 C 340,431 의 25%(85,144)가 이 기본값이었음**(dev-20261015 2026 · 지금 적재기) — 보고 숫자는 동결 그대로.
+  **지금 빌드 = `library/dev-20261016b`**(코드 723e1ac · prefill df30908 깨끗 · registry 0.5.4 · template **5sheet-1.3** · 오류 0) — A 3,490 · 10,517 그대로 · 공정 칸 = manual 만(2026 9,020) ·
+  적재기 트리플 2026 360,330 → 268,756. C 집계는 여전히 플랫폼 J3(CBD) 대기.
+  ② 비공개 = 템플릿엔 Y 표시(실측 1,060행) · 적재기 무시 → 플랫폼 요청 8 · ③ RepeatNo·측정↔스텝 = 템플릿엔 있음 · 플랫폼 요청 3·4 우선순위 올림 · ④ 장비 = 레시피 것 그대로 · ⑤ Entity = 재료 그대로(분류는 추후).
+  ⑦ **VocabAlias 정리(prefill df30908)**: ChemDX Hold 대부분이 SDL-MPSP v0.3.3 에 이미 있음 → Mapped 6 · NotApplicable 1(`coatingMethod`) · `nplc` 경로 오류 고침 · **진짜 신설 = CBD Atmosphere 하나**(요청 10).
+  SDL-MPSP 발행·플랫폼 registry 0.5.4 들여오기·J1/J3 재판정은 **플랫폼 몫 — 손대지 않음**(다른 세션이 작업 중: 안 올린 커밋 1 · 미커밋 frontend · 발행 절차가 0.5.4 들여오기에 걸림). 요청 = `json-ld.md` 8~11.
+  **사용자 답 대기**: 플랫폼 작업을 이 세션에서 할지 · Process Note → ASOL 스텝(반용매·PVK 열처리·3단 스핀 ≈2,300칸이 파라미터가 됨 — 엔진 `new_step` 있음) · 조성 constituent 행(prefill 7-1 — 엔진이 아직 못 씀).
 - 열린 결정 = `docs/PLAN.md` 끝 표(D1·D4~D7).
