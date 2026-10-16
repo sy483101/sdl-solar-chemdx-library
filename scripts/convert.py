@@ -123,7 +123,7 @@ def mats(items):
 def etl_code(b):
     """ETL 블록 → StepType(CBD·ETL) — 열증착·ALD 는 registry 에 그 공정 StepType 이 없다."""
     m = str(lv((b.get("etl") or [{}])[0], "material")[0] or "")
-    if b.get("thermal_evaporation"):
+    if b.get("thermal_evaporation") or m.split("/")[0] == "C60":   # C60 = 열증착 재료(공정 칸이 비어도) · PC60BM 은 용액
         raise Skip(f"ETL {m} 열증착 — registry 에 그 공정 StepType 없음")
     if "ALD" in m:
         raise Skip(f"ETL {m} — registry 에 그 공정 StepType 없음")
@@ -388,7 +388,8 @@ def _selftest():
     assert got("HTL", "thermalAnnealingTemperature") == ["70"] and d["meta"]["note"].endswith("memo")   # 떨어진 공정 블록 = 앞 층
     assert not any(s["orphanParams"] for s in d["steps"]) and not any(p["default"] for s in d["steps"] for p in s["params"])
     assert [e["name"] for e in d["entities"]][:3] == ["bare_ITO전극", "clean_ITO전극", "clean_ITO전극/SnO2_CBD"] and d["entities"][-1]["name"] == "완성소자"
-    for bad, why in (({"etl": [{"material": V("C60")}], "thermal_evaporation": {"rate": V(1)}}, "열증착"), ({"blocking_buffer_layer": [{}]}, "버퍼층")):
+    for bad, why in (({"etl": [{"material": V("C60")}], "thermal_evaporation": {"rate": V(1)}}, "열증착"), ({"etl": [{"material": V("C60")}]}, "열증착"),
+                     ({"blocking_buffer_layer": [{}]}, "버퍼층")):
         try:
             convert(dict(rec, input=rec["input"][:2] + [bad] + rec["input"][2:]), 1)
             raise AssertionError(why)
